@@ -340,14 +340,14 @@ public class Function extends Type
         {
           int id   = argIds[2*nargs];
           int attr = argIds[2*nargs+1];
-          
           // XXX in theory, it should be possible to bring back an optimization
           // to avoid the copy, if nargs==0....
-          
-          OArray arr = new OArray( len - nargs );
-          for( int i=nargs; i<len; i++ )
-            arr.elementAt(i-nargs).opAssign( args.referenceAt(i) );
-          
+          OArray arr = emptyOArray;		// EMPTY ARRAY ON NO DIFF
+          if (len > nargs) {
+              arr = new OArray( len - nargs );
+              for( int i=nargs; i<len; i++ )
+                arr.elementAt(i-nargs).opAssign( args.referenceAt(i) );
+          }
           fxnScope.createMember( id, attr ).opAssign(arr);
         }
       }
@@ -363,6 +363,7 @@ public class Function extends Type
     }
   }
   
+  private final static OArray emptyOArray = new OArray(); 
   
   /*=======================================================================*/
   /**

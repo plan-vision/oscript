@@ -458,6 +458,7 @@ public class Symbols {
 	
 	public static final int IS_TEMPORARY = 446;
 	public static final int IS_I18N = 447;
+	public static final int TYPE_SMALL = 448;
 	
 	public static void init() 
 	{
@@ -912,6 +913,8 @@ public class Symbols {
 		Symbol.setSymbol(USER,"user");
 		Symbol.setSymbol(IS_TEMPORARY,"is_temporary");
 		Symbol.setSymbol(IS_I18N,"is_i18n");
+		Symbol.setSymbol(TYPE_SMALL,"type");
+
 	}
 }
 

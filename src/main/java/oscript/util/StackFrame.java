@@ -374,8 +374,13 @@ public abstract class StackFrame
     
     public final void free()
     {
-      this.members = null;
       this.next = functionScopePool;
+      this._that = null;
+      this._super = null;      
+      this.fxn = null;
+      this.previous = null;
+      this.smit = null;
+      this.members = null;
       functionScopePool = this;
     }
   }
