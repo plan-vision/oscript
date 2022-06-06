@@ -75,9 +75,10 @@ public final class JavaPackageWrapper extends OObject
    */
 public static Value getPackageWrapper( String javaPackageName )
   {
-    // XXX should packages be intern'd?
-    if( (Package.getPackage(javaPackageName) != null) || 
-        declaredPackageSet.contains(javaPackageName) )
+    if(
+    	declaredPackageSet.contains(javaPackageName) || 
+    	JavaPackageWrapper.class.getClassLoader().getDefinedPackage(javaPackageName) != null
+    )
       return new JavaPackageWrapper(javaPackageName);
     return null;
   }
