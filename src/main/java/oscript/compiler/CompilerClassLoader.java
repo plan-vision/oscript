@@ -108,7 +108,7 @@ public class CompilerClassLoader extends ClassLoader
   CompilerClassLoader()
   {
     super( CompilerClassLoader.class.getClassLoader() );
-    
+    /*
     Policy.setPolicy( new Policy() {
     
       public PermissionCollection getPermissions( CodeSource cs )
@@ -122,7 +122,7 @@ public class CompilerClassLoader extends ClassLoader
       {
       }
       
-    } );
+    } );*/
   }
   
   /**

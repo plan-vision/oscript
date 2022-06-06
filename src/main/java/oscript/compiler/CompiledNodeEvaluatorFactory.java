@@ -42,7 +42,7 @@ public class CompiledNodeEvaluatorFactory implements
 	}
 
 	
-	private static final String nodeNameToClassName(String name) 
+	public static final String nodeNameToClassName(String name) 
 	{
 		return "B62"+Base62.encode(name.getBytes(StandardCharsets.UTF_8));
 	}
