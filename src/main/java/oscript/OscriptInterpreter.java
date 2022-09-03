@@ -459,8 +459,15 @@ public class OscriptInterpreter
   {
     NodeEvaluator ne = null;
     
-    if(useCompiler)
-      ne = nodeCompiler.createNodeEvaluator( name, node );
+    if(useCompiler) {
+    	try {
+        	ne = nodeCompiler.createNodeEvaluator( name, node );
+    	} catch (ProgrammingErrorException ex) {
+    		// TOO BIG FOR COMPILATION ? TODO DISABLE FOR VSP?
+    	   OscriptHost.me.warn("OScript compilation failed because of ProgrammingErrorException (generated class size > 64K) | Switching to interpretter mode!");
+    	   ne = nodeInterpreter.createNodeEvaluator( name, node );
+    	}
+    }
     // nodeCompiler.createNodeEvaluator could return null if compile fails
     // for whatever reason...
     if( ne == null )

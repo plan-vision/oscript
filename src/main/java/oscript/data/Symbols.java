@@ -460,6 +460,9 @@ public class Symbols {
 	public static final int IS_I18N = 447;
 	public static final int TYPE_SMALL = 448;
 	
+	public static final int IS_FORMS_STRICT = 449;
+	public static final int ENGINE = 450;
+	
 	public static void init() 
 	{
 		Symbol.setSymbol(_INSERTED_VALUES,"inserted_values");
@@ -914,6 +917,8 @@ public class Symbols {
 		Symbol.setSymbol(IS_TEMPORARY,"is_temporary");
 		Symbol.setSymbol(IS_I18N,"is_i18n");
 		Symbol.setSymbol(TYPE_SMALL,"type");
+		Symbol.setSymbol(IS_FORMS_STRICT,"is_forms_strict");
+		Symbol.setSymbol(ENGINE,"engine");
 
 	}
 }
