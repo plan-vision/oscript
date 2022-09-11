@@ -28,12 +28,10 @@ import oscript.OscriptInterpreter;
 import org.apache.bcel.classfile.JavaClass;
 
 import java.security.*;
-import java.util.LinkedList;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.net.URL;
 
 
 /**
@@ -53,10 +51,6 @@ import java.net.URL;
 public class CompilerClassLoader extends ClassLoader
 {
   private static CompilerClassLoader loader;
-  
-  private static LinkedList loaderList = new LinkedList();
-  private static ClassLoader[] loaders;
-  
   //////////////////////////////////////////////////////////////////////////////
   // attempt to see if avoiding Class.forName helps:
   private static java.util.Map classCache = new java.util.WeakHashMap();
@@ -125,67 +119,6 @@ public class CompilerClassLoader extends ClassLoader
     } );*/
   }
   
-  /**
-   * Register a class loader that we can delegate the act of resolving
-   * classes.  This allows the user of ObjectScript to give us the
-   * ability to load classes that we might not otherwise have access
-   * to.
-   * <p>
-   * Don't call this directly.. it might move.  Use 
-   * {@link OscriptInterpreter#registerClassLoader(ClassLoader)}
-   */
-  public static void registerClassLoader( ClassLoader loader )
-  {
-    synchronized(loaderList)
-    {
-      loaderList.add(loader);
-      loaders = null;
-    }
-  }
-  
-  private static ClassLoader[] getLoaders()
-  {
-    synchronized(loaderList)
-    {
-      if( loaders == null )
-        loaders = (ClassLoader[])loaderList.toArray( new ClassLoader[ loaderList.size() ] );
-      return loaders;
-    }
-  }
-  
-  /**
-   * Override <code>findClass</code> to search all registered class loader
-   * delegates.
-   */
-  protected Class findClass( String name )
-    throws ClassNotFoundException
-  {
-    ClassNotFoundException err = CLASS_NOT_FOUND_EXCEPTION;
-    ClassLoader[] loaders = getLoaders();
-    for( int i=0; i<loaders.length; i++ )
-    {
-      ClassLoader loader = loaders[i];
-      try {
-        return loader.loadClass(name);
-      } catch(ClassNotFoundException e) {
-        err = e;
-      }
-    }
-    throw err;
-  }
-  
-  /**
-   * Override <code>findResource</code> to search all registered 
-   * class loader delegates.
-   */
-  public URL findResource( String name )
-  {
-    URL url = super.findResource(name);
-    ClassLoader[] loaders = getLoaders();
-    for( int i=0; i<loaders.length && (url==null); i++ )
-      url = loaders[i].getResource(name);
-    return url;
-  }
   
   /** */
   private static String toFileName( String className )

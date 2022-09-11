@@ -280,6 +280,8 @@ public class OInexactNumber extends OObject implements java.io.Externalizable,OI
   {
     try
     {
+    	if (val == Value.NULL)
+    		return OBoolean.FALSE;
       return OBoolean.makeBoolean( doubleVal == val.castToInexactNumber() );
     }
     catch(PackagedScriptObjectException e)
@@ -306,6 +308,8 @@ public class OInexactNumber extends OObject implements java.io.Externalizable,OI
   {
     try
     {
+      if (val == Value.NULL)
+    	  return OBoolean.TRUE;
       return OBoolean.makeBoolean( doubleVal != val.castToInexactNumber() );
     }
     catch(PackagedScriptObjectException e)

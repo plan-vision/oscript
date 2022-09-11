@@ -31,9 +31,10 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import oscript.compiler.CompiledNodeEvaluator;
 import oscript.compiler.CompiledNodeEvaluatorFactory;
-import oscript.compiler.CompilerClassLoader;
+//import oscript.compiler.CompiledNodeEvaluator;
+//import oscript.compiler.CompiledNodeEvaluatorFactory;
+//import oscript.compiler.CompilerClassLoader;
 import oscript.data.GlobalScope;
 import oscript.data.OJavaException;
 import oscript.data.Scope;
@@ -93,14 +94,9 @@ public class OscriptInterpreter
   public final static NodeEvaluator EMPTY_EXPR_LIST_EVALUATOR;
   private static ClassLoader cacheClassLoader;
 
-  public static Class loadClassFromCache( String className )
-    throws ClassNotFoundException
-  {
-    return CompilerClassLoader.forName( className, true, cacheClassLoader );
-  }
   
   // XXX clean this up!  It should have some way to register factories, etc...
-  public static CompiledNodeEvaluatorFactory nodeCompiler;
+  public static NodeEvaluatorFactory nodeCompiler;
   public static NodeEvaluatorFactory nodeInterpreter;
   
   public static Value DEFAULT_ARRAY_SORT_COMPARISION_FXN;
@@ -199,16 +195,6 @@ public class OscriptInterpreter
     }
     
     return globalScope;
-  }
-  /**
-   * Register a class loader that we can delegate the act of resolving
-   * classes.  This allows the user of ObjectScript to give us the
-   * ability to load classes that we might not otherwise have access
-   * to.
-   */
-  public static void registerClassLoader( ClassLoader loader )
-  {
-    CompilerClassLoader.registerClassLoader(loader);
   }
   
   /*=======================================================================*/
@@ -585,21 +571,7 @@ private static final String sanitizeUrl( String str )
       }
     }
     
-    public void writeExternal( ObjectOutput out )
-      throws IOException
-    {
-      out.writeLong(time);
-      if( ne instanceof CompiledNodeEvaluator )
-      {
-        out.writeByte(1);
-        out.writeUTF( ne.getClass().getName() );
-      }
-      else
-      {
-        out.writeByte(0);
-      }
-    }
-    
+   
     CacheEntry( File file, NodeEvaluator ne )
     {
       this.file = file;
@@ -614,8 +586,6 @@ private static final String sanitizeUrl( String str )
   }
 }
 
-
-
 /*
  *   Local Variables:
  *   tab-width: 2
