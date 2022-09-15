@@ -28,7 +28,6 @@ import oscript.compiler.*;
 
 // The Bytecode Engineerign Library
 import org.apache.bcel.generic.*;
-
 import org.apache.bcel.Const;
 
 import java.lang.reflect.*;
@@ -546,19 +545,7 @@ public class ClassWrapGen
         }
         
         addCommonJunk();
-        
-        if( Value.DEBUG )
-        {
-          try
-          {
-            org.apache.bcel.util.Class2HTML c2html = new org.apache.bcel.util.Class2HTML( cg.getJavaClass(), "../" );
-          }
-          catch(java.io.IOException e)
-          {
-            e.printStackTrace();
-          }
-        }
-        
+                
         return loader.makeClass( className, cg.getJavaClass() );
       }
       catch(LinkageError e)

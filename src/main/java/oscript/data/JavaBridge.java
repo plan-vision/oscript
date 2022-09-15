@@ -192,16 +192,10 @@ public class JavaBridge
       {
         Throwable t = e.getTargetException();
         
-        if( Value.DEBUG )
-          t.printStackTrace();
-        
         throw OJavaException.convertException(t);
       }
       catch(Throwable e)         // XXX
       {
-        if( Value.DEBUG )
-          e.printStackTrace();
-        
         throw OJavaException.convertException(e);
       }
     }

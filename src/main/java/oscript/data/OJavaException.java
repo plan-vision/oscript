@@ -74,9 +74,6 @@ public class OJavaException extends OException
     
     this.ot = ot;
     
-    if(DEBUG)
-      if( t instanceof PackagedScriptObjectException )
-        Thread.dumpStack();
   }
   
   /**

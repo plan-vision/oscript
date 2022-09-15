@@ -66,9 +66,6 @@ public abstract class Value
 //                        "bopNotEquals",
                      };
   
-  public final static boolean DEBUG = false;
-  
-  
   /*=======================================================================*/
   /**
    * Class Constructor.

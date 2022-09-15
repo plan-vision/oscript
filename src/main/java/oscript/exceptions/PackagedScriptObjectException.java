@@ -84,10 +84,6 @@ public class PackagedScriptObjectException extends RuntimeException
    */
   public Throwable fillInStackTrace()
   {
-    if(Value.DEBUG)
-      return super.fillInStackTrace();
-    // no-op... don't waste time filling in stack trace, because we don't
-    // want it!
     return this;
   }
   

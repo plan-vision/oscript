@@ -689,12 +689,6 @@ public class OString extends OObject implements java.io.Externalizable
       }
       else
       {
-        String str = val.castToString();
-        
-        if(DEBUG)
-          if( str == null )
-            throw new ProgrammingErrorException("this shouldn't happen, val.castToString() returns null for val=" + val + " (" + val.getType()+ ")");
-        
         s = new StringSegment( val.castToString() );
       }
       

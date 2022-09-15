@@ -131,10 +131,6 @@ public class OpenHashSymbolTable
     
     if(COLLECT_STATS) logGet();
     
-    if( oscript.data.Value.DEBUG )
-      if( id < MIN_SYMBOL_ID )
-        throw new ProgrammingErrorException("bad id: " + id);
-    
     int n = h1( id, state.keys.length );
     int k = 0;
     
@@ -173,10 +169,6 @@ public class OpenHashSymbolTable
     State state = this.state;
     
     if(COLLECT_STATS) logCreate();
-    
-    if( oscript.data.Value.DEBUG )
-      if( id < MIN_SYMBOL_ID )
-        throw new ProgrammingErrorException("bad id: " + id);
     
     // first ensure capacity... assume we actually will be creating
     // a new entry, because that is the common case:

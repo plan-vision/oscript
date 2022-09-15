@@ -346,8 +346,6 @@ public class BuiltinType extends JavaClassWrapper
     }
     catch(Throwable e)
     {
-      if(DEBUG)
-        e.printStackTrace();
       throw PackagedScriptObjectException.makeExceptionWrapper( new OException(e + ": " + e.getMessage()) );
     }
   }

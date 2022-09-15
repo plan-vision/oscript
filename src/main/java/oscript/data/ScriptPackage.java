@@ -285,7 +285,6 @@ public final class ScriptPackage extends OObject
     }*/
     catch(java.io.IOException e)
     {
-      if(DEBUG) e.printStackTrace();
       throw OJavaException.convertException(e);
     }
   }
