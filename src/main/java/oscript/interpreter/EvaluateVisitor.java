@@ -745,10 +745,14 @@ public class EvaluateVisitor implements ObjectVisitor, OscriptParserConstants
     throw RETURN;
   }
   
-  private static final Value returnHelper( Value val )
+  public static final Value returnHelper( Value val )
   {
-    // XXX
-    return oscript.compiler.CompiledNodeEvaluator.returnHelper(val);
+    if( val == null )
+    	return Value.NULL;
+    val = val.unhand();
+    if( val != Value.UNDEFINED )
+    	return val;
+     throw PackagedScriptObjectException.makeExceptionWrapper( new OException("cannot return or throw (undefined)") );
   }
   
   /*=======================================================================*/

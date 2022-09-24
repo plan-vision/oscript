@@ -30,10 +30,6 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import oscript.compiler.CompiledNodeEvaluatorFactory;
-//import oscript.compiler.CompiledNodeEvaluator;
-//import oscript.compiler.CompiledNodeEvaluatorFactory;
-//import oscript.compiler.CompilerClassLoader;
 import oscript.data.GlobalScope;
 import oscript.data.OJavaException;
 import oscript.data.Scope;
@@ -85,7 +81,6 @@ import oscript.util.StackFrame;
 public class OscriptInterpreter
 {
   
-  private static boolean       useCompiler     = true;
   private static GlobalScope   globalScope     = null;
   private static DefaultParser parser      	   = new DefaultParser();
   private static LinkedList    scriptPathList  = new LinkedList();
@@ -102,33 +97,14 @@ public class OscriptInterpreter
   
   static {
     try {
-      nodeCompiler    = new CompiledNodeEvaluatorFactory();
+      nodeCompiler    = OscriptHost.me.newCompiledNodeEvaluatorFactory();
       nodeInterpreter = new InterpretedNodeEvaluatorFactory();
       // and finally load and evaluate base.os:
     } catch(Throwable e) {
       e.printStackTrace();
     }
   }
-  
-  /*=======================================================================*/
-  /**
-   * Set whether the compiler should be used or not. 
-   * 
-   * @param useCompiler  iff <code>true</code>, enabled compiler, otherwise
-   *    use only the interpreter
-   */
-  public static void useCompiler( boolean useCompiler )
-  {
-    /* NOTE: currently the RegressionTestDriver depends on the behavior of
-     *       eval(AbstractFile) always creating a CompiledNodeEvaluator if 
-     *       useCompiler is true, and an InterpretedNodeEvaluator if not.
-     *       If this ever changes, a different interface will need to be
-     *       created to give the RegressionTestDriver better control this
-     */
-    OscriptInterpreter.useCompiler = useCompiler;
-  }
-  
- 
+
   
   /*=======================================================================*/
   /**
@@ -317,9 +293,6 @@ public class OscriptInterpreter
   
   public static final void __declareInScope( String name, Value val, Scope scope )
   {
-    Value tmp = oscript.compiler.ClassWrapGen.getScriptObject(val);
-    if( tmp != null )
-      val = tmp;
     scope.createMember(name,0).opAssign(val);
   }
   
@@ -444,7 +417,7 @@ public class OscriptInterpreter
   {
     NodeEvaluator ne = null;
     
-    if(useCompiler) {
+    if(nodeCompiler != null) {
     	try {
         	ne = nodeCompiler.createNodeEvaluator( name, node );
     	} catch (ProgrammingErrorException ex) {

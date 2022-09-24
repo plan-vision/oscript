@@ -7,7 +7,7 @@ package oscript.syntaxtree;
 /**
  * The interface which all syntax tree classes must implement.
  */
-public interface Node extends java.io.Serializable {
+public interface Node {
    public void accept(oscript.visitor.Visitor v);
    public Object accept(oscript.visitor.ObjectVisitor v, Object argu);
 

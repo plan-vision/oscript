@@ -23,7 +23,6 @@ package oscript.data;
 
 import oscript.exceptions.*;
 import oscript.OscriptInterpreter;
-import oscript.compiler.ClassWrapGen;
 import oscript.NodeEvaluator;
 
 
@@ -136,12 +135,6 @@ public class OObject extends Value
   public Value getMember( int id, boolean exception )
     throws PackagedScriptObjectException
   {
-    Value val = null;
-    Value scriptObject = ClassWrapGen.getScriptObject(this);
-    if( scriptObject != null )
-      val = scriptObject.getMember( id, false );
-    if( val != null )
-      return val;
     return super.getMember( id, exception );
   }
   
@@ -170,9 +163,6 @@ public class OObject extends Value
    */
   protected void populateMemberSet( java.util.Set s, boolean debugger )
   {
-    Value scriptObject = ClassWrapGen.getScriptObject(this);
-    if( scriptObject != null )
-      scriptObject.populateMemberSet( s, debugger );
     super.populateMemberSet( s, debugger );
   }
 }

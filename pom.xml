@@ -13,13 +13,6 @@
 		<maven.compiler.target>17</maven.compiler.target>
 		<java.version>17</java.version>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.bcel</groupId>
-			<artifactId>bcel</artifactId>
-			<version>6.5.0</version>
-		</dependency>
-	</dependencies>
 	<build>
 		<plugins>
 			<plugin>

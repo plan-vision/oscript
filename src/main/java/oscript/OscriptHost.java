@@ -14,4 +14,6 @@ public abstract class OscriptHost {
 	public abstract String getVirtualFile(String path);
 	public abstract void onInit();
 
+	public abstract NodeEvaluatorFactory newCompiledNodeEvaluatorFactory();
+	public abstract Class getClassWrapGenForClassName(String className, boolean b) throws ClassNotFoundException;
 }

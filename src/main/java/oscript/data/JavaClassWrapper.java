@@ -28,7 +28,6 @@ import java.util.*;
 import oscript.exceptions.*;
 import oscript.util.*;
 import oscript.OscriptHost;
-import oscript.compiler.ClassWrapGen;
 
 
 
@@ -79,9 +78,7 @@ public class JavaClassWrapper extends Type
    * @param javaClass    the java class this object is a wrapper for
    */
   public static synchronized JavaClassWrapper getClassWrapper( Class javaClass )
-  {
-    javaClass = ClassWrapGen.getNonWrapperClass(javaClass);
-    
+  {    
     JavaClassWrapper jcw = (JavaClassWrapper)(classWrapperCache.get(javaClass));
     
     if( jcw == null )
@@ -100,7 +97,7 @@ public class JavaClassWrapper extends Type
   public static synchronized Class forName( String className )
     throws ClassNotFoundException
   {
-    return oscript.compiler.CompilerClassLoader.forName( className, true, null );
+    return OscriptHost.me.getClassWrapGenForClassName( className, true);
   }
   
   

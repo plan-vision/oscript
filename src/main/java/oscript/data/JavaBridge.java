@@ -23,7 +23,6 @@ package oscript.data;
 
 import oscript.exceptions.*;
 import oscript.OscriptHost;
-import oscript.compiler.ClassWrapGen;
 import oscript.util.StackFrame;
 import oscript.util.MemberTable;
 
@@ -558,16 +557,10 @@ for( int i=0; i<args.length(); i++ )
    * @param javaObject   the java object to make a wrapper for
    */
   public final static Value convertToScriptObject( Object javaObject )
-  {
-    Value tmp;
-    
+  {    
     if( javaObject == null )
     {
       return Value.NULL;
-    }
-    else if( (tmp = ClassWrapGen.getScriptObject(javaObject)) != null )
-    {
-      return tmp;
     }
     else if( javaObject instanceof Number )
     {    

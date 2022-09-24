@@ -23,7 +23,6 @@ import oscript.exceptions.*;
 import oscript.util.StackFrame;
 import oscript.util.MemberTable;
 import oscript.OscriptHost;
-import oscript.compiler.ClassWrapGen;
 
 /**
  * The base class of all values in the interpreter.  This class provides
@@ -123,11 +122,7 @@ public abstract class Value
   public Value getType()
   {
     Value type = getTypeImpl();
-    Value scriptObject = ClassWrapGen.getScriptObject(this);
-    
-    if( scriptObject != null )
-      return scriptObject.getType();
-    else if( type == null )
+    if( type == null )
       return UNDEFINED;
     else
       return type;
