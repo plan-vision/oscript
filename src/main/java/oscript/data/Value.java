@@ -23,7 +23,7 @@ import oscript.exceptions.*;
 import oscript.util.StackFrame;
 import oscript.util.MemberTable;
 import oscript.OscriptHost;
-import oscript.classwrap.ClassWrapGen;
+import oscript.compiler.ClassWrapGen;
 
 /**
  * The base class of all values in the interpreter.  This class provides

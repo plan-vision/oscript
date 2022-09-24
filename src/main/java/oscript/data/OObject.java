@@ -22,8 +22,8 @@
 package oscript.data;
 
 import oscript.exceptions.*;
-import oscript.classwrap.ClassWrapGen;
 import oscript.OscriptInterpreter;
+import oscript.compiler.ClassWrapGen;
 import oscript.NodeEvaluator;
 
 

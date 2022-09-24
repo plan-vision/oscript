@@ -30,7 +30,6 @@ import java.util.TreeMap;
 import oscript.data.Function;
 import oscript.data.JavaClassWrapper;
 import oscript.data.JavaMethodWrapper;
-import oscript.data.JavaPackageWrapper;
 import oscript.data.OArray;
 import oscript.data.OBoolean;
 import oscript.data.OExactNumber;
@@ -46,7 +45,6 @@ import oscript.data.OUnsupportedOperationException;
 import oscript.data.Proxy;
 import oscript.data.Reference;
 import oscript.data.Scope;
-import oscript.data.ScriptPackage;
 import oscript.data.Value;
 
 
@@ -117,7 +115,6 @@ public class OscriptBuiltins
     
     // add built-in types:
     int attr = Reference.ATTR_CONST;
-    globalScope.createMember("JavaPackage",attr).opAssign( JavaPackageWrapper.TYPE );
     globalScope.createMember("Array",attr).opAssign( OArray.TYPE );
     globalScope.createMember("Boolean",attr).opAssign( OBoolean.TYPE );
     globalScope.createMember("ExactNumber",attr).opAssign( OExactNumber.TYPE );
@@ -133,7 +130,6 @@ public class OscriptBuiltins
     globalScope.createMember("Function",attr).opAssign( Function.TYPE );
     globalScope.createMember("JavaClass",attr).opAssign( JavaClassWrapper.TYPE );
     globalScope.createMember("JavaMethod",attr).opAssign( JavaMethodWrapper.TYPE );
-    globalScope.createMember("ScriptPackage",attr).opAssign( ScriptPackage.TYPE );
     globalScope.createMember("Proxy",attr).opAssign( Proxy.TYPE );
     OscriptHost.me.onInit();
   }

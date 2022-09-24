@@ -23,7 +23,7 @@ package oscript.data;
 
 import oscript.exceptions.*;
 import oscript.OscriptHost;
-import oscript.classwrap.ClassWrapGen;
+import oscript.compiler.ClassWrapGen;
 import oscript.util.StackFrame;
 import oscript.util.MemberTable;
 

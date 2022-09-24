@@ -184,7 +184,7 @@ public class BuiltinType extends JavaClassWrapper
   }
   
   /*=======================================================================*/
-  protected synchronized void init()
+  public synchronized void init()
   {
     if( !initialized )
     {
@@ -218,14 +218,10 @@ public class BuiltinType extends JavaClassWrapper
       // to call init() before accessing any of the protected fields in
       // our super-class:
       super.init();
-      if( wrapperImpl != null )
-        wrapperImpl.init();
-      
+       
       try
       {
         javaClassConstructor = impl.javaClass.getConstructor(PARAM_TYPES);
-        if( wrapperImpl != null )
-          javaWrapperClassConstructor = wrapperImpl.javaClass.getConstructor(PARAM_TYPES);
       }
       catch(NoSuchMethodException e)
       {

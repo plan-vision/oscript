@@ -58,7 +58,7 @@ public class JavaInnerClassWrapper extends JavaClassWrapper
    */
   public JavaInnerClassWrapper( Value obj, Class javaClass )
   {
-    super( oscript.classwrap.ClassWrapGen.getNonWrapperClass(javaClass) );
+    super( oscript.compiler.ClassWrapGen.getNonWrapperClass(javaClass) );
     
     this.obj = obj;
   }

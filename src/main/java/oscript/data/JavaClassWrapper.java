@@ -27,7 +27,8 @@ import java.util.*;
 
 import oscript.exceptions.*;
 import oscript.util.*;
-import oscript.classwrap.ClassWrapGen;
+import oscript.OscriptHost;
+import oscript.compiler.ClassWrapGen;
 
 
 
@@ -42,7 +43,6 @@ public class JavaClassWrapper extends Type
   private int id = -1;
   
   transient protected JavaClassWrapperImpl impl;
-  transient protected JavaClassWrapperImpl wrapperImpl;
   
   
   /**
@@ -110,11 +110,12 @@ public class JavaClassWrapper extends Type
    * 
    * @param javaClass    the java class this object is a wrapper for
    */
-  protected JavaClassWrapper( Class javaClass )
+  public JavaClassWrapper( Class javaClass )
   {
     super();
     
     this.javaClass = javaClass;
+    //init(); // INIT ON LOAD : VISIONR 
   }
   
   /**
@@ -122,20 +123,15 @@ public class JavaClassWrapper extends Type
    * <code>impl</code> and <code>wrapperImpl</code> are transient, and
    * might not exist if this object gets unserialized...
    */
-  protected synchronized void init()
+  public synchronized void init()
   {
+	  
     if( impl == null )
     {
+    	OscriptHost.me.warn("INIT JAVA CLASS WRAPPER "+javaClass.getName());
       this.id = Symbol.getSymbol( javaClass.getName() ).getId();
-      
-      // note order is important... we want to initialize "impl" last,
-      // since other places in the code use it to decide whether init()
-      // should be called
-      
-      if( ClassWrapGen.canMakeWrapperClass(javaClass) )
-        wrapperImpl = new JavaClassWrapperImpl( javaClass, true );
-      
-      impl = new JavaClassWrapperImpl( javaClass, false );
+          
+      impl = new JavaClassWrapperImpl( javaClass);
     }
   }
   
@@ -255,32 +251,15 @@ public class JavaClassWrapper extends Type
   public Value callAsExtends( StackFrame sf, Scope scope, MemberTable args )
     throws PackagedScriptObjectException
   {
-    if( impl == null ) init();
+	  throw PackagedScriptObjectException.makeExceptionWrapper( new OUnsupportedOperationException("java class is final; can't call as extend") );
     
-    if( wrapperImpl == null )
-      throw PackagedScriptObjectException.makeExceptionWrapper( new OUnsupportedOperationException("java class is final; can't call as constructor") );
-    
-    /* XXX this is kinda a hack.  We need what we link to to be the ScriptObject,
-     *     and not the ForkScope
-     */
-    Scope scriptObject = scope;
-    while( scriptObject instanceof ForkScope )
-      scriptObject = scriptObject.getPreviousScope();
-    
-    ClassWrapGen.linkObjects( doConstruct( sf, args, true ), scriptObject );
-    
-    return scope;
   }
   
   // we have to leave this here, because it gets overloaded... 
   protected Object doConstruct( StackFrame sf, MemberTable args, boolean isWrapper )
   {
     if( impl == null ) init();
-    
-    if(isWrapper)
-      return wrapperImpl.doConstruct( this, sf, args );
-    else
-      return impl.doConstruct( this, sf, args );
+    return impl.doConstruct( this, sf, args );
   }
   
   /*=======================================================================*/
@@ -374,13 +353,7 @@ public class JavaClassWrapper extends Type
   {
     if( impl == null ) init();
     
-    CacheEntry ce = null;
-    if( ClassWrapGen.isWrapperInstance(javaObj) )
-      ce = wrapperImpl.getTypeMemberCacheEntry(id);
-    
-    // XXX will this work to resolve fields??
-    if( ce == null )
-      ce = impl.getTypeMemberCacheEntry(id);
+    CacheEntry ce = impl.getTypeMemberCacheEntry(id);
     
     if( ce == null )
       return null;
@@ -427,16 +400,14 @@ public class JavaClassWrapper extends Type
      */
     private SymbolMap instanceMemberCache;
     
-    private boolean isWrapper;
     private boolean initialized = false;
     
     /**
      * Class Constructor
      */
-    JavaClassWrapperImpl( Class javaClass, boolean isWrapper )
+    JavaClassWrapperImpl( Class javaClass)
     {
       this.javaClass = javaClass;
-      this.isWrapper = isWrapper;
     }
     
     synchronized void init()
@@ -449,10 +420,7 @@ public class JavaClassWrapper extends Type
        */
       if( !initialized )
       {
-        if(isWrapper)
-          javaClass = ClassWrapGen.makeWrapperClass(javaClass);
-        
-        constructors = javaClass.getDeclaredConstructors();
+       constructors = javaClass.getDeclaredConstructors();
         
         /* the handling of unaccessible classes could be a little more optimized,
          * but this will do for now...
@@ -462,38 +430,8 @@ public class JavaClassWrapper extends Type
         instanceMemberCache = new SymbolMap();
         classMemberCache    = new SymbolMap();
         
-        if(isWrapper)
-        {
-          Method[] methods = javaClass.getMethods();
-          SymbolMap methodMap = new SymbolMap();
-          
-          // build up the method table
-          for( int i=0; i<methods.length; i++ )
-          {
-            if( !Modifier.isStatic(methods[i].getModifiers()) )
-            {
-              addMethodToCache( methodMap, 
-                                Symbol.getSymbol( methods[i].getName() ).getId(),
-                                methods[i] );
-            }
-          }
-          
-          for( Iterator itr=methodMap.keys(); itr.hasNext(); )
-          {
-            int id = ((Integer)(itr.next())).intValue();
-            
-            Object obj = methodMap.get( Symbol.getSymbol( ClassWrapGen.getOrigMethodName( Symbol.getSymbol(id).castToString() )).getId() );
-            
-            // if there is an entry with the corresponding __orig_ name, use
-            // that... if we use the regular version of the method instead,
-            // it will lookup and resolve to itself, and we'll endup in an
-            // infinite loop!
-            if( obj != null )
-              instanceMemberCache.put( id, obj );
-          }
-        }
-        else
-        {
+       
+       
           Method[] methods = javaClass.getMethods();
           Field[]  fields  = javaClass.getFields(); //getDeclaredFields();
           
@@ -525,8 +463,7 @@ public class JavaClassWrapper extends Type
                 addMethodToCache( instanceMemberCache, id, method );
             }
           }
-        }
-        
+       
         initialized = true;
       }
     }
@@ -608,9 +545,8 @@ public class JavaClassWrapper extends Type
                 jicw = new JavaInnerClassWrapper( obj, innerClass );
                 jicw.init();
                 
-                impls = new JavaClassWrapperImpl[2];
+                impls = new JavaClassWrapperImpl[1];
                 impls[0] = jicw.impl;
-                impls[1] = jicw.wrapperImpl;
               }
               
               if( jicw == null )
@@ -618,7 +554,6 @@ public class JavaClassWrapper extends Type
                 jicw = new JavaInnerClassWrapper( obj, impls[0].javaClass );
                 
                 jicw.impl        = impls[0];
-                jicw.wrapperImpl = impls[1];
               }
               
               return jicw;

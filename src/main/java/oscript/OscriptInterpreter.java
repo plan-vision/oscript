@@ -317,7 +317,7 @@ public class OscriptInterpreter
   
   public static final void __declareInScope( String name, Value val, Scope scope )
   {
-    Value tmp = oscript.classwrap.ClassWrapGen.getScriptObject(val);
+    Value tmp = oscript.compiler.ClassWrapGen.getScriptObject(val);
     if( tmp != null )
       val = tmp;
     scope.createMember(name,0).opAssign(val);
