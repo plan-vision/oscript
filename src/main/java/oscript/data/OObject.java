@@ -22,8 +22,6 @@
 package oscript.data;
 
 import oscript.exceptions.*;
-import oscript.OscriptInterpreter;
-import oscript.NodeEvaluator;
 
 
 /**
@@ -64,15 +62,6 @@ public class OObject extends Value
                                                       "wait",
                                                       "getMember"
                                                     };
-  
-  /**
-   * When a script function doesn't explicitly extend another type, it
-   * implicitly subclasses <i>Object</i>, and uses this expression-list
-   * when calling the super-class constructor.  
-   */
-  public final static NodeEvaluator EMPTY_EXPR_LIST_EVALUATOR = 
-    OscriptInterpreter.EMPTY_EXPR_LIST_EVALUATOR;
-  
   /*=======================================================================*/
   /**
    * Class Constructor.

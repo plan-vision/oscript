@@ -64,7 +64,6 @@ public class JavaClassWrapper extends Type
                        "callAsConstructor",
                        "callAsExtends",
                        "getMember",
-                       "getClassLoader",
                        "getName"
                      };
   
@@ -89,15 +88,11 @@ public class JavaClassWrapper extends Type
     
     return jcw;
   }
-  public static JavaClassWrapper getClassWrapper( String className )
-    throws ClassNotFoundException
-  {
-    return getClassWrapper( forName(className) );
-  }
+
   public static synchronized Class forName( String className )
     throws ClassNotFoundException
   {
-    return OscriptHost.me.getClassWrapGenForClassName( className, true);
+    return OscriptHost.me.getClassByName( className);
   }
   
   
@@ -122,10 +117,8 @@ public class JavaClassWrapper extends Type
    */
   public synchronized void init()
   {
-	  
     if( impl == null )
     {
-    	OscriptHost.me.warn("INIT JAVA CLASS WRAPPER "+javaClass.getName());
       this.id = Symbol.getSymbol( javaClass.getName() ).getId();
           
       impl = new JavaClassWrapperImpl( javaClass);
@@ -356,18 +349,6 @@ public class JavaClassWrapper extends Type
       return null;
     
     return ce.getMember( id, javaObj );
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Get the {@link ClassLoader} object for the java class this class is
-   * a wrapper for.
-   * 
-   * @return the {@link ClassLoader} of the java class
-   */
-  public ClassLoader getClassLoader()
-  {
-    return javaClass.getClassLoader();
   }
   
   /*=======================================================================*/

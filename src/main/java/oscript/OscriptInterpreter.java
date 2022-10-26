@@ -24,7 +24,6 @@ package oscript;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInput;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.Iterator;
@@ -85,27 +84,11 @@ public class OscriptInterpreter
   private static DefaultParser parser      	   = new DefaultParser();
   private static LinkedList    scriptPathList  = new LinkedList();
   
-  public final static NodeEvaluator EMPTY_EXPR_LIST_EVALUATOR;
-  private static ClassLoader cacheClassLoader;
-
-  
   // XXX clean this up!  It should have some way to register factories, etc...
-  public static NodeEvaluatorFactory nodeCompiler;
-  public static NodeEvaluatorFactory nodeInterpreter;
+  public static final NodeEvaluatorFactory nodeCompiler = OscriptHost.me.newCompiledNodeEvaluatorFactory();
+  public static final NodeEvaluatorFactory nodeInterpreter = new InterpretedNodeEvaluatorFactory();
   
   public static Value DEFAULT_ARRAY_SORT_COMPARISION_FXN;
-  
-  static {
-    try {
-      nodeCompiler    = OscriptHost.me.newCompiledNodeEvaluatorFactory();
-      nodeInterpreter = new InterpretedNodeEvaluatorFactory();
-      // and finally load and evaluate base.os:
-    } catch(Throwable e) {
-      e.printStackTrace();
-    }
-  }
-
-  
   /*=======================================================================*/
   /**
    * Set the input stream.
@@ -326,27 +309,7 @@ public class OscriptInterpreter
   
  
   
-  /**
-   * this is called once at startup, to construct an empty expression
-   * list node evaluator.
-   */
-  private static NodeEvaluator getEmptyExprListEvaluator()
-    throws IOException, ParseException
-  {
-    return getNodeEvaluator( resolve("etc/core/script/system/__empty.os",false) );
-  }
-  
-  static {
-    try {
-      EMPTY_EXPR_LIST_EVALUATOR = getEmptyExprListEvaluator();
-    } catch(ParseException e) {
-      e.printStackTrace();
-      throw new RuntimeException("unrecoverable error at startup");
-    } catch(IOException e) {
-      e.printStackTrace();
-      throw new RuntimeException("unrecoverable error at startup");
-    }
-  }
+ 
   
   /*=======================================================================*/
   /**
@@ -513,49 +476,6 @@ private static final String sanitizeUrl( String str )
   /*=======================================================================*/
   /*=======================================================================*/
   
- 
-  /**
-   * An entry in the node-evaluator cache.
-   * 
-   * @see #getNodeEntry
-   */
-  public static class CacheEntry
-  {
-    public transient File file;
-    public long time;
-    public NodeEvaluator ne;
-    
-    public CacheEntry() {}
-    
-    public void readExternal( ObjectInput in )
-      throws ClassNotFoundException, IOException
-    {
-      time = in.readLong();
-      if( in.readByte() == 1 )
-      {
-        Class c = Class.forName( in.readUTF(), false, cacheClassLoader );
-        try {
-          ne = (NodeEvaluator)(c.getConstructor().newInstance());
-        } catch(Throwable e) {
-          e.printStackTrace();
-          System.exit(-1);
-        }
-      }
-    }
-    
-   
-    CacheEntry( File file, NodeEvaluator ne )
-    {
-      this.file = file;
-      this.time = file.lastModified();
-      this.ne   = ne;
-    }
-    
-    public String toString()
-    {
-      return "<time: " + time + ", ne: " + ne + ">";
-    }
-  }
 }
 
 /*

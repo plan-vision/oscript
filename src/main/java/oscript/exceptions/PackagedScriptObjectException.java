@@ -49,7 +49,6 @@ public class PackagedScriptObjectException extends RuntimeException
   public PackagedScriptObjectException( Value val )
   {
     super();
-    
     this.val = val;
   }
   

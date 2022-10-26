@@ -31,7 +31,7 @@ public class FunctionPrimaryPrefix implements Node {
     */
    public boolean commentParsed = false;
    public oscript.data.Value comment;
-   public oscript.data.Function.FunctionData fd;
+   public oscript.data.FunctionData fd;
    
    
    /* Parser fields:

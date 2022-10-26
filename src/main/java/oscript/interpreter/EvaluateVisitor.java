@@ -1621,7 +1621,7 @@ public class EvaluateVisitor implements ObjectVisitor, OscriptParserConstants
         }
       }
       
-      n.fd = new Function.FunctionData( n.id,
+      n.fd = new FunctionData( n.id,
                                         argIds,
                                         varargs,
                                         functionCallExpressionListEvaluator,
