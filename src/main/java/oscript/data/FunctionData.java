@@ -27,7 +27,7 @@ import oscript.util.MemberTable;
 import oscript.exceptions.*;
 import oscript.NodeEvaluator;
 
-public final class FunctionData implements Externalizable {
+public final class FunctionData {
 	/**
 	 * The node-evaluator for evaluating the body of this function.
 	 * <p>
@@ -161,29 +161,6 @@ public final class FunctionData implements Externalizable {
 		}
 	}
 
-	/**
-	 * Derived class that implements {@link Externalizable} must call this if it
-	 * overrides it. It should override it to save/restore it's own state.
-	 */
-	public void writeExternal(ObjectOutput out) throws IOException {
-		out.writeObject(program);
-		out.writeObject(sprogram);
-		out.writeObject(exprList);
-		out.writeInt(id);
-		out.writeInt(argIds.length);
-		for (int i = 0; i < argIds.length; i++)
-			out.writeInt(argIds[i]);
-		out.writeInt(nargs);
-		out.writeBoolean(varargs);
-		out.writeBoolean(hasVarInScope);
-		out.writeBoolean(hasFxnInScope);
-		if (comment != null) {
-			out.writeByte(1);
-			comment.writeExternal(out);
-		} else {
-			out.writeByte(0);
-		}
-	}
 
 	/**
 	 * Map arguments to a function into the member-table which is used for a
