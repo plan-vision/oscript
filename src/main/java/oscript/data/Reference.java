@@ -44,7 +44,7 @@ import oscript.util.MemberTable;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public final class Reference extends Value
+public class Reference extends Value
 {
   /**
    */
