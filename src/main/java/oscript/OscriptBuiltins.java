@@ -178,20 +178,7 @@ public class OscriptBuiltins
   {
     return err;
   }
-  
-  /*=======================================================================*/
-  /**
-   * Exit... this is a bit safer than calling System.exit() directly,
-   * because it will run the at-exit runnables *before* calling exit.
-   * They should still be run *in theory* if you call System.exit()
-   * directly, but it seems that is not always reliable
-   */
-  public static void exit( int status )
-  {
-    runAtExitRunnables();
-    System.exit(status);
-  }
-  
+
   /*=======================================================================*/
   /**
    * Register a hook to be called at system exit.  The runnables are
