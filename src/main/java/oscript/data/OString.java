@@ -36,6 +36,8 @@ import java.util.Hashtable;
  */
 public class OString extends OObject implements java.io.Externalizable
 {
+	
+	private static final PackagedScriptObjectException FORMAT_EXCEPTION =  PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException("cannot convert to ExactNumber") );
   /**
    * The type object for an instance of String.
    */
@@ -308,7 +310,7 @@ public class OString extends OObject implements java.io.Externalizable
      */
     if( segment.toString().length() > Byte.MAX_VALUE )
     {
-      throw PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException("cannot convert \"" + segment.toString() + "\" to ExactNumber") );
+      throw FORMAT_EXCEPTION;
     }
     
     byte radix  = 10;
@@ -342,7 +344,7 @@ public class OString extends OObject implements java.io.Externalizable
     
     // check for valid number string, ie "0x", "-", etc., aren't valid:
     if( (idx >= max) && (radix != 8) )
-      throw PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException("cannot convert \"" + str + "\" to ExactNumber") );
+    	throw FORMAT_EXCEPTION;
     
     return parseExactNumber( segment.toString(), radix, idx, max ) * sign;
   }
@@ -358,8 +360,8 @@ public class OString extends OObject implements java.io.Externalizable
       
       // check for characters that aren't digits:
       if( digit == -1 )
-        throw PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException("cannot convert \"" + str + "\" to ExactNumber") );
-      
+        throw FORMAT_EXCEPTION;
+    	  
       long oldResult = result;
       
       result *= radix;
@@ -367,7 +369,7 @@ public class OString extends OObject implements java.io.Externalizable
       
       // check for roll-over:
       if( result < oldResult )
-        throw PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException("cannot convert \"" + str + "\" to ExactNumber") );
+    	  throw FORMAT_EXCEPTION;
     }
     
     return result;
@@ -395,7 +397,7 @@ public class OString extends OObject implements java.io.Externalizable
      * is thrown, so instead we roll our own:
      */
     if( r.length() > Byte.MAX_VALUE )
-      throw PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException("cannot convert \"" + segment.toString() + "\" to InexactNumber") );
+    	throw FORMAT_EXCEPTION;
     
     // in case we have something like "0x1234".castToInexactNumber()
     if( r.indexOf('.') == -1 )
@@ -417,7 +419,7 @@ public class OString extends OObject implements java.io.Externalizable
     
     // check for valid string:
     if( r.length() <= 0 )
-      throw PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException("cannot convert \"" + segment.toString() + "\" to InexactNumber") );
+    	throw FORMAT_EXCEPTION;
     
     String s1;
     String s2;
@@ -487,7 +489,7 @@ public class OString extends OObject implements java.io.Externalizable
     }
     catch(PackagedScriptObjectException e)
     {
-      throw PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException("cannot convert \"" + segment.toString() + "\" to InexactNumber") );
+    	throw FORMAT_EXCEPTION;
     }
   }
   

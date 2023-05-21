@@ -265,28 +265,30 @@ for( int i=0; i<args.length(); i++ )
     
     for( int i=0; (i<argslength) && (score > 0); i++ )
     {
+    	final Class pt = parameterTypes[i];
+    	
       // in case it is a reference:
       Value arg = args.referenceAt(i).unhand();
       
       if( ( (arg == Value.NULL) || (arg == Value.UNDEFINED) ) &&
-          !(parameterTypes[i].isPrimitive() || Value.class.isAssignableFrom(parameterTypes[i])) )
+          !(pt.isPrimitive() || Value.class.isAssignableFrom(pt)) )
       {
         // null can be assigned to any non-primitive
         javaArgs[i] = null;
       }
-      else if (parameterTypes[i] == BigDecimal.class) {
+      else if (pt == BigDecimal.class) {
     	  Object jobj = arg.castToJavaObject();
     	  if (jobj instanceof BigDecimal)
     		  javaArgs[i] = jobj;
     	  else
     		  javaArgs[i] = new BigDecimal(arg.castToString());
       }
-      else if( parameterTypes[i].isArray() )
+      else if( pt.isArray() )
       {
         try
         {
           int len = arg.length();
-          Class componentType = parameterTypes[i].getComponentType();
+          Class componentType = pt.getComponentType();
           
           if( arg instanceof OString )
           {
@@ -347,7 +349,7 @@ for( int i=0; i<args.length(); i++ )
           else
           {
             score--;
-            javaArgs[i] = Array.newInstance( parameterTypes[i].getComponentType(), 0 );
+            javaArgs[i] = Array.newInstance( pt.getComponentType(), 0 );
           }
         }
         catch(PackagedScriptObjectException e)
@@ -355,9 +357,9 @@ for( int i=0; i<args.length(); i++ )
           return 0;
         }
       }
-      else if( parameterTypes[i].isPrimitive() )
+      else if( pt.isPrimitive() )
       {
-        if( parameterTypes[i] == Boolean.TYPE )
+        if( pt == Boolean.TYPE )
         {
           try
           {
@@ -368,12 +370,11 @@ for( int i=0; i<args.length(); i++ )
             return 0;
           }
         }
-        else if( parameterTypes[i] == Character.TYPE )
+        else if( pt == Character.TYPE )
         {
           try
           {
             String str = arg.castToString();
-            
             if( (str != null) && (str.length() == 1) )
               javaArgs[i] = Character.valueOf( str.charAt(0) );
             else
@@ -384,7 +385,7 @@ for( int i=0; i<args.length(); i++ )
             return 0;
           }
         }
-        else if( parameterTypes[i] == Byte.TYPE )
+        else if( pt == Byte.TYPE )
         {
           try
           {
@@ -403,7 +404,7 @@ for( int i=0; i<args.length(); i++ )
             return 0;
           }
         }
-        else if( parameterTypes[i] == Short.TYPE )
+        else if( pt == Short.TYPE )
         {
           try
           {
@@ -422,7 +423,7 @@ for( int i=0; i<args.length(); i++ )
             return 0;
           }
         }
-        else if( parameterTypes[i] == Integer.TYPE )
+        else if( pt == Integer.TYPE )
         {
           try
           {
@@ -441,7 +442,7 @@ for( int i=0; i<args.length(); i++ )
             return 0;
           }
         }
-        else if( parameterTypes[i] == Long.TYPE )
+        else if( pt == Long.TYPE )
         {
           try
           {
@@ -455,7 +456,7 @@ for( int i=0; i<args.length(); i++ )
             return 0;
           }
         }
-        else if( parameterTypes[i] == Float.TYPE )
+        else if( pt == Float.TYPE )
         {
           try
           {
@@ -474,7 +475,7 @@ for( int i=0; i<args.length(); i++ )
             return 0;
           }
         }
-        else if( parameterTypes[i] == Double.TYPE )
+        else if( pt == Double.TYPE )
         {
           try
           {
@@ -501,16 +502,16 @@ for( int i=0; i<args.length(); i++ )
         if( obj == null )
           obj = arg;
         
-        if( parameterTypes[i].isAssignableFrom( obj.getClass() ) )
+        if( pt.isAssignableFrom( obj.getClass() ) )
         {
-          if( parameterTypes[i] != obj.getClass() )
+          if( pt != obj.getClass() )
             score--;
           
           javaArgs[i] = obj;
         }
-        else if( parameterTypes[i].isAssignableFrom( arg.getClass() ) )
+        else if( pt.isAssignableFrom( arg.getClass() ) )
         {
-          if( parameterTypes[i] != arg.getClass() )
+          if( pt != arg.getClass() )
             score--;
           
           javaArgs[i] = arg;
@@ -523,7 +524,7 @@ for( int i=0; i<args.length(); i++ )
           {
             FunctionTransformer ft = (FunctionTransformer)(itr.next());
             
-            if( parameterTypes[i].isAssignableFrom( ft.getTargetClass() ) )
+            if( pt.isAssignableFrom( ft.getTargetClass() ) )
             {
               javaArgs[i] = ft.transform(arg);
               transformed = true;
