@@ -463,6 +463,9 @@ public class Symbols {
 	public static final int IS_FORMS_STRICT = 449;
 	public static final int ENGINE = 450;
 	
+	public static final int SET_STATUS=451;
+
+	
 	public static void init() 
 	{
 		Symbol.setSymbol(_INSERTED_VALUES,"inserted_values");
@@ -919,6 +922,8 @@ public class Symbols {
 		Symbol.setSymbol(TYPE_SMALL,"type");
 		Symbol.setSymbol(IS_FORMS_STRICT,"is_forms_strict");
 		Symbol.setSymbol(ENGINE,"engine");
+
+		Symbol.setSymbol(SET_STATUS,"setStatus");
 
 	}
 }
