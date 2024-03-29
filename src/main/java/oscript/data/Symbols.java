@@ -195,7 +195,7 @@ public class Symbols {
 	public static final int TOP_PROPERTY= 196;
 	public static final int TOP_COMPATIBLE_PROPERTY= 197;
 	public static final int RELATION_TYPE= 198;
-	public static final int SESSION_ID= 199;
+	public static final int AUTH_ID= 199;
 	public static final int REMOVE= 200;
 	public static final int IN = 201;
 	public static final int CONTAINS = 202;
@@ -668,7 +668,7 @@ public class Symbols {
 		Symbol.setSymbol(TOP_PROPERTY,"top_property");
 		Symbol.setSymbol(TOP_COMPATIBLE_PROPERTY,"top_compatible_property");
 		Symbol.setSymbol(RELATION_TYPE,"relation_type");
-		Symbol.setSymbol(SESSION_ID,"session_id");
+		Symbol.setSymbol(AUTH_ID,"auth_id");
 		Symbol.setSymbol(REMOVE,"remove");
 		Symbol.setSymbol(IN,"in");
 		Symbol.setSymbol(CONTAINS,"contains");

@@ -165,26 +165,7 @@ public class OscriptInterpreter
    */
   public static Value importHelper( String path, Scope scope )
   {
-    try
-    {
-      File file = OscriptInterpreter.resolve( System.getProperty("oscript.script.user-path")+"/"+path, false );
-      if( !file.exists() )
-      {
-        StringBuffer sp = new StringBuffer();
-        for( Iterator itr=OscriptInterpreter.getScriptPath(); itr.hasNext(); )
-        {
-          sp.append(itr.next());
-          if( itr.hasNext() )
-            sp.append(", ");
-        }
-        throw new java.io.FileNotFoundException(path + " (in " + sp + ")");
-      }
-      return OscriptInterpreter.eval( file, scope );
-    }
-    catch(Throwable e)
-    {
-      throw OJavaException.convertException(e);
-    }
+      throw OJavaException.convertException(new RuntimeException("NOT IMPLEMENTED!"));
   }
   
   /*=======================================================================*/

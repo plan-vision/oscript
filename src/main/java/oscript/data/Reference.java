@@ -21,7 +21,6 @@
 
 package oscript.data;
 
-import oscript.OscriptHost;
 import oscript.exceptions.*;
 import oscript.util.StackFrame;
 import oscript.util.MemberTable;
@@ -826,30 +825,8 @@ public class Reference extends Value
     // we can't have a reference to a reference:
     if( val instanceof Reference )
       val = val.unhand();
-    
     if( val == UNDEFINED )
-    {
-      if( !"warning".equals( System.getProperty("oscript.undefined.assign") ) )
-        throw PackagedScriptObjectException.makeExceptionWrapper( new OUnsupportedOperationException("cannot assign (undefined) to variable") );
-      
-      String desc = "";
-      
-      //////////////////////////////////////////////////////////////////////////
-      // the following code is a hack to attempt to determine what script called
-      // this, so we can print a more informative warning message:
-      try
-      {
-        oscript.util.StackFrame sf = oscript.util.StackFrame.currentStackFrame();
-        desc = " at " + sf.toString();
-      }
-      catch(Throwable t)
-      {
-        // ignore... an exception may be thrown if not called from script 
-      }
-      //////////////////////////////////////////////////////////////////////////
-      OscriptHost.me.warn("warning: cannot assign (undefined) to variable" + desc);
-    }
-    
+       throw PackagedScriptObjectException.makeExceptionWrapper( new OUnsupportedOperationException("cannot assign (undefined) to variable") );
     // in the case of "const" values, they can be assigned a value
     // only once:
     if( (attr & ATTR_CONST) != 0 )
