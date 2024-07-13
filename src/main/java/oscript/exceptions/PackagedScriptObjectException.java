@@ -18,113 +18,84 @@
  * $ProjectHeader: OSCRIPT 0.155 Fri, 20 Dec 2002 18:34:22 -0800 rclark $
  */
 
-
 package oscript.exceptions;
 
-import oscript.OscriptHost;
+import java.io.PrintWriter;
+
 import oscript.data.*;
 
 /**
- * When a script object is thrown, it is packaged as an instance of this
- * class.
+ * When a script object is thrown, it is packaged as an instance of this class.
  * 
- * @author Rob Clark (rob@ti.com)
- * <!--$Format: " * @version $Revision$"$-->
+ * @author Rob Clark (rob@ti.com) <!--$Format: " * @version $Revision$"$-->
  * @version 1.19
  */
-public class PackagedScriptObjectException extends RuntimeException
-{
-  /**
-   * The wrapped exception object.
-   */
-  public Value val;
-  
-  
-  /*=======================================================================*/
-  /**
-   * Class Constructor.
-   * 
-   * @param val          the packaged script object
-   */
-  public PackagedScriptObjectException( Value val )
-  {
-    super();
-    this.val = val;
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Use this method to get a new exception to throw... eventually we
-   * might play tricks like caching a pre-allocated exception per thread.
-   * 
-   * @param val          the script "exception" object to wrap
-   * @return a real java exception (ie <code>PackagedScriptObjectException</code>
-   */
-  public static final PackagedScriptObjectException makeExceptionWrapper( Value val )
-  {
-    return new PackagedScriptObjectException(val);
-  }
-  
-  /**
-   * A helper for evaluating "throw" statements, so script code can throw
-   * java exceptions
-   */
-  public static final PackagedScriptObjectException makeExceptionWrapper2( Value val )
-  {
-    if( (val instanceof JavaObjectWrapper) && (val.castToJavaObject() instanceof Throwable) )
-      return makeExceptionWrapper( new OJavaException( (Throwable)(val.castToJavaObject()), val ) );
-    else
-      return makeExceptionWrapper(val);
-  }
-  
-  /*=======================================================================*/
-  /**
-   * 
-   */
-  public Throwable fillInStackTrace()
-  {
-    return this;
-  }
-  
-  /*=======================================================================*/
-  /**
-   * 
-   */
-  public String getMessage()
-  {
-  if( getMessageLevel > 0 ) {
-	  OscriptHost.me.error(getClass().getName() + ": " + hashCode() + "  ->  " + val.getType() + "/" + val.getClass().getName() + ": " + val.hashCode());
-  if( getMessageLevel > 5 ) {
-	  OscriptHost.me.error("detected getMessage() loop... doh!");
-    return "<<<unknown exception message>>>";
-  }
-}
-try {
-  getMessageLevel++;
-    return val.castToString();
-} finally {
-  getMessageLevel--;
-}
-  }
-  // XXX used to detect a problem with infinite loop... seems to be that if val
-  // is itself a OJavaException with a link back to this PackagedScriptObjectException
-  // that end up in a loop!
-  private int getMessageLevel = 0;
-}
+public class PackagedScriptObjectException extends RuntimeException {
+	/**
+	 * The wrapped exception object.
+	 */
+	public Value val;
+	private Throwable parent;
+		
+	@Override
+	public void printStackTrace() {
+		if (parent != null)
+			parent.printStackTrace();
+		super.printStackTrace();
+	}
+	
+	@Override
+	public void printStackTrace(PrintWriter s) {
+		if (parent != null)
+			parent.printStackTrace(s);
+		super.printStackTrace(s);
+	}
+	/* ======================================================================= */
+	/**
+	 * Class Constructor.
+	 * 
+	 * @param val the packaged script object
+	 */
+	public PackagedScriptObjectException(Value val) {
+		super();
+		this.val = val;
+		if (val instanceof OJavaException) {
+			Object t = val.castToJavaObject();
+			if (t instanceof Throwable) 
+				parent = (Throwable) t;
+		}
+	}
 
+	/* ======================================================================= */
+	/**
+	 * Use this method to get a new exception to throw... eventually we might play
+	 * tricks like caching a pre-allocated exception per thread.
+	 * 
+	 * @param val the script "exception" object to wrap
+	 * @return a real java exception (ie <code>PackagedScriptObjectException</code>
+	 */
+	public static final PackagedScriptObjectException makeExceptionWrapper(Value val) {
 
-
-/*
- *   Local Variables:
- *   tab-width: 2
- *   indent-tabs-mode: nil
- *   mode: java
- *   c-indentation-style: java
- *   c-basic-offset: 2
- *   eval: (c-set-offset 'substatement-open '0)
- *   eval: (c-set-offset 'case-label '+)
- *   eval: (c-set-offset 'inclass '+)
- *   eval: (c-set-offset 'inline-open '0)
- *   End:
- */
+		return new PackagedScriptObjectException(val);
+	}
 
+	/**
+	 * A helper for evaluating "throw" statements, so script code can throw java
+	 * exceptions
+	 */
+	public static final PackagedScriptObjectException makeExceptionWrapper2(Value val) {
+		if ((val instanceof JavaObjectWrapper) && (val.castToJavaObject() instanceof Throwable))
+			return makeExceptionWrapper(new OJavaException((Throwable) (val.castToJavaObject()), val));
+		else
+			return makeExceptionWrapper(val);
+	}
+
+	/* ======================================================================= */
+	public Throwable fillInStackTrace() {
+		return this;
+	}
+	/* ======================================================================= */
+	public String getMessage() {
+		return val.toString();
+	}
+}
