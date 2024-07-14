@@ -145,7 +145,7 @@ public abstract class StackFrame
    * a SFA will re-use a SFA from the pool, to avoid dynamic memory allocation
    * @see #allocateMemberTable(int)
    */
-  private StackFrameMemberTable sfaPool = null;  // XXX should be shared between both StackFrame objects...
+  private MemberTableImpl sfaPool = null;  // XXX should be shared between both StackFrame objects...
   
   /**
    * Pool of available, pre-allocated scope objects.  Whenever possible,
@@ -291,8 +291,8 @@ public abstract class StackFrame
     {
       this.previous = previous;
       this.smit     = smit;
-      if( members instanceof StackFrameMemberTable )
-        ((StackFrameMemberTable)members).reinit( (int)(smit.size()) );
+      if( members != null)
+        members.reinit( (int)(smit.size()) );
       else
         members = allocateMemberTable( (int)(smit.size()) );
     }
@@ -388,130 +388,18 @@ public abstract class StackFrame
   /**
    * Allocate from the stack.
    */
-  public final MemberTable allocateMemberTable( int sz )
+  public final MemberTableImpl allocateMemberTable( int sz )
   {
-    /* note: not synchronized because only a single thread context
-     *       should be allocating/freeing from this stack...
-     */
-    StackFrameMemberTable sfa;
-    if( sfaPool != null )
-    {
+	MemberTableImpl sfa;
+    if( sfaPool != null ) {
       sfa = sfaPool;
       sfaPool = sfaPool.next;
     }
-    else
-    {
-      sfa = new StackFrameMemberTable();
+    else {
+      sfa = new MemberTableImpl();
     }
     sfa.reinit(sz);
     return sfa;
-  }
-  
-  /**
-   * An array object which uses the pre-allocated stack.  Note that this array
-   * is not thread safe, because it is only intended to be used from the thread
-   * associated with this stack.
-   */
-  private final class StackFrameMemberTable implements MemberTable
-  {
-    private int sz;    // the actual size of the array, sz <= len
-    private Reference[] members;
-    private StackFrameMemberTable next;
-
-    final void reinit( int len )
-    {
-      if (len < 16)
-    	  len=16;
-      this.members = new Reference[len];
-      this.sz  = 0;
-    }
-    
-    public void reset()
-    {
-    	this.sz=0;
-    	Arrays.fill(members, null);
-    }
-    
-    public void free()
-    {
-      members = null;
-    }
-    
-    public Reference referenceAt( final int idx )
-    {
-    	final int t = idx+1;
-    	ensureCapacity(t);
-    	if (sz < t) sz=t;
-    	Reference r = members[idx];
-    	if (r == null)
-    		return members[idx]=new Reference();
-    	return r;
-    }
-    
-    public int length()
-    {
-      return sz;
-    }
-    
-    public MemberTable safeCopy()
-    {
-        Reference[] newMembers = new Reference[ sz ];
-        System.arraycopy( members, 0, newMembers, 0, sz );
-        return new OArray( newMembers, sz );
-    }
-    
-    public void push1( Value val )
-    {
-      int idx = sz;
-      referenceAt(idx).reset(val);
-    }
-    
-    public void push2( Value val1, Value val2 )
-    {
-      int idx = sz;
-      referenceAt(idx++).reset(val1);
-      referenceAt(idx).reset(val2);
-    }
-    
-    public void push3( Value val1, Value val2, Value val3 )
-    {
-      int idx = sz;
-      referenceAt(idx++).reset(val1);
-      referenceAt(idx++).reset(val2);
-      referenceAt(idx).reset(val3);
-    }
-    
-    public void push4( Value val1, Value val2, Value val3, Value val4 )
-    {
-      int idx = sz;
-      referenceAt(idx++).reset(val1);
-      referenceAt(idx++).reset(val2);
-      referenceAt(idx++).reset(val3);
-      referenceAt(idx).reset(val4);
-    }
-    
-    public String toString()
-    {
-      return "[" + hashCode() + ": sz="+sz+ "]";
-    }
-
-	@Override
-	public void ensureCapacity(int nsz) {
-		final int idx=nsz-1;
-    	if (idx >= members.length) 
-    	{
-    		Reference old[] = members;
-    		int nlen = members.length;
-    		while (idx >= nlen) {
-        		nlen<<=1;
-        		if (nlen < 16)
-        			nlen = 16;
-    		}
-    		members = new Reference[nlen];
-    		if (sz > 0)
-    			System.arraycopy(old, 0, members, 0, sz);
-    	}
-	}
   }
   
   /**

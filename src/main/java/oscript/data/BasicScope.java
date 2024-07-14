@@ -288,7 +288,7 @@ public class BasicScope extends Scope
   public Value createMember( int id, int attr )
   {
     int idx = smit.create(id);
-    members.ensureCapacity(idx);
+    members.ensureCapacity(idx); 
     Reference ref = members.referenceAt(idx);
     ref.reset(attr);
     return ref;

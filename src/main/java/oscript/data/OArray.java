@@ -31,8 +31,7 @@ import oscript.util.MemberTable;
  * @author Rob Clark (rob@ti.com)
  */
 public class OArray 
-  extends OObject
-  implements java.io.Externalizable, MemberTable
+  extends Value implements MemberTable,java.io.Externalizable
 {
 	
 	/*=======================================================================*/
@@ -1019,7 +1018,8 @@ public class OArray
     // no-op... OArray is always safe
     return this;
   }
-  
+
+  @Override
   public void push1( Value val )
   {
     int idx = length();
@@ -1027,12 +1027,14 @@ public class OArray
     referenceAt(idx).reset(val);
   }
   
+  @Override
   public void push2( Value val1, Value val2 )
   {
     push1(val1);
     push1(val2);
   }
   
+  @Override
   public void push3( Value val1, Value val2, Value val3 )
   {
     push1(val1);
@@ -1040,6 +1042,7 @@ public class OArray
     push1(val3);
   }
   
+  @Override
   public void push4( Value val1, Value val2, Value val3, Value val4 )
   {
     push1(val1);

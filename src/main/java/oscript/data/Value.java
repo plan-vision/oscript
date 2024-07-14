@@ -34,9 +34,7 @@ import oscript.OscriptHost;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public abstract class Value
-  implements java.io.Serializable
-{
+public abstract class Value implements MemberTable {
   /**
    * Various and asundry special values.  UNDEFINED is different from
    * NULL in that it is used for un-initialized variables or array
@@ -772,11 +770,17 @@ public abstract class Value
    * @throws PackagedScriptObjectException
    * @see Function
    */
-  public Value callAsFunction( StackFrame sf, MemberTable args )
-    throws PackagedScriptObjectException
+  public Value callAsFunction( StackFrame sf, MemberTable args ) throws PackagedScriptObjectException
   {
 	  return OscriptHost.me.callValueAsFunction(this,sf,args);
   }
+  
+  public Value callAsConstructor( StackFrame sf, MemberTable args )
+    throws PackagedScriptObjectException
+  {
+    throw PackagedScriptObjectException.makeExceptionWrapper( new OUnsupportedOperationException("can't call as constructor") );
+  }
+
   public final Value callAsFunction( Value oneArg) {
 	  Value[] t = new Value[1];
 	  t[0]=oneArg;
@@ -788,12 +792,6 @@ public abstract class Value
   {
     return callAsFunction( StackFrame.currentStackFrame(), new OArray(args) );
   }
-  /** @deprecated */
-  public final Value callAsFunction( StackFrame sf, Value[] args )
-  {
-    throw new ProgrammingErrorException("shouldn't get here!!");
-  }
-  
   /*=======================================================================*/
   /**
    * Call this object as a constructor.
@@ -804,22 +802,11 @@ public abstract class Value
    * @throws PackagedScriptObjectException
    * @see Function
    */
-  public Value callAsConstructor( StackFrame sf, MemberTable args )
-    throws PackagedScriptObjectException
-  {
-    throw PackagedScriptObjectException.makeExceptionWrapper( new OUnsupportedOperationException("can't call as constructor") );
-  }
   public final Value callAsConstructor( Value[] args )
     throws PackagedScriptObjectException
   {
     return callAsConstructor( StackFrame.currentStackFrame(), new OArray(args) );
   }
-  /** @deprecated */
-  public final Value callAsConstructor( StackFrame sf, Value[] args )
-  {
-    throw new ProgrammingErrorException("shouldn't get here!!");
-  }
- 
   /*=======================================================================*/
   /**
    * Call this object as a parent class constructor.
@@ -1079,21 +1066,64 @@ public abstract class Value
   {
 	  return !(this.bopEquals(Value.NULL).castToBoolean()); 
   }
+
+  //--------------------------------------------
+  @Override
+  public void push1( Value val )
+  {
+	    throw noSuchMember("push1");
+  }
   
+  @Override
+  public void push2( Value val1, Value val2 )
+  {
+	    throw noSuchMember("push2");
+  }
+  
+  @Override
+  public void push3( Value val1, Value val2, Value val3 )
+  {
+	    throw noSuchMember("push3");
+  }
+  
+  @Override
+  public void push4( Value val1, Value val2, Value val3, Value val4 )
+  {
+	    throw noSuchMember("push4");
+  }
+  
+  @Override
+  public void reset()
+  {
+	    throw noSuchMember("reset");
+  }
+  @Override
+  public void free()
+  {
+	    throw noSuchMember("free");
+  }
+  @Override
+  public MemberTable safeCopy()
+  {
+	    throw noSuchMember("safeCopy");
+  }
+  @Override
+  public void ensureCapacity(int sz)
+  {
+	    throw noSuchMember("ensureCapacity");
+  }
+  
+  @Override
+  public void reinit(int sz)
+  {
+	    throw noSuchMember("reinit");
+  }
+  
+  @Override
+  public Reference referenceAt(final int idx)
+  {
+	    throw noSuchMember("referenceAt");
+  }
+
 }
-
-
-/*
- *   Local Variables:
- *   tab-width: 2
- *   indent-tabs-mode: nil
- *   mode: java
- *   c-indentation-style: java
- *   c-basic-offset: 2
- *   eval: (c-set-offset 'substatement-open '0)
- *   eval: (c-set-offset 'case-label '+)
- *   eval: (c-set-offset 'inclass '+)
- *   eval: (c-set-offset 'inline-open '0)
- *   End:
- */
 
