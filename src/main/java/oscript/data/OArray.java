@@ -39,33 +39,7 @@ public class OArray
   //   (I was using java.util.Vector, but it became easier to just do it myself)
   private Reference[] arr;
   private int size = 0;
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void readExternal( java.io.ObjectInput in )
-    throws java.io.IOException, ClassNotFoundException
-  {
-    size = in.readInt();
-    arr = new Reference[size];
-    for( int i=0; i<size; i++ )
-      arr[i] = (Reference)(in.readObject());
-  }
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void writeExternal( java.io.ObjectOutput out )
-    throws java.io.IOException
-  {
-    out.writeInt(size);
-    for( int i=0; i<size; i++ )
-      out.writeObject( arr[i] );
-  }
+
   /*=======================================================================*/
   
   /**
@@ -1097,6 +1071,14 @@ public class OArray
   {
     for( int i=0; i<arr.length; i++ )
       arr[i] = i;
+  }
+  
+  
+  @Override
+  public void reinit(int sz)
+  {
+	  ensureCapacity(sz);
+	  this.size=0;
   }
   
 }
