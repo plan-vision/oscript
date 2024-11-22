@@ -31,7 +31,7 @@ import oscript.exceptions.*;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-class OSpecial extends Value
+public final class OSpecial extends Value
 {
   private static java.util.Hashtable specials = new java.util.Hashtable();
   
