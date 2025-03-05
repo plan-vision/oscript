@@ -183,11 +183,12 @@ public final class OSpecial extends Value
   //SPECIAL FIX FOR IS_EMPTY OPERATOR (returns allways true)
   private static final int IS_EMPTY = Symbol.getSymbol("is_empty").getId();
   private static final int IS_EMPTY2 = Symbol.getSymbol("isEmpty").getId();
+  public static final FunctionValueWrapper functionValueWrapperTrue = new FunctionValueWrapper(OBoolean.makeBoolean(true));
+  public static final FunctionValueWrapper functionValueWrapperFalse = new FunctionValueWrapper(OBoolean.makeBoolean(false));
   public Value getMember(int id, boolean exception) throws PackagedScriptObjectException 
   {
-		if (id == IS_EMPTY || id == IS_EMPTY2) 
-		{
-	  		return new FunctionValueWrapper(OBoolean.makeBoolean(true));
+		if (id == IS_EMPTY || id == IS_EMPTY2) {
+	  		return functionValueWrapperTrue;
 		}
   		return super.getMember(id,exception);
   }
