@@ -464,10 +464,13 @@ public class Symbols {
 	public static final int ENGINE = 450;
 	
 	public static final int SET_STATUS=451;
+    public static final int IS_ADMIN=452;
 
 	
 	public static void init() 
-	{
+	{     
+	    Symbol.setSymbol(IS_ADMIN,"isAdmin");
+
 		Symbol.setSymbol(_INSERTED_VALUES,"inserted_values");
 		Symbol.setSymbol(_UPDATED_VALUES,"updated_values");
 		Symbol.setSymbol(_DELETED_VALUES,"deleted_values");
@@ -915,7 +918,6 @@ public class Symbols {
 		Symbol.setSymbol(IS_FORMS,"is_forms");
 		Symbol.setSymbol(IS_NESTED_TRANSACTION,"is_nested_transaction");
 		Symbol.setSymbol(REAL_RELATION_PARENT,"real_relation_parent");
-		Symbol.setSymbol(IS_LOCAL,"is_local");
 		Symbol.setSymbol(USER,"user");
 		Symbol.setSymbol(IS_TEMPORARY,"is_temporary");
 		Symbol.setSymbol(IS_I18N,"is_i18n");
