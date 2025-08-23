@@ -29,14 +29,20 @@ import oscript.util.MemberTable;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public class OArray extends Value implements MemberTable, java.io.Externalizable {
+public final class OArray extends Value implements MemberTable, java.io.Externalizable {
 
     /* ======================================================================= */
     // members:
     // (I was using java.util.Vector, but it became easier to just do it myself)
     private Reference[] arr;
+    private Object jarr;  // only for java objects, java array 
     private int size = 0;
 
+    public static boolean isJavaArray(Object o) {
+        if (!(o instanceof OArray)) return false;
+        OArray r = (OArray)o;
+        return r.jarr != null;
+    }
     /* ======================================================================= */
 
     /**
@@ -53,7 +59,7 @@ public class OArray extends Value implements MemberTable, java.io.Externalizable
     /**
      */
     public final static OArray makeArray(final Object arrObject) {
-        return new OJavaArray(arrObject);
+        return new OArray(arrObject);
     }
 
     private static final int ADD = 81; // Symbols.java
@@ -107,45 +113,6 @@ public class OArray extends Value implements MemberTable, java.io.Externalizable
         }
         return super.getMember(id, exception);
     }
-
-    public static class OJavaArray extends OArray {
-        private final int len;
-        private final Object arrObject;
-
-        OJavaArray(Object arrObject) {
-            this.arrObject = arrObject;
-            this.len = java.lang.reflect.Array.getLength(arrObject);
-        }
-
-        public Object castToJavaObject() {
-            return arrObject;
-        }
-
-        public int length() {
-            return len;
-        }
-
-        public synchronized Value elementAt(final int idx) throws PackagedScriptObjectException {
-            if ((idx < 0) || (idx >= length()))
-                throw PackagedScriptObjectException
-                        .makeExceptionWrapper(new OIllegalArgumentException("invalid array index: " + idx));
-
-            return new AbstractReference() {
-
-                public void opAssign(Value val) throws PackagedScriptObjectException {
-                    Object obj = JavaBridge.convertToJavaObject(val, arrObject.getClass().getComponentType());
-
-                    java.lang.reflect.Array.set(arrObject, idx, obj);
-                }
-
-                protected Value get() {
-                    return JavaBridge.convertToScriptObject(java.lang.reflect.Array.get(arrObject, idx));
-                }
-
-            };
-        }
-    }
-
     /* ======================================================================= */
     /**
      * Class Constructor.
@@ -179,6 +146,11 @@ public class OArray extends Value implements MemberTable, java.io.Externalizable
         this.size = size;
     }
 
+    // JAVA array reflection
+    private OArray(Object jarr) {
+        this.jarr = jarr;
+        this.size = java.lang.reflect.Array.getLength(jarr);
+    }
     /* ======================================================================= */
     /**
      * Class Constructor. This is the constructor that is called via a
@@ -297,8 +269,24 @@ public class OArray extends Value implements MemberTable, java.io.Externalizable
         if (idx < 0)
             throw PackagedScriptObjectException
                     .makeExceptionWrapper(new OIllegalArgumentException("invalid array index: " + idx));
-        ensureCapacity(idx);
-        return referenceAt(idx, 0);
+        if (arr != null) {
+            // COMMON !!! 
+            ensureCapacity(idx);
+            return referenceAt(idx, 0);
+        }
+        // java array (only for java interop )
+        if (idx >= length())
+            throw PackagedScriptObjectException
+                    .makeExceptionWrapper(new OIllegalArgumentException("invalid array index: " + idx));
+        return new AbstractReference() {
+            public void opAssign(Value val) throws PackagedScriptObjectException {
+                Object obj = JavaBridge.convertToJavaObject(val, jarr.getClass().getComponentType());
+                java.lang.reflect.Array.set(jarr, idx, obj);
+            }
+            protected Value get() {
+                return JavaBridge.convertToScriptObject(java.lang.reflect.Array.get(jarr, idx));
+            }
+        };
     }
 
     public final Reference referenceAt(int idx) {

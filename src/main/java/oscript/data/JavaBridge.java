@@ -305,7 +305,7 @@ for( int i=0; i<args.length(); i++ )
               return 0;
             }
           }
-          else if( (arg instanceof OArray.OJavaArray) && 
+          else if( OArray.isJavaArray(arg) && 
                    compatibleJavaArray( componentType, arg.castToJavaObject() ) )
           {
             javaArgs[i] = arg.castToJavaObject();
@@ -557,49 +557,40 @@ for( int i=0; i<args.length(); i++ )
    * 
    * @param javaObject   the java object to make a wrapper for
    */
-  public final static Value convertToScriptObject( Object javaObject )
-  {    
-    if( javaObject == null )
-    {
-      return Value.NULL;
-    }
-    else if( javaObject instanceof Number )
-    {    
-      if( (javaObject instanceof Float) || (javaObject instanceof Double))
-        return OInexactNumber.makeInexactNumber( ((Number)javaObject).doubleValue() );
-      else if (javaObject instanceof BigDecimal) {
-    	  return new JavaObjectWrapper(javaObject); 
-      } else 
-    	  return OExactNumber.makeExactNumber( ((Number)javaObject).longValue() );
-    }
-    else if( javaObject instanceof Boolean )
-    {
-      return OBoolean.makeBoolean( ((Boolean)javaObject).booleanValue() );
-    }
-    else if( javaObject instanceof String )
-    {
-      return new OString( (String)javaObject ); // XXX should this be intern'd?
-    }
-    else if( javaObject instanceof Character )
-    {
-      return new OString( ((Character)javaObject).toString() ); // XXX should this be intern'd?
-    }
-    else if( javaObject instanceof Value )
-    {
-      return (Value)javaObject;
-    }
-    else if( javaObject instanceof Class )
-    {
-      return JavaClassWrapper.getClassWrapper( (Class)javaObject );
-    }
-    else if( javaObject.getClass().isArray() )
-    {
-      return OArray.makeArray(javaObject);
-    }
-    else
-    {
-      return new JavaObjectWrapper(javaObject);
-    }
+  public final static Value convertToScriptObject( Object javaObject ) {   
+      // java 21+
+      return switch (javaObject) {
+          case null       -> Value.NULL;
+          case Value v    -> v;
+          // Inexact numbers first
+          case Float v    -> OInexactNumber.makeInexactNumber(v);
+          case Double v   -> OInexactNumber.makeInexactNumber(v);
+    
+          // Big numbers
+          case BigDecimal v -> new JavaObjectWrapper(v);
+    
+          // Other exact numbers
+          case Number v  -> OExactNumber.makeExactNumber(v.longValue());
+    
+          case String v    -> new OString(v);
+          case Boolean v   -> OBoolean.makeBoolean(v);
+          case Character v -> new OString(v.toString());
+          case Class<?> v  -> JavaClassWrapper.getClassWrapper(v);
+    
+          // ==== FULL ARRAY LIST ====
+          case Object[] a   -> OArray.makeArray(a);  // reference type array
+          case int[] a      -> OArray.makeArray(a);
+          case long[] a     -> OArray.makeArray(a);
+          case double[] a   -> OArray.makeArray(a);
+          case float[] a    -> OArray.makeArray(a);
+          case short[] a    -> OArray.makeArray(a);
+          case byte[] a     -> OArray.makeArray(a);
+          case char[] a     -> OArray.makeArray(a);
+          case boolean[] a  -> OArray.makeArray(a);
+    
+          default -> new JavaObjectWrapper(javaObject);
+      };
+  
   }
   public final static Value convertToScriptObject( long longVal )
   {
@@ -625,20 +616,3 @@ for( int i=0; i<args.length(); i++ )
     }
   }
 }
-
-
-
-/*
- *   Local Variables:
- *   tab-width: 2
- *   indent-tabs-mode: nil
- *   mode: java
- *   c-indentation-style: java
- *   c-basic-offset: 2
- *   eval: (c-set-offset 'substatement-open '0)
- *   eval: (c-set-offset 'case-label '+)
- *   eval: (c-set-offset 'inclass '+)
- *   eval: (c-set-offset 'inline-open '0)
- *   End:
- */
-

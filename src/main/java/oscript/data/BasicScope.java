@@ -357,7 +357,7 @@ public class BasicScope extends Scope
   {
     Value val = getMemberImpl(id);
     
-    if( val == null )
+    if( val == null && previous != null)
       val = previous.lookupInScope(id);
     
     return val;
