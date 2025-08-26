@@ -21,191 +21,146 @@
 package oscript.data;
 
 import java.lang.reflect.*;
-
-
 import oscript.exceptions.*;
 
-
-
 /**
- * A wrapper for a method of a java object.  Because the method that is 
- * called is determined by the arguments to the method when it is called,
- * rather than when it is dereferenced, this is actually a wrapper for
- * an array of all methods in a class with a certain name.
+ * A wrapper for a method of a java object. Because the method that is called is
+ * determined by the arguments to the method when it is called, rather than when
+ * it is dereferenced, this is actually a wrapper for an array of all methods in
+ * a class with a certain name.
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public class JavaMethodWrapper extends Value implements Runnable
-{
-  private int      id;
-  private Object   javaObject;
-  private Method[] methods;
-  
-  /**
-   * The type object for an script java method.
-   */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.JavaMethodWrapper");
-  public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
-  public final static String TYPE_NAME        = "JavaMethod";
-  public final static String[] MEMBER_NAMES   = new String[] {
-                                                      "castToString",
-                                                      "callAsFunction"
-                                                    };
-  
-  /*=======================================================================*/
-  /**
-   * Class Constructor.
-   * 
-   * @param id           the name of the method
-   * @param javaObject   the java-object this method is in
-   * @param methods      the methods this is a wrapper for
-   */
-  JavaMethodWrapper( int id, Object javaObject, Method[] methods )
-  {
-    super();
-    
-    this.id         = id;
-    this.javaObject = javaObject;
-    this.methods    = methods;
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Get the type of this object.  The returned type doesn't have to take
-   * into account the possibility of a script type extending a built-in
-   * type, since that is handled by {@link #getType}.
-   * 
-   * @return the object's type
-   */
-  protected Value getTypeImpl()
-  {
-    return TYPE;
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Implementing the runnable interface.
-   */
-  public void run()
-  {
-    callAsFunction(NO_ARGS);
-  }
-  private static final Value[] NO_ARGS = Value.emptyArray;
-  
-  /*=======================================================================*/
-  /**
-   * Return a hash code value for this object.
-   * 
-   * @return a hash code value
-   * @see java.lang.Object#hashCode()
-   */
-  public int hashCode()
-  {
-    return methods[0].hashCode();
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Compare two objects for equality.
-   * 
-   * @param obj          the object to compare to this object
-   * @return <code>true</code> if equals, else <code>false</code>
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  public boolean equals( Object obj )
-  {
-    return ( (obj instanceof JavaMethodWrapper) &&
-             (((JavaMethodWrapper)obj).methods[0].equals(methods[0])) );
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Perform the "==" operation.
-   * 
-   * @param val          the other value
-   * @return the result
-   * @throws PackagedScriptObjectException(NoSuchMethodException)
-   */
-  public Value bopEquals( Value val )
-    throws PackagedScriptObjectException
-  {
-    return OBoolean.makeBoolean( equals(val) );
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Perform the "!=" operation.
-   * 
-   * @param val          the other value
-   * @return the result
-   * @throws PackagedScriptObjectException(NoSuchMethodException)
-   */
-  public Value bopNotEquals( Value val )
-    throws PackagedScriptObjectException
-  {
-    return OBoolean.makeBoolean( !equals(val) );
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Convert this object to a native java <code>String</code> value.
-   * 
-   * @return a String value
-   * @throws PackagedScriptObjectException(NoSuchMethodException)
-   */
-  public String castToString()
-    throws PackagedScriptObjectException
-  {
-    return "[method: " + Symbol.getSymbol(id).castToString() + "]";
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Call this object as a function.
-   * 
-   * @param sf           the current stack frame
-   * @param args         the arguments to the function, or <code>null</code> if none
-   * @return the value returned by the function
-   * @throws PackagedScriptObjectException
-   * @see Function
-   */
-  public Value callAsFunction( oscript.util.StackFrame sf, oscript.util.MemberTable args )
-    throws PackagedScriptObjectException
-  {
-    return JavaBridge.convertToScriptObject( 
-      JavaBridge.call( methodAccessor, id, javaObject, methods, sf, args )
-    );
-  }
-  
-  private static final JavaBridge.JavaCallableAccessor methodAccessor = 
-    new JavaBridge.JavaCallableAccessor() {
-    
-    public Class[] getParameterTypes( Object javaCallable )
-    {
-      return ((Method)javaCallable).getParameterTypes();
+public class JavaMethodWrapper extends Value implements Runnable {
+    private int id;
+    private Object javaObject;
+    private Method[] methods;
+
+    /**
+     * The type object for an script java method.
+     */
+    public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.JavaMethodWrapper");
+    public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
+    public final static String TYPE_NAME = "JavaMethod";
+    public final static String[] MEMBER_NAMES = new String[] { "castToString", "callAsFunction" };
+
+    /* ======================================================================= */
+    /**
+     * Class Constructor.
+     * 
+     * @param id         the name of the method
+     * @param javaObject the java-object this method is in
+     * @param methods    the methods this is a wrapper for
+     */
+    JavaMethodWrapper(int id, Object javaObject, Method[] methods) {
+        super();
+
+        this.id = id;
+        this.javaObject = javaObject;
+        this.methods = methods;
     }
-    
-    public Object call( Object javaCallable, Object javaObject, Object[] args )
-      throws InvocationTargetException, InstantiationException, IllegalAccessException
-    {
-      return ((Method)javaCallable).invoke( javaObject, args );
+
+    /* ======================================================================= */
+    /**
+     * Get the type of this object. The returned type doesn't have to take into
+     * account the possibility of a script type extending a built-in type, since
+     * that is handled by {@link #getType}.
+     * 
+     * @return the object's type
+     */
+    protected Value getTypeImpl() {
+        return TYPE;
     }
-  };
+
+    /* ======================================================================= */
+    /**
+     * Implementing the runnable interface.
+     */
+    public void run() {
+        callAsFunction(NO_ARGS);
+    }
+
+    private static final Value[] NO_ARGS = Value.emptyArray;
+
+    /* ======================================================================= */
+    /**
+     * Return a hash code value for this object.
+     * 
+     * @return a hash code value
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return methods[0].hashCode();
+    }
+
+    /* ======================================================================= */
+    /**
+     * Compare two objects for equality.
+     * 
+     * @param obj the object to compare to this object
+     * @return <code>true</code> if equals, else <code>false</code>
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+        return ((obj instanceof JavaMethodWrapper) && (((JavaMethodWrapper) obj).methods[0].equals(methods[0])));
+    }
+
+    /* ======================================================================= */
+    /**
+     * Perform the "==" operation.
+     * 
+     * @param val the other value
+     * @return the result
+     * @throws PackagedScriptObjectException(NoSuchMethodException)
+     */
+    public Value bopEquals(Value val) throws PackagedScriptObjectException {
+        return OBoolean.makeBoolean(equals(val));
+    }
+
+    /* ======================================================================= */
+    /**
+     * Perform the "!=" operation.
+     * 
+     * @param val the other value
+     * @return the result
+     * @throws PackagedScriptObjectException(NoSuchMethodException)
+     */
+    public Value bopNotEquals(Value val) throws PackagedScriptObjectException {
+        return OBoolean.makeBoolean(!equals(val));
+    }
+
+    /* ======================================================================= */
+    /**
+     * Convert this object to a native java <code>String</code> value.
+     * 
+     * @return a String value
+     * @throws PackagedScriptObjectException(NoSuchMethodException)
+     */
+    public String castToString() throws PackagedScriptObjectException {
+        return "[method: " + Symbol.getSymbol(id).castToString() + "]";
+    }
+
+    /* ======================================================================= */
+    /**
+     * Call this object as a function.
+     * 
+     * @param sf   the current stack frame
+     * @param args the arguments to the function, or <code>null</code> if none
+     * @return the value returned by the function
+     * @throws PackagedScriptObjectException
+     * @see Function
+     */
+    public Value callAsFunction(oscript.util.StackFrame sf, oscript.util.MemberTable args)
+            throws PackagedScriptObjectException {
+        return JavaBridge.convertToScriptObject(JavaBridge.call(methodAccessor, id, javaObject, methods, sf, args));
+    }
+
+    private static final JavaBridge.JavaCallableAccessor methodAccessor = new JavaMethodAccessor();
 }
 
-
-
 /*
- *   Local Variables:
- *   tab-width: 2
- *   indent-tabs-mode: nil
- *   mode: java
- *   c-indentation-style: java
- *   c-basic-offset: 2
- *   eval: (c-set-offset 'substatement-open '0)
- *   eval: (c-set-offset 'case-label '+)
- *   eval: (c-set-offset 'inclass '+)
- *   eval: (c-set-offset 'inline-open '0)
- *   End:
+ * Local Variables: tab-width: 2 indent-tabs-mode: nil mode: java
+ * c-indentation-style: java c-basic-offset: 2 eval: (c-set-offset
+ * 'substatement-open '0) eval: (c-set-offset 'case-label '+) eval:
+ * (c-set-offset 'inclass '+) eval: (c-set-offset 'inline-open '0) End:
  */
-

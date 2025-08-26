@@ -1,11 +1,9 @@
 package oscript;
 
-
 import oscript.data.Value;
 import oscript.exceptions.PackagedScriptObjectException;
 import oscript.util.MemberTable;
 import oscript.util.StackFrame;
-
 public abstract class OscriptHost {
 
 	public static OscriptHost me;
@@ -44,4 +42,17 @@ public abstract class OscriptHost {
 		}
 		return "$"+Integer.toHexString((int)c);
 	}
+	
+	// MAY INTERCEPT unwrapping of results for replacing object proxies with wrappers 
+	// TODO DOCU used only for JAX-WS WSDL generated generic soap wrappers
+	// see compile.native.js after native-image extra generated java source processing 
+	// ONLY for native build!
+	public abstract Object wrapJavaMethodCallResult(Object result);
+	public static interface ClassMappingCallback {
+	    public Object map(Object c);
+	}
+	public static interface ClassMappingUnproxifyCallback {
+        public Object __unmap();
+	}
+
 }

@@ -39,9 +39,7 @@ import java.util.Iterator;
  * @version 1.29
  */
 public class JavaBridge
-{
-  private static LinkedList functionTransformList = new LinkedList();
-  
+{  
   /*=======================================================================*/
   /**
    * This abstract class is implemented by transformers that understand how
@@ -80,14 +78,7 @@ public class JavaBridge
      */
     public abstract Object transform( Value fxn );
   }
-  
-  /**
-   */
-  public static void registerFunctionTransformer( FunctionTransformer ft )
-  {
-    functionTransformList.add(ft);
-  }
-  
+
   /*=======================================================================*/
   /**
    * This is used by java class wrappers to convert the return type back
@@ -252,293 +243,198 @@ for( int i=0; i<args.length(); i++ )
    * equal to zero indicates that the conversion is not possible.  A
    * higher score is better.
    */
-  public static int convertArgs( Class[] parameterTypes, Object[] javaArgs, MemberTable args )
-  {
-    int score = Integer.MAX_VALUE;
-    if( (args == null) || (args.length() == 0) )
+  public static int convertArgs(Class[] parameterTypes, Object[] javaArgs, MemberTable args) {
+      int score = Integer.MAX_VALUE;      
+      if ((args == null) || (args.length() == 0)) return score;
+      int argslength = args.length();
+      for (int i = 0; (i < argslength) && (score > 0); i++) {
+          final Class pt = parameterTypes[i];
+          // in case it is a reference:
+          Value arg = args.referenceAt(i).unhand();
+          if (((arg == Value.NULL) || (arg == Value.UNDEFINED))  && !(pt.isPrimitive() || Value.class.isAssignableFrom(pt))) {
+              // null can be assigned to any non-primitive
+              javaArgs[i] = null;
+          } else if (pt.isPrimitive()) {
+              if (pt == Boolean.TYPE) {
+                  try {
+                      javaArgs[i] = arg.castToBoolean() ? Boolean.TRUE : Boolean.FALSE;
+                  } catch (PackagedScriptObjectException e) {
+                      return 0;
+                  }
+              } else if (pt == Long.TYPE) {
+                  try {
+                      javaArgs[i] = Long.valueOf(arg.castToExactNumber());
+
+                      if (!arg.bopInstanceOf(OExactNumber.TYPE).castToBoolean())
+                          score--;
+                  } catch (PackagedScriptObjectException e) {
+                      return 0;
+                  }
+              } else if (pt == Double.TYPE) {
+                  try {
+                      javaArgs[i] = Double.valueOf(arg.castToInexactNumber());
+
+                      if (!arg.bopInstanceOf(OInexactNumber.TYPE).castToBoolean())
+                          score--;
+                  } catch (PackagedScriptObjectException e) {
+                      return 0;
+                  }
+              } else if (pt == Integer.TYPE) {
+                  try {
+                      long val = arg.castToExactNumber();
+
+                      if ((long) ((int) val) != val)
+                          return 0;
+
+                      if (!arg.bopInstanceOf(OExactNumber.TYPE).castToBoolean())
+                          score--;
+
+                      javaArgs[i] = Integer.valueOf((int) val);
+                  } catch (PackagedScriptObjectException e) {
+                      return 0;
+                  }
+              } 
+              else if (pt == Float.TYPE) {
+                  try {
+                      double val = arg.castToInexactNumber();
+
+                      if ((double) ((float) val) != val)
+                          return 0;
+
+                      if (!arg.bopInstanceOf(OInexactNumber.TYPE).castToBoolean())
+                          score--;
+
+                      javaArgs[i] = Float.valueOf((float) val);
+                  } catch (PackagedScriptObjectException e) {
+                      return 0;
+                  }
+              } else if (pt == Character.TYPE) {
+                  try {
+                      String str = arg.castToString();
+                      if ((str != null) && (str.length() == 1))
+                          javaArgs[i] = Character.valueOf(str.charAt(0));
+                      else
+                          return 0;
+                  } catch (PackagedScriptObjectException e) {
+                      return 0;
+                  }
+              } else if (pt == Byte.TYPE) {
+                  try {
+                      long val = arg.castToExactNumber();
+
+                      if ((long) ((byte) val) != val)
+                          return 0;
+
+                      if (!arg.bopInstanceOf(OExactNumber.TYPE).castToBoolean())
+                          score--;
+
+                      javaArgs[i] = Byte.valueOf((byte) val);
+                  } catch (PackagedScriptObjectException e) {
+                      return 0;
+                  }
+              } else if (pt == Short.TYPE) {
+                  try {
+                      long val = arg.castToExactNumber();
+
+                      if ((long) ((short) val) != val)
+                          return 0;
+
+                      if (!arg.bopInstanceOf(OExactNumber.TYPE).castToBoolean())
+                          score--;
+
+                      javaArgs[i] = Short.valueOf((short) val);
+                  } catch (PackagedScriptObjectException e) {
+                      return 0;
+                  }
+              } else {
+                  return 0;
+              }
+          }
+          else if (pt.isArray()) {
+              try {
+                  int len = arg.length();
+                  Class componentType = pt.getComponentType();
+
+                  if (arg instanceof OString) {
+                      if (componentType == Character.TYPE) {
+                          // we want methods that take a String to be preferred over
+                          // methods that take a char[]
+                          score--;
+                          javaArgs[i] = arg.castToString().toCharArray();
+                      } else {
+                          // don't support converting a string to any other sort of array:
+                          return 0;
+                      }
+                  } else if (OArray.isJavaArray(arg) && compatibleJavaArray(componentType, arg.castToJavaObject())) {
+                      javaArgs[i] = arg.castToJavaObject();
+                  } else if (len > 0) {
+                      Class[] arrParameterTypes = new Class[len];
+                      Value[] arrArgs = new Value[len];
+
+                      arrParameterTypes[0] = componentType;
+                      arrArgs[0] = arg.elementAt(OExactNumber.makeExactNumber(0));
+                      for (int j = 1; j < len; j++) {
+                          arrParameterTypes[j] = arrParameterTypes[0];
+                          arrArgs[j] = arg.elementAt(OExactNumber.makeExactNumber(j));
+                      }
+
+                      // primitive types need to be handled specially...
+                      if (arrParameterTypes[0].isPrimitive()) {
+                          // convert into temporary array:
+                          Object[] tmpArr = new Object[len];
+                          score -= Integer.MAX_VALUE - convertArgs(arrParameterTypes, tmpArr, new OArray(arrArgs));
+
+                          if (score <= 0)
+                              return score;
+
+                          // now copy to final destination:
+                          javaArgs[i] = Array.newInstance(arrParameterTypes[0], len);
+
+                          for (int j = 0; j < len; j++)
+                              Array.set(javaArgs[i], j, tmpArr[j]);
+                      } else {
+                          Object[] arrJavaArgs = (Object[]) (Array.newInstance(arrParameterTypes[0], len));
+                          score -= Integer.MAX_VALUE - convertArgs(arrParameterTypes, arrJavaArgs, new OArray(arrArgs));
+                          javaArgs[i] = arrJavaArgs;
+                      }
+                  } else {
+                      score--;
+                      javaArgs[i] = Array.newInstance(pt.getComponentType(), 0);
+                  }
+              } catch (PackagedScriptObjectException e) {
+                  return 0;
+              }
+          } else if (pt == BigDecimal.class) {
+              Object jobj = arg.castToJavaObject();
+              if (jobj instanceof BigDecimal)
+                  javaArgs[i] = jobj;
+              else
+                  javaArgs[i] = new BigDecimal(arg.castToString());
+          } else {
+              Object obj = arg.castToJavaObject();
+              
+              // special handlers (generated SOAP proxies) 
+              if (obj instanceof OscriptHost.ClassMappingUnproxifyCallback) 
+                  obj = ((OscriptHost.ClassMappingUnproxifyCallback)obj).__unmap();
+
+              // to deal with NULL/UNDEFINED:
+              if (obj == null)
+                  obj = arg;
+              if (pt.isAssignableFrom(obj.getClass())) {
+                  if (pt != obj.getClass())
+                      score--;
+                  javaArgs[i] = obj;
+              } else if (pt.isAssignableFrom(arg.getClass())) {
+                  if (pt != arg.getClass())
+                      score--;
+                  javaArgs[i] = arg;
+              } else {
+                  return 0;
+              }
+          }
+      }
+
       return score;
-    
-    int argslength = args.length();
-    
-    if( (javaArgs.length != argslength) || (parameterTypes.length < argslength) )
-      throw new ProgrammingErrorException("bad monkey, no banana");
-    
-    for( int i=0; (i<argslength) && (score > 0); i++ )
-    {
-    	final Class pt = parameterTypes[i];
-    	
-      // in case it is a reference:
-      Value arg = args.referenceAt(i).unhand();
-      
-      if( ( (arg == Value.NULL) || (arg == Value.UNDEFINED) ) &&
-          !(pt.isPrimitive() || Value.class.isAssignableFrom(pt)) )
-      {
-        // null can be assigned to any non-primitive
-        javaArgs[i] = null;
-      }
-      else if (pt == BigDecimal.class) {
-    	  Object jobj = arg.castToJavaObject();
-    	  if (jobj instanceof BigDecimal)
-    		  javaArgs[i] = jobj;
-    	  else
-    		  javaArgs[i] = new BigDecimal(arg.castToString());
-      }
-      else if( pt.isArray() )
-      {
-        try
-        {
-          int len = arg.length();
-          Class componentType = pt.getComponentType();
-          
-          if( arg instanceof OString )
-          {
-            if( componentType == Character.TYPE )
-            {
-              // we want methods that take a String to be preferred over
-              // methods that take a char[]
-              score--;
-              javaArgs[i] = arg.castToString().toCharArray();
-            }
-            else
-            {
-              // don't support converting a string to any other sort of array:
-              return 0;
-            }
-          }
-          else if( OArray.isJavaArray(arg) && 
-                   compatibleJavaArray( componentType, arg.castToJavaObject() ) )
-          {
-            javaArgs[i] = arg.castToJavaObject();
-          }
-          else if( len > 0 )
-          {
-            Class[]  arrParameterTypes = new Class[len];
-            Value[]  arrArgs = new Value[len];
-            
-            arrParameterTypes[0] = componentType;
-            arrArgs[0]           = arg.elementAt( OExactNumber.makeExactNumber(0) );
-            for( int j=1; j<len; j++ )
-            {
-              arrParameterTypes[j] = arrParameterTypes[0];
-              arrArgs[j]           = arg.elementAt( OExactNumber.makeExactNumber(j) );
-            }
-            
-            // primitive types need to be handled specially...
-            if( arrParameterTypes[0].isPrimitive() )
-            {
-              // convert into temporary array:
-              Object[] tmpArr = new Object[len];
-              score -= Integer.MAX_VALUE - convertArgs( arrParameterTypes, tmpArr, new OArray(arrArgs) );
-              
-              if( score <= 0 )
-                return score;
-              
-              // now copy to final destination:
-              javaArgs[i] = Array.newInstance( arrParameterTypes[0], len );
-              
-              for( int j=0; j<len; j++ )
-                Array.set( javaArgs[i], j, tmpArr[j] );
-            }
-            else
-            {
-              Object[] arrJavaArgs = (Object[])(Array.newInstance( arrParameterTypes[0], len ));
-              score -= Integer.MAX_VALUE - convertArgs( arrParameterTypes, arrJavaArgs, new OArray(arrArgs) );
-              javaArgs[i] = arrJavaArgs;
-            }
-          }
-          else
-          {
-            score--;
-            javaArgs[i] = Array.newInstance( pt.getComponentType(), 0 );
-          }
-        }
-        catch(PackagedScriptObjectException e)
-        {
-          return 0;
-        }
-      }
-      else if( pt.isPrimitive() )
-      {
-        if( pt == Boolean.TYPE )
-        {
-          try
-          {
-            javaArgs[i] = arg.castToBoolean() ? Boolean.TRUE : Boolean.FALSE;
-          }
-          catch(PackagedScriptObjectException e)
-          {
-            return 0;
-          }
-        }
-        else if( pt == Character.TYPE )
-        {
-          try
-          {
-            String str = arg.castToString();
-            if( (str != null) && (str.length() == 1) )
-              javaArgs[i] = Character.valueOf( str.charAt(0) );
-            else
-              return 0;
-          }
-          catch(PackagedScriptObjectException e)
-          {
-            return 0;
-          }
-        }
-        else if( pt == Byte.TYPE )
-        {
-          try
-          {
-            long val = arg.castToExactNumber();
-            
-            if( (long)((byte)val) != val )
-              return 0;
-            
-            if( ! arg.bopInstanceOf( OExactNumber.TYPE ).castToBoolean() )
-              score--;
-            
-            javaArgs[i] = Byte.valueOf( (byte)val );
-          }
-          catch(PackagedScriptObjectException e)
-          {
-            return 0;
-          }
-        }
-        else if( pt == Short.TYPE )
-        {
-          try
-          {
-            long val = arg.castToExactNumber();
-            
-            if( (long)((short)val) != val )
-              return 0;
-            
-            if( ! arg.bopInstanceOf( OExactNumber.TYPE ).castToBoolean() )
-              score--;
-            
-            javaArgs[i] = Short.valueOf( (short)val );
-          }
-          catch(PackagedScriptObjectException e)
-          {
-            return 0;
-          }
-        }
-        else if( pt == Integer.TYPE )
-        {
-          try
-          {
-            long val = arg.castToExactNumber();
-            
-            if( (long)((int)val) != val )
-              return 0;
-            
-            if( ! arg.bopInstanceOf( OExactNumber.TYPE ).castToBoolean() )
-              score--;
-            
-            javaArgs[i] = Integer.valueOf( (int)val );
-          }
-          catch(PackagedScriptObjectException e)
-          {
-            return 0;
-          }
-        }
-        else if( pt == Long.TYPE )
-        {
-          try
-          {
-            javaArgs[i] = Long.valueOf( arg.castToExactNumber() );
-            
-            if( ! arg.bopInstanceOf( OExactNumber.TYPE ).castToBoolean() )
-              score--;
-          }
-          catch(PackagedScriptObjectException e)
-          {
-            return 0;
-          }
-        }
-        else if( pt == Float.TYPE )
-        {
-          try
-          {
-            double val = arg.castToInexactNumber();
-            
-            if( (double)((float)val) != val )
-              return 0;
-            
-            if( ! arg.bopInstanceOf( OInexactNumber.TYPE ).castToBoolean() )
-              score--;
-            
-            javaArgs[i] = Float.valueOf( (float)val );
-          }
-          catch(PackagedScriptObjectException e)
-          {
-            return 0;
-          }
-        }
-        else if( pt == Double.TYPE )
-        {
-          try
-          {
-            javaArgs[i] = Double.valueOf( arg.castToInexactNumber() );
-            
-            if( ! arg.bopInstanceOf( OInexactNumber.TYPE ).castToBoolean() )
-              score--;
-          }
-          catch(PackagedScriptObjectException e)
-          {
-            return 0;
-          }
-        }
-        else
-        {
-          return 0;
-        }
-      }
-      else
-      {
-        Object obj = arg.castToJavaObject();
-        
-        // to deal with NULL/UNDEFINED:
-        if( obj == null )
-          obj = arg;
-        
-        if( pt.isAssignableFrom( obj.getClass() ) )
-        {
-          if( pt != obj.getClass() )
-            score--;
-          
-          javaArgs[i] = obj;
-        }
-        else if( pt.isAssignableFrom( arg.getClass() ) )
-        {
-          if( pt != arg.getClass() )
-            score--;
-          
-          javaArgs[i] = arg;
-        }
-        else
-        {
-          boolean transformed = false;
-          
-          for( Iterator itr=functionTransformList.iterator(); itr.hasNext(); )
-          {
-            FunctionTransformer ft = (FunctionTransformer)(itr.next());
-            
-            if( pt.isAssignableFrom( ft.getTargetClass() ) )
-            {
-              javaArgs[i] = ft.transform(arg);
-              transformed = true;
-              break;
-            }
-          }
-          
-          if( !transformed )
-            return 0;
-        }
-      }
-    }
-    
-    return score;
   }
   
   private static final boolean compatibleJavaArray( Class componentType, Object javaArr )
@@ -587,6 +483,9 @@ for( int i=0; i<args.length(); i++ )
           case byte[] a     -> OArray.makeArray(a);
           case char[] a     -> OArray.makeArray(a);
           case boolean[] a  -> OArray.makeArray(a);
+          
+          // === CUSTOM GENERATED DYNAMIC PROXIES === 
+          //case OscriptHost.ClassMappingUnproxifyCallback c -> convertToScriptObject(c.__unmap());
     
           default -> new JavaObjectWrapper(javaObject);
       };
