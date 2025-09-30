@@ -466,7 +466,9 @@ public class Symbols {
 	public static final int SET_STATUS=451;
     public static final int IS_ADMIN=452;
 
-	
+    public static final int CAST_TO_EXACT_NUMBER=453;
+    public static final int CAST_TO_INEXACT_NUMBER=454;
+
 	public static void init() 
 	{     
 	    Symbol.setSymbol(IS_ADMIN,"isAdmin");
@@ -832,6 +834,9 @@ public class Symbols {
 		Symbol.setSymbol(STOP_OUTPUT_RECORDING,"stopOutputRecording");
 		
 		Symbol.setSymbol(CAST_TO_STRING,"castToString");
+        Symbol.setSymbol(CAST_TO_EXACT_NUMBER,"castToExactNumber");
+        Symbol.setSymbol(CAST_TO_INEXACT_NUMBER,"castToInexactNumber");
+
 		Symbol.setSymbol(IS_ONLY_SWAP,"is_only_swap");
 		Symbol.setSymbol(RELOAD_CORE,"reloadCore");
 		Symbol.setSymbol(STOP_SCHEMA_SYNCHRONIZATION,"stopSchemaSynchronization");
