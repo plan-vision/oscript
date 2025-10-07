@@ -23,7 +23,6 @@ package oscript;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
@@ -66,45 +65,7 @@ public class OscriptBuiltins
    * priority level.
    */
   private static TreeMap atExitRunnableMap = null;
-  
-  static
-  {
-    Runtime.getRuntime().addShutdownHook( new Thread()
-    {
-      public void run()
-      {
-        runAtExitRunnables();
-      }
-    });
-  }
-  
-  private static void runAtExitRunnables()
-  {
-    while( atExitRunnableMap != null )
-    {
-      TreeMap map = atExitRunnableMap;
-      atExitRunnableMap = null;
-      
-      for( Iterator mitr=map.values().iterator(); mitr.hasNext(); )
-      {
-        LinkedList list = (LinkedList)(mitr.next());
-//  System.err.println("run: " + list);
-        
-        for( Iterator litr=list.iterator(); litr.hasNext(); )
-        {
-          try
-          {
-            ((Runnable)(litr.next())).run();
-          }
-          catch(Throwable t)
-          {
-            t.printStackTrace();
-          }
-        }
-      }
-    }
-  }
-  
+    
   /*=======================================================================*/
   /**
    * 

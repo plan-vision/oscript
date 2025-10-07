@@ -110,7 +110,7 @@ public class BuiltinType extends JavaClassWrapper
     try
     {
       paramTypes = new Class[] {
-        Class.forName("oscript.util.MemberTable")
+        oscript.util.MemberTable.class
       };
     }
     catch(Throwable e)

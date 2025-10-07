@@ -14,7 +14,7 @@ public abstract class OscriptHost {
 	public abstract void onInit();
 	public abstract NodeEvaluatorFactory newCompiledNodeEvaluatorFactory();
 	public abstract Class getClassByName(String className) throws ClassNotFoundException;
-	public abstract void publishJavaApis(String packageName,Class []classes);	
+	public abstract void publishJavaApis(String packageName,String []classes);	
 	//public abstract Object /* class */ compilerMakeClass(byte []data); // only if compiler supported
 
 	// default
