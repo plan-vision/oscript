@@ -102,6 +102,13 @@ public class DefaultParser implements Parser
       return OscriptParser.ProgramFile();
     }
   }
+  // NOT SYNCHRONIZED ! LOCKING BY USER !
+  public  static Node parse( String lines[]) throws ParseException
+  {
+      OscriptParser.ReInit(lines);
+      return OscriptParser.ProgramFile();
+  }
+  
 }
 
 

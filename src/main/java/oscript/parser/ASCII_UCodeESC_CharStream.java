@@ -3,6 +3,7 @@ package oscript.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -10,7 +11,21 @@ import java.util.Stack;
  * contain only ASCII characters (with java-like unicode escape processing).
  */
 public final class ASCII_UCodeESC_CharStream
-{
+{  
+  public static List<String> _lines;
+    
+  private static String _readLine() throws IOException {
+       if (_lines != null) {
+           // custom reader 
+           if (_lines.isEmpty()) {
+               _lines=null;
+               return null;
+           }
+           return _lines.removeFirst();
+       }
+       return inputStream.readLine();
+  }
+    
   private static final int MASK = 0xFFFF;
   public static final boolean staticFlag = true;
   static final int hexval(char c) throws java.io.IOException {
@@ -181,13 +196,13 @@ public final class ASCII_UCodeESC_CharStream
   static private final void FillBuff() throws java.io.IOException
   {
      try {
-    	 if (!inputStream.ready()) {
+    	 if (_lines == null && !inputStream.ready()) {
     		 inputStream.close();
     		 throw new java.io.IOException();
      	 }
     	 String line;
     	 StringBuffer buf = new StringBuffer();
-    	 while( (line = inputStream.readLine()) != null ) {
+    	 while( (line = _readLine()) != null ) {
     		 //System.out.println(count++ + ": " + line);
     		 parseVSCLine(buf, line,cdataStack);
     		 buf.append("\n");
