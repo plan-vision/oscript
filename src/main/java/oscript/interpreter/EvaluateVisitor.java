@@ -1610,17 +1610,7 @@ public class EvaluateVisitor implements ObjectVisitor, OscriptParserConstants
       if( n.f6.staticNodes != null )
         staticNodeEvaluator = OscriptInterpreter.createNodeEvaluator( name + "$static", n.f6.staticNodes );
       
-      // the syntaxtree won't change, so we only need to parse the comment once:
-      synchronized(n)
-      {
-        if( ! n.commentParsed )
-        {
-          n.commentParsed = true;
-          if( NodeToken_lastSpecials != null )
-            n.comment = Function.extractJavadocComment( NodeToken_lastSpecials, oname, argIds );
-        }
-      }
-      
+    
       n.fd = new FunctionData( n.id,
                                         argIds,
                                         varargs,

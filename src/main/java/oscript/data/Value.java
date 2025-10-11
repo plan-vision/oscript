@@ -827,13 +827,7 @@ public abstract class Value implements MemberTable {
     throws PackagedScriptObjectException
   {
     return callAsExtends( StackFrame.currentStackFrame(), scope, args );
-  }
-  /** @deprecated */
-  public final Value callAsExtends( StackFrame sf, Scope scope, Value[] args )
-  {
-    throw new ProgrammingErrorException("shouldn't get here!!");
-  }
- 
+  } 
   /*=======================================================================*/
   /**
    * Get a member of this object.  This method is provided for convenience.

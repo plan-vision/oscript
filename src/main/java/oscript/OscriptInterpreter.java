@@ -168,39 +168,6 @@ public class OscriptInterpreter
       throw OJavaException.convertException(new RuntimeException("NOT IMPLEMENTED!"));
   }
   
-  /*=======================================================================*/
-  /**
-   * Evaluate from the specified abstract file.  The stream is evaluated
-   * until EOF is hit.
-   * 
-   * @param file         the file to evaluate
-   * @return the result of evaluating the input
-   * @throws ParseException if error parsing input
-   * @throws IOException if something goes poorly when reading file
-   */
-  public static Value eval( File file )
-    throws ParseException, IOException
-  {
-    return eval( file, getGlobalScope() );
-  }
-  
-  /*=======================================================================*/
-  /**
-   * Evaluate from the specified abstract file.  The stream is evaluated
-   * until EOF is hit.
-   * 
-   * @param file         the file to evaluate
-   * @param scope        the scope to evaluate in
-   * @return the result of evaluating the input
-   * @throws ParseException if error parsing input
-   * @throws IOException if something goes poorly when reading file
-   */
-  public static Value eval( File file, Scope scope )
-    throws ParseException, IOException
-  {
-      return (Value)(StackFrame.currentStackFrame().evalNode( getNodeEvaluator(file), scope ));
-  }
-  
   public static long et;
   
   /*=======================================================================*/
@@ -216,17 +183,6 @@ public class OscriptInterpreter
   {
     return eval( str, getGlobalScope() );
   }
-  
-  // XXX fixme: work around because "eval" is a object-script keyword
-  public static final Value __eval( String str )
-    throws ParseException
-  {
-    Value val = eval(str);
-    if( val == Value.UNDEFINED )
-      val = Value.NULL;
-    return val;
-  }
-  
   /*=======================================================================*/
   /**
    * Evaluate the specified sting.
@@ -265,27 +221,15 @@ public class OscriptInterpreter
   /*=======================================================================*/
   
   /**
-   * Parse the input stream to a syntaxtree.
-   * 
-   * @param file         the file to parse
-   * @return the parsed syntaxtree
-   */
-  public static Node parse( File file )
-    throws ParseException, IOException
-  {
-	  return parser.parse(file);
-  }
-  
-  /**
    * Get node-evaluator via cache.  If not in cache, and not loadable into
    * cache from cache-fs, then actually parse and create new node-evaluator.
    * If exists in cache, but <code>file</code> has been more recently modified,
    * the re-parse and create new node-evaluator.
    */
-  public static NodeEvaluator getNodeEvaluator( File file )
+  public static NodeEvaluator getNodeEvaluator( MemoryFile file )
     throws ParseException, IOException
   {
-	  return createNodeEvaluator( file instanceof MemoryFile ? file.getName() : file.getPath().intern(), parse(file) );
+	  return createNodeEvaluator( file.getName(), parse(file.getContent()) );
   }
   
  

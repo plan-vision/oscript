@@ -34,21 +34,15 @@ import oscript.parser.ParseException;
 import oscript.parser.TokenMgrError;
 import oscript.syntaxtree.Node;
 
-
-/* XXX TODO: move this, and oscript.OscriptParser, etc. to oscript.parser
- * package.
- */
-
 /**
  * 
  * @author Rob Clark (rob@ti.com)
  * <!--$Format: " * @version $Revision$"$-->
  * @version 1.3.1.4
  */
-public class DefaultParser implements Parser
+public class DefaultParser
 {
-  static OscriptParser parser =
-    new OscriptParser( new StringReader(""));
+  static OscriptParser parser = new OscriptParser( new BufferedReader(new StringReader("")));
   
   /**
    * Get the file extension for file type to handle, eg. <code>os</code>.  This
@@ -60,36 +54,7 @@ public class DefaultParser implements Parser
   {
     return "os";
   }
-  
-  /**
-   * Convert a file to Node.
-   * 
-   * @param file       the file to parse
-   * @return the parsed syntaxtree
-   */
-  public Node parse( File file )
-    throws ParseException, IOException
-  {
-    // we want to annotate the error msg with the name of the file being
-    // parsed:
-    Reader r = file instanceof MemoryFile ? new StringReader(((MemoryFile)file).getContent()) :  new InputStreamReader(new FileInputStream(file),"UTF-8");
-    try
-    {
-      return parse(r);
-    }
-	catch(TokenMgrError e)
-	{
-      throw new ParseException("Error parsing '" + file.getPath() + "', " + e.getMessage());
-	}
-    catch(ParseException e)
-    {
-      throw new ParseException("Error parsing '" + file.getPath() + "', " + e.getMessage());
-    }
-    finally
-    {
-      r.close();
-    }
-  }
+ 
   
   // we don't want multiple isntances of the parser, so we share it by 
   // providing this method as a way to access the parser.

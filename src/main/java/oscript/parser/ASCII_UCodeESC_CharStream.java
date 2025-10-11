@@ -181,10 +181,6 @@ public final class ASCII_UCodeESC_CharStream
   static private final void FillBuff() throws java.io.IOException
   {
      try {
-    	 if (!inputStream.ready()) {
-    		 inputStream.close();
-    		 throw new java.io.IOException();
-     	 }
     	 String line;
     	 StringBuffer buf = new StringBuffer();
     	 while( (line = inputStream.readLine()) != null ) {
@@ -443,14 +439,10 @@ public final class ASCII_UCodeESC_CharStream
        bufpos += bufsize;
   }
 
-  public ASCII_UCodeESC_CharStream(java.io.Reader dstream,
+  public ASCII_UCodeESC_CharStream(BufferedReader dstream,
                  int startline, int startcolumn, int buffersize)
   {
-    if (inputStream != null)
-       throw new Error("\n   ERROR: Second call to the constructor of a static ASCII_UCodeESC_CharStream.  You must\n" +
-       "       either use ReInit() or set the JavaCC option STATIC to false\n" +
-       "       during the generation of this class.");
-    inputStream = new BufferedReader(dstream);
+    inputStream = dstream;
     line = startline;
     column = startcolumn - 1;
     off = 0;
@@ -463,12 +455,12 @@ public final class ASCII_UCodeESC_CharStream
     nextCharBuf = new char[16384];
   }
 
-  public ASCII_UCodeESC_CharStream(java.io.Reader dstream,
+  public ASCII_UCodeESC_CharStream(java.io.BufferedReader dstream,
                                         int startline, int startcolumn)
   {
      this(dstream, startline, startcolumn, 16384);
   }
-  public void ReInit(java.io.Reader dstream,
+  public void ReInit(java.io.BufferedReader dstream,
                  int startline, int startcolumn, int buffersize)
   {
     inputStream = new BufferedReader(dstream);
@@ -492,33 +484,12 @@ public final class ASCII_UCodeESC_CharStream
     nextCharInd = bufpos = -1;
   }
 
-  public void ReInit(java.io.Reader dstream,
+  public void ReInit(BufferedReader dstream,
                                         int startline, int startcolumn)
   {
      ReInit(dstream, startline, startcolumn, 16384);
   }
-  public ASCII_UCodeESC_CharStream(java.io.InputStream dstream, int startline,
-  int startcolumn, int buffersize)
-  {
-     this(new java.io.InputStreamReader(dstream), startline, startcolumn, 16384);
-  }
 
-  public ASCII_UCodeESC_CharStream(java.io.InputStream dstream, int startline,
-                                                           int startcolumn)
-  {
-     this(dstream, startline, startcolumn, 16384);
-  }
-
-  public void ReInit(java.io.InputStream dstream, int startline,
-  int startcolumn, int buffersize)
-  {
-     ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, 16384);
-  }
-  public void ReInit(java.io.InputStream dstream, int startline,
-                                                           int startcolumn)
-  {
-     ReInit(dstream, startline, startcolumn, 16384);
-  }
 
   static public final String GetImage()
   {

@@ -1234,20 +1234,7 @@ public class ScriptObject extends BasicScope
   {
     return super.elementsAt( idx1, idx2 );
   }
-  
-  private static final int FINALIZE = Symbol.getSymbol("finalize").getId();
-  
-  /*=======================================================================*/
-  /**
-   * Called when the script object is GC'd
-   */
-  protected void finalize()
-    throws PackagedScriptObjectException
-  {
-    Value fxn = getMemberImpl(FINALIZE);  // use getMemberImpl() so function doesn't have to be public
-    if( fxn != null )
-      fxn.callAsFunction(EMPTY_ARRAY);
-  }
+
 }
 
 
