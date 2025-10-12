@@ -3,7 +3,7 @@ package oscript.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Stack;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Stack;
  */
 public final class ASCII_UCodeESC_CharStream
 {  
-  public static List<String> _lines;
+  public static LinkedList<String> _lines;
     
   private static String _readLine() throws IOException {
        if (_lines != null) {
@@ -511,6 +511,55 @@ public final class ASCII_UCodeESC_CharStream
                                         int startline, int startcolumn)
   {
      ReInit(dstream, startline, startcolumn, 16384);
+  }
+
+  public void ReInit(String[] lines)
+  {
+    inputStream = new BufferedReader(new java.io.StringReader(""));
+
+    if (_lines == null) {
+      _lines = new LinkedList<String>();
+    } else {
+      _lines.clear();
+    }
+    if (lines != null) {
+      for (String lineContent : lines) {
+        _lines.add(lineContent);
+      }
+    }
+
+    line = 1;
+    column = 0;
+    off = 0;
+
+    if (buffer == null) {
+      available = bufsize = 16384;
+      buffer = new char[bufsize];
+      bufline = new int[bufsize];
+      bufcolumn = new int[bufsize];
+      bufoff = new int[bufsize];
+      nextCharBuf = new char[16384];
+      cdataStack = new Stack<String>();
+    } else {
+      available = bufsize = buffer.length;
+    }
+
+    if (cdataStack == null) {
+      cdataStack = new Stack<String>();
+    } else {
+      cdataStack.clear();
+    }
+
+    if (nextCharBuf == null || nextCharBuf.length == 0) {
+      nextCharBuf = new char[16384];
+    }
+
+    prevCharIsLF = prevCharIsCR = false;
+    tokenBegin = 0;
+    inBuf = 0;
+    maxNextCharInd = 0;
+    nextCharInd = -1;
+    bufpos = -1;
   }
   public ASCII_UCodeESC_CharStream(java.io.InputStream dstream, int startline,
   int startcolumn, int buffersize)
