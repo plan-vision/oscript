@@ -1032,30 +1032,6 @@ public abstract class Value implements MemberTable {
     return PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException( getType(), member ) );
   }
   
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it, or call {@link #_externalInit} from the
-   * {@link #readExternal} method.  This class doesn't (yet!) implement
-   * <code>Externalizable</code> because that would force all subclasses
-   * to implement it too (ie. override this methods).
-   */
-  public void readExternal( java.io.ObjectInput in )
-    throws ClassNotFoundException, java.io.IOException
-  {
-  }
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it, or call {@link #setType} from the
-   * {@link #readExternal} method.  This class doesn't (yet!) implement
-   * <code>Externalizable</code> because that would force all subclasses
-   * to implement it too (ie. override this methods).
-   */
-  public void writeExternal( java.io.ObjectOutput out )
-    throws java.io.IOException
-  {
-  }
-  
   public boolean castToBooleanSoft() throws PackagedScriptObjectException
   {
 	  return !(this.bopEquals(Value.NULL).castToBoolean()); 

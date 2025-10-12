@@ -56,21 +56,6 @@ public abstract class CompiledNodeEvaluator
    */
   private File file;
   
-//  protected CompiledNodeEvaluator() {}
-  
-//  protected final static Object _readObject( java.io.ObjectInput in )
-//    throws java.io.IOException, ClassNotFoundException
-//  {
-//    return in.readObject();
-//  }
-//  
-//  protected final static void _writeObject( java.io.ObjectOutput out, Object obj )
-//    throws java.io.IOException
-//  {
-//    out.writeObject(obj);
-//  }
-  /*=======================================================================*/
-  
   /*=======================================================================*/
   /**
    * Class Constructor.

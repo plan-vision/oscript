@@ -29,7 +29,7 @@ import oscript.exceptions.*;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public class OBoolean extends OObject implements java.io.Externalizable
+public class OBoolean extends OObject
 {
   /**
    * The type object for an instance of Boolean.
@@ -67,30 +67,8 @@ public class OBoolean extends OObject implements java.io.Externalizable
   // members:
   protected boolean booleanVal;
   
-  // Externalizable support:
   public OBoolean() {}
   
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void readExternal( java.io.ObjectInput in )
-    throws java.io.IOException
-  {
-    booleanVal = in.readBoolean();
-  }
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void writeExternal( java.io.ObjectOutput out )
-    throws java.io.IOException
-  {
-    out.writeBoolean(booleanVal);
-  }
   /*=======================================================================*/
   
   /*=======================================================================*/

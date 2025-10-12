@@ -34,7 +34,7 @@ import java.util.Hashtable;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public class OString extends OObject implements java.io.Externalizable
+public class OString extends OObject 
 {
 	
 	private static final PackagedScriptObjectException FORMAT_EXCEPTION =  PackagedScriptObjectException.makeExceptionWrapper( new ONoSuchMemberException("cannot convert to ExactNumber") );
@@ -92,27 +92,6 @@ public class OString extends OObject implements java.io.Externalizable
   
   public OString() {}
   
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void readExternal( java.io.ObjectInput in )
-    throws java.io.IOException
-  {
-    segment = new StringSegment( in.readUTF() );
-  }
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void writeExternal( java.io.ObjectOutput out )
-    throws java.io.IOException
-  {
-    out.writeUTF( segment.toString() );
-  }
   /*=======================================================================*/
   
   

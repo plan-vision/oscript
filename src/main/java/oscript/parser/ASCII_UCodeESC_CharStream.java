@@ -380,24 +380,6 @@ public final class ASCII_UCodeESC_CharStream {
         }
     }
 
-    /**
-     * @deprecated
-     * @see #getEndColumn
-     */
-
-    static public final int getColumn() {
-        return bufcolumn[bufpos];
-    }
-
-    /**
-     * @deprecated
-     * @see #getEndLine
-     */
-
-    static public final int getLine() {
-        return bufline[bufpos];
-    }
-
     static public final int getEndColumn() {
         return bufcolumn[bufpos];
     }

@@ -29,7 +29,7 @@ import oscript.util.MemberTable;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public final class OArray extends Value implements MemberTable, java.io.Externalizable {
+public final class OArray extends Value implements MemberTable {
 
     /* ======================================================================= */
     // members:

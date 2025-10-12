@@ -29,7 +29,7 @@ import oscript.exceptions.*;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public class OExactNumber extends OObject implements java.io.Externalizable
+public class OExactNumber extends OObject
 {
   /**
    * The type object for an instance of ExactNumber.
@@ -116,30 +116,8 @@ public class OExactNumber extends OObject implements java.io.Externalizable
   // members:
   private long longVal;
   
-  // Externalizable support:
   public OExactNumber() {}
   
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void readExternal( java.io.ObjectInput in )
-    throws java.io.IOException
-  {
-    longVal = in.readLong();
-  }
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void writeExternal( java.io.ObjectOutput out )
-    throws java.io.IOException
-  {
-    out.writeLong(longVal);
-  }
   /*=======================================================================*/
   
   /*=======================================================================*/

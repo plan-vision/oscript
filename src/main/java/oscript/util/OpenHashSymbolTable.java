@@ -42,7 +42,7 @@ import oscript.exceptions.*;
  * @version 1.0
  */
 public class OpenHashSymbolTable
-  implements SymbolTable, java.io.Externalizable
+  implements SymbolTable
 {
   /**
    * The loading factor, the capacity must always be size * load
@@ -375,46 +375,6 @@ public class OpenHashSymbolTable
     
     return Primes.PRIMES[idx];
   }
-  
-  /*=======================================================================*/
-  public void readExternal( java.io.ObjectInput in )
-    throws java.io.IOException
-  {
-    load = in.readFloat();
-    
-    int capacity = in.readInt();
-    
-    State state = new State(capacity);
-    for( int i=0; i<capacity; i++ )
-    {
-      state.keys[i] = in.readInt();
-      state.vals[i] = in.readInt();
-    }
-    
-    state.size = in.readInt();
-    
-    this.state = state;
-  }
-  
-  public void writeExternal( java.io.ObjectOutput out )
-    throws java.io.IOException
-  {
-    out.writeFloat(load);
-    
-    State  state = this.state;
-    int capacity = state.keys.length;
-    
-    out.writeInt(capacity);
-    
-    for( int i=0; i<capacity; i++ )
-    {
-      out.writeInt( state.keys[i] );
-      out.writeInt( state.vals[i] );
-    }
-    
-    out.writeInt(state.size);
-  }
-  /*=======================================================================*/
   
 }
 

@@ -38,9 +38,7 @@ import java.io.*;
  * @author Rob Clark (rob@ti.com)
  * @version 1.56
  */
-public class Symbol
-  extends OString
-  implements Externalizable
+public class Symbol extends OString
 {
 	//private static final VLog log = VLog.getVLog( LogModule.CORE_ALL, Symbol.class );
 
@@ -75,30 +73,6 @@ public class Symbol
   public int getId()
   {
     return id;
-  }
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void readExternal( ObjectInput in )
-    throws IOException
-  {
-    super.readExternal(in);
-    id = in.readInt();
-  }
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void writeExternal( ObjectOutput out )
-    throws IOException
-  {
-    super.writeExternal(out);
-    out.writeInt(id);
   }
   
   /* probably should have readResolve(), so symbols that are equal will

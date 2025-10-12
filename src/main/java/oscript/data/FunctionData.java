@@ -131,36 +131,9 @@ public final class FunctionData {
 		else
 			nargs = (argIds.length / 2);
 	}
-
-	/*
-	 * Externalizable Support:
-	 */
-
+	
 	public FunctionData() {
 	}
-
-	/**
-	 * Derived class that implements {@link java.io.Externalizable} must call this
-	 * if it overrides it. It should override it to save/restore it's own state.
-	 */
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-		program = (NodeEvaluator) (in.readObject());
-		sprogram = (NodeEvaluator) (in.readObject());
-		exprList = (NodeEvaluator) (in.readObject());
-		id = in.readInt();
-		argIds = new int[in.readInt()];
-		for (int i = 0; i < argIds.length; i++)
-			argIds[i] = in.readInt();
-		nargs = in.readInt();
-		varargs = in.readBoolean();
-		hasVarInScope = in.readBoolean();
-		hasFxnInScope = in.readBoolean();
-		if (in.readByte() == 1) {
-			comment = new OString();
-			comment.readExternal(in);
-		}
-	}
-
 
 	/**
 	 * Map arguments to a function into the member-table which is used for a

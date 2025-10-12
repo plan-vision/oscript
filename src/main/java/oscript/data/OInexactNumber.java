@@ -31,7 +31,7 @@ import oscript.exceptions.*;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public class OInexactNumber extends OObject implements java.io.Externalizable,OInexactInterface
+public class OInexactNumber extends OObject implements OInexactInterface
 {
   /**
    * The type object for an instance of InexactNumber.
@@ -87,31 +87,8 @@ public class OInexactNumber extends OObject implements java.io.Externalizable,OI
   // members:
   private double doubleVal;
   
-  // Externalizable support:
   public OInexactNumber() {}
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void readExternal( java.io.ObjectInput in )
-    throws java.io.IOException
-  {
-    doubleVal = in.readDouble();
-  }
-  
-  /**
-   * Derived class that implements {@link java.io.Externalizable} must
-   * call this if it overrides it.  It should override it to save/restore
-   * it's own state.
-   */
-  public void writeExternal( java.io.ObjectOutput out )
-    throws java.io.IOException
-  {
-    out.writeDouble(doubleVal);
-  }
-  /*=======================================================================*/
+ 
   
   /*=======================================================================*/
   /**
