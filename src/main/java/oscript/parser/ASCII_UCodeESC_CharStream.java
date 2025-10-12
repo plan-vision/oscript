@@ -226,7 +226,7 @@ public final class ASCII_UCodeESC_CharStream {
     static public final int BeginToken() {
         if (inBuf > 0) {
             --inBuf;
-            return buffer[tokenBegin = (bufpos == bufsize - 1) ? (bufpos = 0) : ++bufpos] & MASK;
+            return buffer[tokenBegin = (bufpos == bufsize - 1) ? (bufpos = 0) : ++bufpos];
         }
 
         tokenBegin = 0;
@@ -287,7 +287,7 @@ public final class ASCII_UCodeESC_CharStream {
     static public final int readChar() {
         if (inBuf > 0) {
             --inBuf;
-            return buffer[(bufpos == bufsize - 1) ? (bufpos = 0) : ++bufpos] & MASK;
+            return buffer[(bufpos == bufsize - 1) ? (bufpos = 0) : ++bufpos];
         }
 
         char c;
@@ -370,7 +370,7 @@ public final class ASCII_UCodeESC_CharStream {
             }
         } else {
             UpdateLineColumn(c);
-            return (c & MASK);
+            return c;
         }
     }
 
