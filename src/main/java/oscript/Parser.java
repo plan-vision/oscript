@@ -21,10 +21,6 @@
 
 package oscript;
 
-import java.io.File;
-
-import oscript.syntaxtree.Node;
-
 
 /* XXX TODO: change API to:
  *    public Node parse( AbstractFile file, Value desc );
@@ -47,15 +43,7 @@ public interface Parser
    * @return the file extension
    */
   public String getExtension();
-  
-  /**
-   * Convert a file to Node.
-   * 
-   * @param file       the file to parse
-   * @return the parsed syntaxtree
-   */
-  public Node parse( File file )
-    throws oscript.parser.ParseException, java.io.IOException;
+ 
 }
 
 

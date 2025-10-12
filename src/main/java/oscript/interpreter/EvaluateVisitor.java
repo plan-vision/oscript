@@ -82,7 +82,6 @@ public class EvaluateVisitor implements ObjectVisitor, OscriptParserConstants
    */
   private int       NodeToken_kind;
   private NodeToken NodeToken_lastToken;  // for generating error messages
-  private java.util.Vector NodeToken_lastSpecials;
   
   private int[]     Arglist_names;
   private boolean   Arglist_varargs;
@@ -201,10 +200,7 @@ public class EvaluateVisitor implements ObjectVisitor, OscriptParserConstants
     NodeToken_lastToken = n;
     
     StackFrame.currentStackFrame().setLineNumber( thisScope, n.beginLine );
-    
-    if( n.specialTokens != null )
-      NodeToken_lastSpecials = n.specialTokens;
-    
+     
     if( n.cachedValue == null )
     {
       switch(n.kind)

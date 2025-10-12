@@ -22,7 +22,6 @@
 package oscript.data;
 
 
-import java.io.*;
 import java.util.*;
 
 import oscript.syntaxtree.FunctionPrimaryPrefix;

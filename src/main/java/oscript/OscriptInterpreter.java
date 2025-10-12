@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.io.StringReader;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -41,7 +40,6 @@ import oscript.syntaxtree.Node;
 import oscript.syntaxtree.Program;
 import oscript.syntaxtree.ProgramFile;
 import oscript.util.StackFrame;
-
 
 
 /**
@@ -178,7 +176,7 @@ public class OscriptInterpreter
    * @throws ParseException if error parsing input
    * @throws IOException if something goes poorly when reading file
    */
-  public static Value eval( File file )
+  public static Value eval( MemoryFile file )
     throws ParseException, IOException
   {
     return eval( file, getGlobalScope() );
@@ -195,7 +193,7 @@ public class OscriptInterpreter
    * @throws ParseException if error parsing input
    * @throws IOException if something goes poorly when reading file
    */
-  public static Value eval( File file, Scope scope )
+  public static Value eval( MemoryFile file, Scope scope )
     throws ParseException, IOException
   {
       return (Value)(StackFrame.currentStackFrame().evalNode( getNodeEvaluator(file), scope ));
@@ -263,29 +261,17 @@ public class OscriptInterpreter
   /*=======================================================================*/
   /*=======================================================================*/
   /*=======================================================================*/
-  
-  /**
-   * Parse the input stream to a syntaxtree.
-   * 
-   * @param file         the file to parse
-   * @return the parsed syntaxtree
-   */
-  public static Node parse( File file )
-    throws ParseException, IOException
-  {
-	  return parser.parse(file);
-  }
-  
+
   /**
    * Get node-evaluator via cache.  If not in cache, and not loadable into
    * cache from cache-fs, then actually parse and create new node-evaluator.
    * If exists in cache, but <code>file</code> has been more recently modified,
    * the re-parse and create new node-evaluator.
    */
-  public static NodeEvaluator getNodeEvaluator( File file )
+  public static NodeEvaluator getNodeEvaluator( MemoryFile file )
     throws ParseException, IOException
   {
-	  return createNodeEvaluator( file instanceof MemoryFile ? file.getName() : file.getPath().intern(), parse(file) );
+	  return createNodeEvaluator( file.getName(), parse(file.getContent()) );
   }
   
  
@@ -299,30 +285,9 @@ public class OscriptInterpreter
    * @param str          the string to parse
    * @return the parsed syntaxtree
    */
-  public static Node parse( String str )
-    throws ParseException
-  {
-    try
-    {
-  	  return DefaultParser.parse(new StringReader(str));
-    }
-    catch(IOException e)
-    {
-      throw new ProgrammingErrorException("shouldn't get here!");
-    }
+  public static Node parse( String str ) throws ParseException {
+      return DefaultParser.parse(str.split("\\n")); // without IO Streams 
   }
-  
-  public static Node parse( String[] str ) throws ParseException
-  {
-        return DefaultParser.parse(str);
-  }
-  /*=======================================================================*/
-  /*=======================================================================*/
-  /*=======================================================================*/
-  
-  /* I should add some mechanism to add/remove NodeEvaluatorFactory?
-   */
-  
   /*=======================================================================*/
   /**
    * Create a NodeEvaluator to evaluate a node.  An application embedding
