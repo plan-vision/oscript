@@ -21,8 +21,6 @@
 
 package oscript;
 
-import java.io.File;
-
 import oscript.syntaxtree.Node;
 
 
@@ -54,7 +52,7 @@ public interface Parser
    * @param file       the file to parse
    * @return the parsed syntaxtree
    */
-  public Node parse( File file )
+  public Node parse( MemoryFile file )
     throws oscript.parser.ParseException, java.io.IOException;
 }
 

@@ -178,7 +178,7 @@ public class OscriptInterpreter
    * @throws ParseException if error parsing input
    * @throws IOException if something goes poorly when reading file
    */
-  public static Value eval( File file )
+  public static Value eval( MemoryFile file )
     throws ParseException, IOException
   {
     return eval( file, getGlobalScope() );
@@ -195,7 +195,7 @@ public class OscriptInterpreter
    * @throws ParseException if error parsing input
    * @throws IOException if something goes poorly when reading file
    */
-  public static Value eval( File file, Scope scope )
+  public static Value eval( MemoryFile file, Scope scope )
     throws ParseException, IOException
   {
       return (Value)(StackFrame.currentStackFrame().evalNode( getNodeEvaluator(file), scope ));
@@ -270,7 +270,7 @@ public class OscriptInterpreter
    * @param file         the file to parse
    * @return the parsed syntaxtree
    */
-  public static Node parse( File file )
+  public static Node parse( MemoryFile file )
     throws ParseException, IOException
   {
 	  return parser.parse(file);
@@ -282,10 +282,10 @@ public class OscriptInterpreter
    * If exists in cache, but <code>file</code> has been more recently modified,
    * the re-parse and create new node-evaluator.
    */
-  public static NodeEvaluator getNodeEvaluator( File file )
+  public static NodeEvaluator getNodeEvaluator( MemoryFile file )
     throws ParseException, IOException
   {
-	  return createNodeEvaluator( file instanceof MemoryFile ? file.getName() : file.getPath().intern(), parse(file) );
+	  return createNodeEvaluator( file.getName(), parse(file) );
   }
   
  
@@ -299,17 +299,9 @@ public class OscriptInterpreter
    * @param str          the string to parse
    * @return the parsed syntaxtree
    */
-  public static Node parse( String str )
-    throws ParseException
+  public static Node parse( String str ) throws ParseException
   {
-    try
-    {
-  	  return DefaultParser.parse(new StringReader(str));
-    }
-    catch(IOException e)
-    {
-      throw new ProgrammingErrorException("shouldn't get here!");
-    }
+  	  return DefaultParser.parse(str);
   }
   
   public static Node parse( String[] str ) throws ParseException

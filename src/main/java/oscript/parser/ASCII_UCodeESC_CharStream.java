@@ -126,16 +126,20 @@ public final class ASCII_UCodeESC_CharStream {
 
                 bufpos += (bufsize - tokenBegin);
             } else {
-                System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
+                if (bufsize>tokenBegin)
+                    System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
                 buffer = newbuffer;
 
-                System.arraycopy(bufline, tokenBegin, newbufline, 0, bufsize - tokenBegin);
+                if (bufsize>tokenBegin)
+                    System.arraycopy(bufline, tokenBegin, newbufline, 0, bufsize - tokenBegin);
                 bufline = newbufline;
 
-                System.arraycopy(bufcolumn, tokenBegin, newbufcolumn, 0, bufsize - tokenBegin);
+                if (bufsize>tokenBegin)
+                    System.arraycopy(bufcolumn, tokenBegin, newbufcolumn, 0, bufsize - tokenBegin);
                 bufcolumn = newbufcolumn;
 
-                System.arraycopy(bufoff, tokenBegin, newbufoff, 0, bufsize - tokenBegin);
+                if (bufsize>tokenBegin)
+                    System.arraycopy(bufoff, tokenBegin, newbufoff, 0, bufsize - tokenBegin);
                 bufoff = newbufoff;
 
                 bufpos -= tokenBegin;
@@ -186,8 +190,7 @@ public final class ASCII_UCodeESC_CharStream {
 
     static private final void FillBuff() throws java.io.IOException {
         try {
-            if (_lines == null && !inputStream.ready()) {
-                inputStream.close();
+            if (_lines == null ) {
                 throw new java.io.IOException();
             }
             String line;
@@ -199,15 +202,12 @@ public final class ASCII_UCodeESC_CharStream {
                 if (buf.length() >= 16384)
                     break;
             }
-            if (buf.length() > nextCharBuf.length) {
+            if (nextCharBuf == null || buf.length() > nextCharBuf.length) {
                 nextCharBuf = new char[buf.length()];
             }
             buf.getChars(0, buf.length(), nextCharBuf, 0);
             maxNextCharInd = buf.length();
             nextCharInd = 0;
-            if (line == null) {
-                inputStream.close();
-            }
             return;
         } catch (java.io.IOException e) {
             if (bufpos != 0) {
@@ -411,69 +411,6 @@ public final class ASCII_UCodeESC_CharStream {
             bufpos += bufsize;
     }
 
-    public ASCII_UCodeESC_CharStream(java.io.Reader dstream, int startline, int startcolumn, int buffersize) {
-        if (inputStream != null)
-            throw new Error(
-                    "\n   ERROR: Second call to the constructor of a static ASCII_UCodeESC_CharStream.  You must\n"
-                            + "       either use ReInit() or set the JavaCC option STATIC to false\n"
-                            + "       during the generation of this class.");
-        inputStream = new BufferedReader(dstream);
-        line = startline;
-        column = startcolumn - 1;
-        off = 0;
-
-        available = bufsize = buffersize;
-        buffer = new char[buffersize];
-        bufline = new int[buffersize];
-        bufcolumn = new int[buffersize];
-        bufoff = new int[buffersize];
-        nextCharBuf = new char[16384];
-    }
-
-    public ASCII_UCodeESC_CharStream(java.io.Reader dstream, int startline, int startcolumn) {
-        this(dstream, startline, startcolumn, 16384);
-    }
-
-    public void ReInit(java.io.Reader dstream, int startline, int startcolumn, int buffersize) {
-        inputStream = new BufferedReader(dstream);
-        line = startline;
-        column = startcolumn - 1;
-        off = 0;
-
-        if (buffer == null || buffersize != buffer.length) {
-            available = bufsize = buffersize;
-            buffer = new char[buffersize];
-            bufline = new int[buffersize];
-            bufcolumn = new int[buffersize];
-            bufoff = new int[buffersize];
-            nextCharBuf = new char[16384];
-            cdataStack = new Stack<String>();
-        }
-        cdataStack.clear();
-        prevCharIsLF = prevCharIsCR = false;
-        tokenBegin = inBuf = maxNextCharInd = 0;
-        nextCharInd = bufpos = -1;
-    }
-
-    public void ReInit(java.io.Reader dstream, int startline, int startcolumn) {
-        ReInit(dstream, startline, startcolumn, 16384);
-    }
-
-    public ASCII_UCodeESC_CharStream(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
-        this(new java.io.InputStreamReader(dstream), startline, startcolumn, 16384);
-    }
-
-    public ASCII_UCodeESC_CharStream(java.io.InputStream dstream, int startline, int startcolumn) {
-        this(dstream, startline, startcolumn, 16384);
-    }
-
-    public void ReInit(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
-        ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, 16384);
-    }
-
-    public void ReInit(java.io.InputStream dstream, int startline, int startcolumn) {
-        ReInit(dstream, startline, startcolumn, 16384);
-    }
 
     static public final String GetImage() {
         if (bufpos >= tokenBegin)
