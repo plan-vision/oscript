@@ -297,7 +297,13 @@ public final class ASCII_UCodeESC_CharStream {
 
         int byteRead = ReadByte();
         if (byteRead == -1) {
-            --bufpos;
+            if (bufpos != 0) {
+                --bufpos;
+            } else {
+                bufline[bufpos] = line;
+                bufcolumn[bufpos] = column;
+                bufoff[bufpos] = off;
+            }
             return -1;
         }
 
