@@ -2121,7 +2121,7 @@ public static final Token getNextToken()
         ASCII_UCodeESC_CharStream.backup(1);
         error_after = curPos <= 1 ? "" : ASCII_UCodeESC_CharStream.GetImage();
      }
-     throw new TokenMgrError(EOFSeen, curLexState, error_line, error_column, error_after, curChar, TokenMgrError.LEXICAL_ERROR);
+     throw new TokenMgrError(EOFSeen, curLexState, error_line, error_column, error_after, (char)curChar, TokenMgrError.LEXICAL_ERROR);
    }
   }
 }
