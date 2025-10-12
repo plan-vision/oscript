@@ -14,8 +14,8 @@ public final class ASCII_UCodeESC_CharStream {
     private static String _readLine() {
         if (_lines == null)
             return null;
-                
-         if (_lines.isEmpty()) {
+
+        if (_lines.isEmpty()) {
             _lines = null;
             return null;
         }
@@ -25,7 +25,7 @@ public final class ASCII_UCodeESC_CharStream {
     private static final int MASK = 0xFFFF;
     public static final boolean staticFlag = true;
 
-    static final int hexval(char c)  {
+    static final int hexval(char c) {
         switch (c) {
         case '0':
             return 0;
@@ -144,28 +144,27 @@ public final class ASCII_UCodeESC_CharStream {
 
         available = (bufsize += 2048);
         tokenBegin = 0;
-  }
+    }
 
-  static private final boolean FillBuff() 
-  {  
-	 if (_lines == null)
-        return false;
-	 String line;
-	 StringBuffer buf = new StringBuffer();
-	 while( (line = _readLine()) != null ) {
-	     buf.append(line);
-		 buf.append("\n");
-		 if (buf.length() >= 16384)
-			 break;
-	 }
-	 if (nextCharBuf == null || buf.length() > nextCharBuf.length) 
-		 nextCharBuf = new char[buf.length()];
-	 buf.getChars(0, buf.length(), nextCharBuf, 0);
-     maxNextCharInd = buf.length();
-     nextCharInd = 0;    
-     return true;
-   
-  }
+    static private final boolean FillBuff() {
+        if (_lines == null)
+            return false;
+        String line;
+        StringBuffer buf = new StringBuffer();
+        while ((line = _readLine()) != null) {
+            buf.append(line);
+            buf.append("\n");
+            if (buf.length() >= 16384)
+                break;
+        }
+        if (nextCharBuf == null || buf.length() > nextCharBuf.length)
+            nextCharBuf = new char[buf.length()];
+        buf.getChars(0, buf.length(), nextCharBuf, 0);
+        maxNextCharInd = buf.length();
+        nextCharInd = 0;
+        return true;
+
+    }
 
     static private final int ReadByte() {
         if (++nextCharInd >= maxNextCharInd)
@@ -174,7 +173,7 @@ public final class ASCII_UCodeESC_CharStream {
         return nextCharBuf[nextCharInd];
     }
 
-    static public int BeginToken()  {
+    static public int BeginToken() {
         if (inBuf > 0) {
             --inBuf;
             return buffer[tokenBegin = (bufpos == bufsize - 1) ? (bufpos = 0) : ++bufpos];
@@ -289,9 +288,9 @@ public final class ASCII_UCodeESC_CharStream {
             // do we need to update offset here?
             while (true) {
                 rb = ReadByte();
-                if (rb == -1) 
+                if (rb == -1)
                     return -1;
-                if ((c = (char) ((char) MASK & (char)rb)) == 'u') 
+                if ((c = (char) ((char) MASK & (char) rb)) == 'u')
                     ++column;
                 else
                     break;
@@ -302,12 +301,8 @@ public final class ASCII_UCodeESC_CharStream {
             int rb2 = ReadByte();
             if (rb2 == -1)
                 return -1;
-            buffer[bufpos] = c = (char) (
-                hexval(c) << 12 | 
-                hexval((char) ((char) MASK & (char)rb)) << 8 | 
-                hexval((char) ((char) MASK & (char)rb1)) << 4 | 
-                hexval((char) ((char) MASK & (char)rb2))
-            );
+            buffer[bufpos] = c = (char) (hexval(c) << 12 | hexval((char) ((char) MASK & (char) rb)) << 8
+                    | hexval((char) ((char) MASK & (char) rb1)) << 4 | hexval((char) ((char) MASK & (char) rb2)));
 
             column += 4;
             if (backSlashCnt == 1)
