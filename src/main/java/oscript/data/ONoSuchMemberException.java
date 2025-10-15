@@ -34,12 +34,12 @@ public class ONoSuchMemberException extends OException
   /**
    * The type object for an instance of <i>NoSuchMemberException</i>.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.ONoSuchMemberException");
   public final static String PARENT_TYPE_NAME = "oscript.data.OException";
   public final static String TYPE_NAME        = "NoSuchMemberException";
   public final static String[] MEMBER_NAMES   = new String[] {
                                                     };
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.ONoSuchMemberException");
+
   /*=======================================================================*/
   /**
    * Class Constructor.

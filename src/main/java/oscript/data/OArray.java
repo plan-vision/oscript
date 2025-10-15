@@ -48,12 +48,12 @@ public final class OArray extends Value implements MemberTable {
     /**
      * The type object for an instance of Array.
      */
-    public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OArray");
     public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
     public final static String TYPE_NAME = "Array";
     public final static String[] MEMBER_NAMES = new String[] { "castToString", "castToJavaObject", "length",
             "elementAt", "elementsAt", "iterator", "concat", "join", "slice", "splice", "pop", "push", "shift",
             "unshift", "reverse", "sort", "every", "some", "filter", "map", "forEach" };
+    public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OArray");
 
     /* ======================================================================= */
     /**

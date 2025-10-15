@@ -80,7 +80,6 @@ public class OscriptBuiltins
     globalScope.createMember("ExactNumber",attr).opAssign( OExactNumber.TYPE );
     globalScope.createMember("Exception",attr).opAssign( OException.TYPE );
     globalScope.createMember("NoSuchMemberException",attr).opAssign( ONoSuchMemberException.TYPE );
-    globalScope.createMember("NullReferenceException",attr).opAssign( ONullReferenceException.TYPE );
     globalScope.createMember("IllegalArgumentException",attr).opAssign( OIllegalArgumentException.TYPE );
     globalScope.createMember("UnsupportedOperationException",attr).opAssign( OUnsupportedOperationException.TYPE );
     globalScope.createMember("JavaException",attr).opAssign( OJavaException.TYPE );

@@ -33,11 +33,11 @@ public class OUnsupportedOperationException extends OException
   /**
    * The type object for an instance of <i>UnsupportedOperationException</i>.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OUnsupportedOperationException");
   public final static String PARENT_TYPE_NAME = "oscript.data.OException";
   public final static String TYPE_NAME        = "UnsupportedOperationException";
   public final static String[] MEMBER_NAMES   = new String[] {};
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OUnsupportedOperationException");
+
   /*=======================================================================*/
   /**
    * Class Constructor.

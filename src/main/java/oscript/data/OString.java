@@ -41,49 +41,49 @@ public class OString extends OObject
   /**
    * The type object for an instance of String.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OString");
   public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
   public final static String TYPE_NAME        = "String";
   public final static String[] MEMBER_NAMES   = new String[] {
-                                                      "castToBoolean",
-                                                      "castToString",
-                                                      "castToExactNumber",
-                                                      "castToInexactNumber",
-                                                      "castToJavaObject",
-                                                      "bopEquals",
-                                                      "bopEqualsR",
-                                                      "bopNotEquals",
-                                                      "bopNotEqualsR",
-                                                      "bopLessThan",
-                                                      "bopLessThanR",
-                                                      "bopGreaterThan",
-                                                      "bopGreaterThanR",
-                                                      "bopLessThanOrEquals",
-                                                      "bopLessThanOrEqualsR",
-                                                      "bopGreaterThanOrEquals",
-                                                      "bopGreaterThanOrEqualsR",
-                                                      "bopPlus",
-                                                      "bopPlusR",
-                                                      "length",
-                                                      "elementAt",
-                                                      "elementsAt",
-                                                      "match",
-                                                      "replace",
-                                                      "replaceFirst",
-                                                      "search",
-                                                      "substring",
-                                                      "intern",
-                                                      "indexOf",
-                                                      "lastIndexOf",
-                                                      "toUpperCase",
-                                                      "toLowerCase",
-                                                      "equals",
-                                                      "startsWith",
-                                                      "endsWith",
-                                                      "trim",
-                                                      "split"
-                                                    };
-  
+      "castToBoolean",
+      "castToString",
+      "castToExactNumber",
+      "castToInexactNumber",
+      "castToJavaObject",
+      "bopEquals",
+      "bopEqualsR",
+      "bopNotEquals",
+      "bopNotEqualsR",
+      "bopLessThan",
+      "bopLessThanR",
+      "bopGreaterThan",
+      "bopGreaterThanR",
+      "bopLessThanOrEquals",
+      "bopLessThanOrEqualsR",
+      "bopGreaterThanOrEquals",
+      "bopGreaterThanOrEqualsR",
+      "bopPlus",
+      "bopPlusR",
+      "length",
+      "elementAt",
+      "elementsAt",
+      "match",
+      "replace",
+      "replaceFirst",
+      "search",
+      "substring",
+      "intern",
+      "indexOf",
+      "lastIndexOf",
+      "toUpperCase",
+      "toLowerCase",
+      "equals",
+      "startsWith",
+      "endsWith",
+      "trim",
+      "split"
+  };
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OString");
+
   
   /*=======================================================================*/
   /**

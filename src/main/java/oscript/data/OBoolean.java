@@ -34,7 +34,6 @@ public class OBoolean extends OObject
   /**
    * The type object for an instance of Boolean.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OBoolean");
   public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
   public final static String TYPE_NAME        = "Boolean";
   public final static String[] MEMBER_NAMES   = new String[] {
@@ -51,7 +50,7 @@ public class OBoolean extends OObject
                                                       "bopNotEqualsR",
                                                       "uopLogicalNot"
                                                     };
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OBoolean");
   public static final OBoolean TRUE  = new OBoolean(true);
   public static final OBoolean FALSE = new OBoolean(false);
   

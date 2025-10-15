@@ -34,7 +34,6 @@ public class OExactNumber extends OObject
   /**
    * The type object for an instance of ExactNumber.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OExactNumber");
   public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
   public final static String TYPE_NAME        = "ExactNumber";
   public final static String[] MEMBER_NAMES   = new String[] {
@@ -87,7 +86,8 @@ public class OExactNumber extends OObject
                                                       "uopMinus",
                                                       "uopBitwiseNot"
                                                     };
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OExactNumber");
+
   /**
    * On the theory that many OExactNumbers or on the range 0..?? and are
    * short lived (for example, for loops, etc), a table of pre-allocated

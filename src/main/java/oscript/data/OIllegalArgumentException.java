@@ -32,11 +32,10 @@ public class OIllegalArgumentException extends OException
   /**
    * The type object for an instance of <i>IllegalArgumentException</i>.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OIllegalArgumentException");
   public final static String PARENT_TYPE_NAME = "oscript.data.OException";
   public final static String TYPE_NAME        = "IllegalArgumentException";
   public final static String[] MEMBER_NAMES   = new String[] {};
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OIllegalArgumentException");
   /*=======================================================================*/
   /**
    * Class Constructor.

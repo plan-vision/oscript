@@ -36,7 +36,6 @@ public class OInexactNumber extends OObject implements OInexactInterface
   /**
    * The type object for an instance of InexactNumber.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OInexactNumber");
   public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
   public final static String TYPE_NAME        = "InexactNumber";
   public final static String[] MEMBER_NAMES   = new String[] {
@@ -74,7 +73,8 @@ public class OInexactNumber extends OObject implements OInexactInterface
                                                       "uopPlus",
                                                       "uopMinus",
                                                     };
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OInexactNumber");
+
   /*=======================================================================*/
   /**
    */

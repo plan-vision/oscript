@@ -41,7 +41,6 @@ public class OException extends OObject
   /**
    * The type object for an instance of Exception.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OException");
   public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
   public final static String TYPE_NAME        = "Exception";
   public final static String[] MEMBER_NAMES   = new String[] {
@@ -49,8 +48,8 @@ public class OException extends OObject
                                                       "stackFrameIterator",
                                                       "getMessage"
                                                     };
-  
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OException");
+
   /**
    * The type of the exception object
    */

@@ -49,20 +49,10 @@ public abstract class Value implements MemberTable {
    * The type object for an instance of Value... value can't really be
    * instantiated, but this is needed internally.
    */
-  public final static BuiltinType TYPE = BuiltinType.makeBuiltinType("oscript.data.Value");
   public final static String PARENT_TYPE_NAME = null;
   public final static String TYPE_NAME        = "Value";
-  public final static String[] MEMBER_NAMES   = new String[] {
-//                        "unhand",
-//                        "getType",
-//                        "castToJavaObject",
-//                        "castToString",
-//                        "bopInstanceOf",
-//                        "bopInstanceOfR",
-//                        "bopEquals",
-//                        "bopNotEquals",
-                     };
-  
+  public final static String[] MEMBER_NAMES   = new String[] {};
+  public final static BuiltinType TYPE = BuiltinType.makeBuiltinType("oscript.data.Value");
   /*=======================================================================*/
   /**
    * Class Constructor.

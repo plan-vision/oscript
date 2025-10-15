@@ -53,40 +53,10 @@ public class ScriptObject extends BasicScope
    * The type object for an instance of ScriptObject... which can't really be
    * instantiated, but this is needed internally.
    */
-  public final static BuiltinType TYPE = BuiltinType.makeBuiltinType("oscript.data.ScriptObject");
   public final static String PARENT_TYPE_NAME = null;
   public final static String TYPE_NAME        = "ScriptObject";
-  public final static String[] MEMBER_NAMES   = new String[] {
-//                        "_unhand",
-//                        "_getType",
-//                        "_castToJavaObject",
-//                        "_castToString",
-//                        "_bopInstanceOf",
-//                        "_bopInstanceOfR",
-//                        "_bopEquals",
-//                        "_bopNotEquals",
-                     };
-  
-  /* What about members like "getType"?  Right now, we don't overload
-   * so it would be weird if script type overloaded that member.  We
-   * can't do it with the getMember("getType").callAsFunction(...)
-   * approach, because the getType method of OObject is not what we
-   * want...
-   * 
-   * For pretty much everything, if we catch an exception we call
-   * super.whateverMethod(with,args)... this is sorta like multiple
-   * inheritance for objects that subclass java types, but is needed
-   * to ensure that all objects in the system have the methods that
-   * are implemented in Value... the counterpart to this for objects
-   * that are instances of java types is in JavaClassWrapper, where
-   * it calls Value.TYPE.getTypeMemberImpl()...
-   * 
-   * what we should really do is make the getMember() call not throw
-   * an exception, but use the method from Value... hmmm... but when
-   * I was doing that I was getting an "object not instance of
-   * delaring class" type error from JavaMethodWrapper...
-   */
-  
+  public final static String[] MEMBER_NAMES   = new String[] {};
+  public final static BuiltinType TYPE = BuiltinType.makeBuiltinType("oscript.data.ScriptObject");
   /*=======================================================================*/
   /**
    * Class Constructor.  Construct a element in the scope chain.  This

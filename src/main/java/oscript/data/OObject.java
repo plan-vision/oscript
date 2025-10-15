@@ -40,7 +40,6 @@ public class OObject extends Value
   /**
    * The type object for an instance of Object.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OObject");
   public final static String PARENT_TYPE_NAME = null;
   public final static String TYPE_NAME        = "Object";
   public final static String[] MEMBER_NAMES   = new String[] {
@@ -62,6 +61,8 @@ public class OObject extends Value
                                                       "wait",
                                                       "getMember"
                                                     };
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OObject");
+  
   /*=======================================================================*/
   /**
    * Class Constructor.

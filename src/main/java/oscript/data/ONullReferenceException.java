@@ -33,11 +33,11 @@ public class ONullReferenceException extends OException
   /**
    * The type object for an instance of <i>NullReferenceException</i>.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.ONullReferenceException");
   public final static String PARENT_TYPE_NAME = "oscript.data.OException";
   public final static String TYPE_NAME        = "NullReferenceException";
   public final static String[] MEMBER_NAMES   = new String[] {};
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.ONullReferenceException");
+
   /*=======================================================================*/
   /**
    * Class Constructor.

@@ -45,7 +45,6 @@ public class Function extends Type
   /**
    * The type object for an script function.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.Function");
   public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
   public final static String TYPE_NAME        = "Function";
   public final static String[] MEMBER_NAMES   = new String[] {
@@ -60,6 +59,7 @@ public class Function extends Type
     "callAsConstructor",
     "callAsExtends"
   };
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.Function");
   
   /**
    * The scope this function is defined in.  This does not change throughout

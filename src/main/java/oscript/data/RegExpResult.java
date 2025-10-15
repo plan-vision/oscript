@@ -60,7 +60,6 @@ import oscript.exceptions.*;
  */
 public abstract class RegExpResult extends OObject
 {
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.RegExpResult");
   public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
   public final static String TYPE_NAME        = "RegExpResult";
   public final static String[] MEMBER_NAMES   = new String[] {
@@ -79,7 +78,8 @@ public abstract class RegExpResult extends OObject
                                                       "input"
                                                       // XXX
                                                     };
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.RegExpResult");
+
   /**
    * The input string, whose match results are contained in this object
    */

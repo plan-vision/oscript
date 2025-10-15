@@ -37,11 +37,11 @@ public class OJavaException extends OException
   /**
    * The type object for an instance of <i>JavaException</i>.
    */
-  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OJavaException");
   public final static String PARENT_TYPE_NAME = "oscript.data.OException";
   public final static String TYPE_NAME        = "JavaException";
   public final static String[] MEMBER_NAMES   = new String[] { "getJavaException" };
-  
+  public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.OJavaException");
+
   // XXX should this be in PackagedScriptObjectException???
   public static final RuntimeException convertException( Throwable t )
   {

@@ -31,16 +31,6 @@ import oscript.exceptions.*;
  */
 public abstract class RegExp extends OObject
 {
-  /**
-   * The type object for an instance of RegExp... implementing class should
-   * use these values in the class used to construct the {@link BuiltinType}:
-   * <pre>
-   *   public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.???RegExp");
-   *   public final static String PARENT_TYPE_NAME = RegExp.PARENT_TYPE_NAME;
-   *   public final static String TYPE_NAME        = RegExp.TYPE_NAME;
-   *   public final static String[] MEMBER_NAMES   = RegExp.MEMBER_NAMES;
-   * </pre>
-   */
   public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
   public final static String TYPE_NAME        = "RegExp";
   public final static String[] MEMBER_NAMES   = new String[] {

@@ -39,10 +39,10 @@ public class JavaMethodWrapper extends Value implements Runnable {
     /**
      * The type object for an script java method.
      */
-    public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.JavaMethodWrapper");
     public final static String PARENT_TYPE_NAME = "oscript.data.OObject";
     public final static String TYPE_NAME = "JavaMethod";
     public final static String[] MEMBER_NAMES = new String[] { "castToString", "callAsFunction" };
+    public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.JavaMethodWrapper");
 
     /* ======================================================================= */
     /**
