@@ -102,15 +102,11 @@ public class JavaClassWrapper extends Type {
 	public synchronized void init() {
 		if (impl == null) {
 			String name = javaClass.getName();
-
-			System.err.println(">>> JavaClassWrapper ::: " + name);
-
 			if (name != null) // TeaVM target may be null ? TODO ?
 				this.id = Symbol.getSymbol(name).getId();
 			impl = new JavaClassWrapperImpl(javaClass);
 		}
 	}
-
 	/* ======================================================================= */
 	/**
 	 * Get the type of this object. The returned type doesn't have to take into
