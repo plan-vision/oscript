@@ -41,7 +41,6 @@ import oscript.data.ONullReferenceException;
 import oscript.data.OObject;
 import oscript.data.OString;
 import oscript.data.OUnsupportedOperationException;
-import oscript.data.Proxy;
 import oscript.data.Reference;
 import oscript.data.Scope;
 import oscript.data.Value;
@@ -91,7 +90,6 @@ public class OscriptBuiltins
     globalScope.createMember("Function",attr).opAssign( Function.TYPE );
     globalScope.createMember("JavaClass",attr).opAssign( JavaClassWrapper.TYPE );
     globalScope.createMember("JavaMethod",attr).opAssign( JavaMethodWrapper.TYPE );
-    globalScope.createMember("Proxy",attr).opAssign( Proxy.TYPE );
     OscriptHost.me.onInit();
   }
   

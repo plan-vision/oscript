@@ -23,7 +23,6 @@ package oscript.data;
 
 
 import java.util.Hashtable;
-import java.io.*;
 
 
 /**

@@ -20,8 +20,6 @@
 
 package oscript.data;
 
-import java.io.*;
-
 import oscript.util.StackFrame;
 import oscript.util.MemberTable;
 import oscript.exceptions.*;

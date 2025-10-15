@@ -304,8 +304,6 @@ public class BuiltinType extends JavaClassWrapper
     
     if( memberSet.get(id) != -1 )
       return super.getTypeMember( obj, id );
-    else if( obj.castToJavaObject() instanceof Proxy )
-      return ((Proxy)(obj.castToJavaObject())).getTypeMember( obj, id );
     else
       return null;
   }
