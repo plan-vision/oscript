@@ -21,16 +21,11 @@
 
 package oscript.data;
 
-
 import oscript.exceptions.*;
 import oscript.util.*;
 
 import java.util.*;
-
-
-
-
-/**
+/*
  * Base class for the script type "Exception".  This isn't a java exception,
  * but instead is wrapped in a <code>PackagedScriptObjectException</code>.
  * 
@@ -70,13 +65,13 @@ public class OException extends OObject
    * we need to take care to remember the original line number for accurate
    * back-traces.
    */
-  private int line;
+  //private int line;
   
   // called from StackFrame#evalNode
   public final void preserveStackFrame()
   {
-    if( line != sf.getLineNumber() )
-      sf.setLineNumber(line);
+    /*if( line != sf.getLineNumber() )
+      sf.setLineNumber(line);*/
     sf = sf.getSafeCopy();
   }
   
@@ -101,7 +96,7 @@ public class OException extends OObject
     this.str  = str;
     
     sf = StackFrame.currentStackFrame();
-    line = sf.getLineNumber();
+    //line = sf.getLineNumber();
   }
   
   /*=======================================================================*/
@@ -181,20 +176,4 @@ public class OException extends OObject
     return sf.iterator();
   }
 }
-
-
-
-/*
- *   Local Variables:
- *   tab-width: 2
- *   indent-tabs-mode: nil
- *   mode: java
- *   c-indentation-style: java
- *   c-basic-offset: 2
- *   eval: (c-set-offset 'substatement-open '0)
- *   eval: (c-set-offset 'case-label '+)
- *   eval: (c-set-offset 'inclass '+)
- *   eval: (c-set-offset 'inline-open '0)
- *   End:
- */
 

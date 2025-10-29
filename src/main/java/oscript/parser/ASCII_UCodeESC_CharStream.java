@@ -10,7 +10,6 @@ import java.util.Stack;
  */
 public final class ASCII_UCodeESC_CharStream {
     public static Deque<String> _lines;
-
     private static String _readLine() {
         if (_lines != null) {
             // custom reader
@@ -79,7 +78,6 @@ public final class ASCII_UCodeESC_CharStream {
     static private int bufline[];
     static private int bufcolumn[];
     static private int bufoff[];
-
     static private int off = 0;
     static private int column = 0;
     static private int line = 1;
@@ -92,61 +90,87 @@ public final class ASCII_UCodeESC_CharStream {
     static private int maxNextCharInd = 0;
     static private int nextCharInd = -1;
     static private int inBuf = 0;
+
     static final String CDATA_LEFT = "<![CDATA[";
     static final String CDATA_RIGHT = "]]>";
     static Stack<String> cdataStack = new Stack<String>();
 
+    public static void reset() {
+    	 // source-related (do NOT touch _lines; caller sets it)
+        nextCharBuf = null;
+        maxNextCharInd = 0;
+        nextCharInd = -1;     // important: so ReadByte() triggers FillBuff() on first use
+
+        // buffer / token indices
+        bufpos = -1;
+        tokenBegin = 0;
+        bufsize = 0;          // let AdjustBuffSize() -> ExpandBuff(false) allocate on demand
+        available = 0;
+        inBuf = 0;
+
+        // line/column/offset tracking
+        line = 1;
+        column = 0;
+        off = 0;
+        prevCharIsCR = false;
+        prevCharIsLF = false;
+
+        // clear CDATA processing state
+        if (cdataStack != null)
+            cdataStack.clear();
+        // allow lazy re-allocation of buffers on first AdjustBuffSize()/ExpandBuff()
+        buffer = null;
+        bufline = null;
+        bufcolumn = null;
+        bufoff = null;
+    }
+    
     static private final void ExpandBuff(boolean wrapAround) {
-        char[] newbuffer = new char[bufsize + 2048];
-        int newbufline[] = new int[bufsize + 2048];
-        int newbufcolumn[] = new int[bufsize + 2048];
-        int newbufoff[] = new int[bufsize + 2048];
+        int newSize = (bufsize == 0) ? 8192 : bufsize * 2;  // double or start at 2048
+        char[] newbuffer = new char[newSize];
+        int[] newbufline = new int[newSize];
+        int[] newbufcolumn = new int[newSize];
+        int[] newbufoff = new int[newSize];
 
         try {
             if (wrapAround) {
-                System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
-                System.arraycopy(buffer, 0, newbuffer, bufsize - tokenBegin, bufpos);
-                buffer = newbuffer;
+                int firstPart = bufsize - tokenBegin;
+                // copy from tokenBegin -> end to beginning
+                System.arraycopy(buffer, tokenBegin, newbuffer, 0, firstPart);
+                // then copy from start -> bufpos
+                System.arraycopy(buffer, 0, newbuffer, firstPart, bufpos);
 
-                System.arraycopy(bufline, tokenBegin, newbufline, 0, bufsize - tokenBegin);
-                System.arraycopy(bufline, 0, newbufline, bufsize - tokenBegin, bufpos);
-                bufline = newbufline;
+                System.arraycopy(bufline, tokenBegin, newbufline, 0, firstPart);
+                System.arraycopy(bufline, 0, newbufline, firstPart, bufpos);
 
-                System.arraycopy(bufcolumn, tokenBegin, newbufcolumn, 0, bufsize - tokenBegin);
-                System.arraycopy(bufcolumn, 0, newbufcolumn, bufsize - tokenBegin, bufpos);
-                bufcolumn = newbufcolumn;
+                System.arraycopy(bufcolumn, tokenBegin, newbufcolumn, 0, firstPart);
+                System.arraycopy(bufcolumn, 0, newbufcolumn, firstPart, bufpos);
 
-                System.arraycopy(bufoff, tokenBegin, newbufoff, 0, bufsize - tokenBegin);
-                System.arraycopy(bufoff, 0, newbufoff, bufsize - tokenBegin, bufpos);
-                bufoff = newbufoff;
+                System.arraycopy(bufoff, tokenBegin, newbufoff, 0, firstPart);
+                System.arraycopy(bufoff, 0, newbufoff, firstPart, bufpos);
 
-                bufpos += (bufsize - tokenBegin);
+                bufpos += firstPart;
             } else {
-                if (bufsize>tokenBegin)
-                    System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
-                buffer = newbuffer;
-
-                if (bufsize>tokenBegin)
-                    System.arraycopy(bufline, tokenBegin, newbufline, 0, bufsize - tokenBegin);
-                bufline = newbufline;
-
-                if (bufsize>tokenBegin)
-                    System.arraycopy(bufcolumn, tokenBegin, newbufcolumn, 0, bufsize - tokenBegin);
-                bufcolumn = newbufcolumn;
-
-                if (bufsize>tokenBegin)
-                    System.arraycopy(bufoff, tokenBegin, newbufoff, 0, bufsize - tokenBegin);
-                bufoff = newbufoff;
-
+                int lengthToCopy = bufsize - tokenBegin;
+                if (lengthToCopy > 0) {
+                    System.arraycopy(buffer, tokenBegin, newbuffer, 0, lengthToCopy);
+                    System.arraycopy(bufline, tokenBegin, newbufline, 0, lengthToCopy);
+                    System.arraycopy(bufcolumn, tokenBegin, newbufcolumn, 0, lengthToCopy);
+                    System.arraycopy(bufoff, tokenBegin, newbufoff, 0, lengthToCopy);
+                }
                 bufpos -= tokenBegin;
             }
         } catch (Throwable t) {
-            throw new Error(t.getMessage());
+            throw new Error("Buffer expansion failed: " + t.getMessage(), t);
         }
-
-        available = (bufsize += 2048);
+        buffer = newbuffer;
+        bufline = newbufline;
+        bufcolumn = newbufcolumn;
+        bufoff = newbufoff;
+        available = bufsize = newSize;
         tokenBegin = 0;
     }
+
 
     static void parseVSCLine(StringBuffer buf, String line, Stack<String> cdataStack) {
         if (line.startsWith(CDATA_LEFT)) {

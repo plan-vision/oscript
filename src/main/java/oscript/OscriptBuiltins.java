@@ -37,7 +37,6 @@ import oscript.data.OIllegalArgumentException;
 import oscript.data.OInexactNumber;
 import oscript.data.OJavaException;
 import oscript.data.ONoSuchMemberException;
-import oscript.data.ONullReferenceException;
 import oscript.data.OObject;
 import oscript.data.OString;
 import oscript.data.OUnsupportedOperationException;

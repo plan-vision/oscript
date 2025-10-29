@@ -5505,9 +5505,7 @@ public class OscriptParser implements OscriptParserConstants {
         return false;
     }
 
-    static private boolean jj_initialized_once = false;
-    static public OscriptParserTokenManager token_source;
-    static ASCII_UCodeESC_CharStream jj_input_stream;
+    //static private boolean jj_initialized_once = false;
     static public Token token, jj_nt;
     static private int jj_ntk;
     static private Token jj_scanpos, jj_lastpos;
@@ -5539,10 +5537,11 @@ public class OscriptParser implements OscriptParserConstants {
     static private int jj_gc = 0;
 
     static public void ReInit(String lines[]) {
-        OscriptParserTokenManager.ReInit(jj_input_stream);
+    	jj_gc = 0;jj_rescan = false;lookingAhead=false;jj_la=0;jj_scanpos=jj_lastpos=null;jj_nt=null;
         ASCII_UCodeESC_CharStream._lines = new LinkedList<String>();
         for (String s : lines)
             ASCII_UCodeESC_CharStream._lines.add(s);
+        ASCII_UCodeESC_CharStream.reset();
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
@@ -5552,34 +5551,6 @@ public class OscriptParser implements OscriptParserConstants {
             jj_2_rtns[i] = new JJCalls();
     }
 
-    public OscriptParser(OscriptParserTokenManager tm) {
-        if (jj_initialized_once) {
-            System.out.println("ERROR: Second call to constructor of static parser.  You must");
-            System.out.println("       either use ReInit() or set the JavaCC option STATIC to false");
-            System.out.println("       during parser generation.");
-            throw new Error();
-        }
-        jj_initialized_once = true;
-        token_source = tm;
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 60; i++)
-            jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++)
-            jj_2_rtns[i] = new JJCalls();
-    }
-
-    public void ReInit(OscriptParserTokenManager tm) {
-        token_source = tm;
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 60; i++)
-            jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++)
-            jj_2_rtns[i] = new JJCalls();
-    }
 
     static final private Token jj_consume_token(int kind) throws ParseException {
         Token oldToken;

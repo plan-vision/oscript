@@ -469,7 +469,10 @@ public class Symbols {
     public static final int CAST_TO_EXACT_NUMBER=453;
     public static final int CAST_TO_INEXACT_NUMBER=454;
 
-	public static void init() 
+    public static final int IS_SERVER_MODE_TEST=455;
+    public static final int IS_SERVER_MODE_PROD=456;
+
+    public static void init() 
 	{     
 	    Symbol.setSymbol(IS_ADMIN,"isAdmin");
 
@@ -931,7 +934,9 @@ public class Symbols {
 		Symbol.setSymbol(ENGINE,"engine");
 
 		Symbol.setSymbol(SET_STATUS,"setStatus");
-
+		
+        Symbol.setSymbol(IS_SERVER_MODE_PROD,"isServerModeProd");
+        Symbol.setSymbol(IS_SERVER_MODE_TEST,"isServerModeTest");
 	}
 }
 
