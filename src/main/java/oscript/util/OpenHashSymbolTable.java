@@ -110,8 +110,6 @@ public class OpenHashSymbolTable
       capacity = 2;
     
     state = new State(capacity);
-    
-    if(COLLECT_STATS) logIncreaseCapacity( state.keys.length );
   }
   
   /**
@@ -128,18 +126,12 @@ public class OpenHashSymbolTable
   public final int get( int id )
   {
     State state = this.state;
-    
-    if(COLLECT_STATS) logGet();
-    
+       
     int n = h1( id, state.keys.length );
     int k = 0;
-    
-    if(COLLECT_STATS) logLookup();
-    
+       
     for( int i=0; i<state.keys.length; i++ )
-    {
-      if(COLLECT_STATS) logProbe();
-      
+    {      
       if( state.keys[n] == 0 )
         return -1;
       
@@ -167,21 +159,14 @@ public class OpenHashSymbolTable
   public int create( int id )
   {
     State state = this.state;
-    
-    if(COLLECT_STATS) logCreate();
-    
     // first ensure capacity... assume we actually will be creating
     // a new entry, because that is the common case:
     if( (state.size+1) >= state.threshold )
     {
       int[] oldkeys = state.keys;
       int[] oldvals = state.vals;
-      
       // reset to new bigger size:
       State newState = new State( 2 * oldkeys.length );
-      
-      if(COLLECT_STATS) logIncreaseCapacity( state.keys.length - oldkeys.length );
-      
       for( int n=0; n<oldkeys.length; n++ )
         if( oldkeys[n] != 0 )
           putIfNotIn( newState, oldkeys[n], oldvals[n] );
@@ -197,21 +182,14 @@ public class OpenHashSymbolTable
   {
     int n = h1( id, state.keys.length );
     int k = 0;
-    
-    if(COLLECT_STATS) logPutImpl();
-    if(COLLECT_STATS) logLookup();
-    
     for( int i=0; i<state.keys.length; i++ )
-    {
-      if(COLLECT_STATS) logProbe();
-      
+    {      
       if( state.keys[n] == 0 )
       {
         // order is important here, because in the common case this will
         // not be synchronized:
         state.vals[n] = val;
         state.keys[n] = id;
-        if(COLLECT_STATS) logAdd();
         state.size++;
         return state.vals[n];
       }
@@ -233,38 +211,6 @@ public class OpenHashSymbolTable
    * should be wrapped with an if(COLLECT_STATS) so it gets compiled out for
    * a regular build.
    */
-  
-  private static final boolean COLLECT_STATS = false;
-  
-  private static final synchronized void logGet()     { numGets++; }
-  private static final synchronized void logCreate()  { numCreates++; }
-  private static final synchronized void logPutImpl() { numPutImpl++; }  // including re-hashing
-  private static final synchronized void logLookup()  { numLookups++; }
-  private static final synchronized void logProbe()   { numProbes++; }
-  private static final synchronized void logAdd()     { totalSize++; }
-  private static final synchronized void logIncreaseCapacity( int amount ) { totalCapacity += amount; }
-  
-  private static int numGets       = 0;
-  private static int numCreates    = 0;
-  private static int numPutImpl    = 0;
-  private static int numLookups    = 0;
-  private static int numProbes     = 0;
-  private static int totalSize     = 0;
-  private static int totalCapacity = 0;
-  
-  public static final synchronized String getStats()
-  {
-    return ("OpenHashSymbolTable stats\n" +
-            "------------------- -----\n" +
-            "  numGets:            " + numGets + "\n" +
-            "  numCreates:         " + numCreates + "\n" +
-            "  numPutImpl:         " + numPutImpl + " (" + (numPutImpl - numCreates) + " due to rehash)\n" +
-            "  numLookups:         " + numLookups + "\n" +
-            "  numProbes:          " + numProbes + "\n" +
-            "  avgProbesPerLookup: " + (((float)numProbes)/((float)numLookups)) + "\n" +
-            "  totalSize:          " + totalSize + "\n" +
-            "  totalCapacity:      " + totalCapacity + "\n");
-  }
   
   /**
    * The number of mappings that exist in this table.
