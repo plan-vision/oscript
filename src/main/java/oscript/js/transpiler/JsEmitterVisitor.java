@@ -110,7 +110,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         out.append("(function(oscript){");
         out.indent();
         out.line("const {");
-        out.line("  SYMB_GET, SYMB_ID, NEW_OARRAY,");
+        out.line("  SYMB_GET, SYMB_ID, NEW_ARR0, NEW_ARR,");
         out.line("  TRUE, FALSE, INVOKE, INVOKEC, POSTINC, POSTDEC, UNDEFINED, NULL,");
         out.line("  SCOPE_CM, SCOPE_L, SCOPE_THS, SCOPE_SPR, SCOPE_GCLE,");
         out.line("  VAL_OA, VAL_CB, VAL_PLS, VAL_MNS, VAL_MUL, VAL_DIV,");
@@ -700,7 +700,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         if (n.f1.present()) {
             contents = emitInitializer((FunctionCallExpressionListBody) n.f1.node);
         }
-        return contents.isEmpty() ? "NEW_OARRAY()" : "NEW_OARRAY(" + contents + ")";
+        return contents.isEmpty() ? "NEW_ARR0()" : "NEW_ARR(" + contents + ")";
     }
 
     @Override

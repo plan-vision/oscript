@@ -34,11 +34,11 @@ public final class JsOscriptEmul {
         return Symbol.getSymbol(name).getId();
     }
 
-    public OArray NEW_OARRAY0() {
+    public OArray NEW_ARR0() {
         return new OArray();
     }
 
-    public OArray NEW_OARRAY(Value[] items) {
+    public OArray NEW_ARR(Value[] items) {
         return new OArray(items);
     }
 
