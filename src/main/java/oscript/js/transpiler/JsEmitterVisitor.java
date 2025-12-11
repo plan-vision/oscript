@@ -77,28 +77,33 @@ import oscript.visitor.ObjectDepthFirst;
 
 final class JsEmitterVisitor extends ObjectDepthFirst {
 
+    private static final class ConstantPool {
+        int stringCounter;
+        int symbolCounter;
+        int exactNumberCounter;
+        int inexactNumberCounter;
+        boolean emptyArgsConstEmitted;
+        Map<String, String> stringNameMap;
+        Map<String, String> symbolNameMap;
+        Map<String, String> exactNumberNameMap;
+        Map<String, String> inexactNumberNameMap;
+    }
+
     private final JsSourceBuilder out;
     private final JsSourceBuilder constants;
+    private final ConstantPool pool;
     private int constantInsertPos;
-    private int stringCounter;
-    private int symbolCounter;
-    private int exactNumberCounter;
-    private int inexactNumberCounter;
-    private boolean emptyArgsConstEmitted;
     private final java.util.Set<String> declaredNames = new java.util.HashSet<>();
-    private Map<String, String> stringNameMap;
-    private Map<String, String> symbolNameMap;
-    private Map<String, String> exactNumberNameMap;
-    private Map<String, String> inexactNumberNameMap;
     private String lastExpression = "UNDEFINED";
 
     JsEmitterVisitor() {
-        this(new JsSourceBuilder(), new JsSourceBuilder());
+        this(new JsSourceBuilder(), new JsSourceBuilder(), new ConstantPool());
     }
 
-    private JsEmitterVisitor(JsSourceBuilder out, JsSourceBuilder constants) {
+    private JsEmitterVisitor(JsSourceBuilder out, JsSourceBuilder constants, ConstantPool pool) {
         this.out = out;
         this.constants = constants;
+        this.pool = pool;
     }
 
     JsSourceBuilder emitProgram(ProgramFile file) {
@@ -630,7 +635,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     private String emitFunctionExpression(FunctionPrimaryPrefix n) {
-        JsEmitterVisitor fn = new JsEmitterVisitor(new JsSourceBuilder(), new JsSourceBuilder());
+        JsEmitterVisitor fn = new JsEmitterVisitor(new JsSourceBuilder(), constants, pool);
         fn.declaredNames.addAll(declaredNames);
         List<String> params = collectArgNames(n.f2);
         fn.declaredNames.addAll(params);
@@ -640,10 +645,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         builder.append(String.join(", ", params));
         builder.append("){");
         builder.indent();
-        fn.constantInsertPos = builder.position();
-        fn.constants.setIndent(builder.indentLevel());
         n.f6.accept(fn, null);
-        builder.insert(fn.constantInsertPos, fn.constants.toString());
         builder.dedent();
         builder.append("}");
         return builder.toString();
@@ -861,9 +863,9 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     private String emptyArgsConst() {
-        if (!emptyArgsConstEmitted) {
+        if (!pool.emptyArgsConstEmitted) {
             constants.line("const ARR_0 = [];");
-            emptyArgsConstEmitted = true;
+            pool.emptyArgsConstEmitted = true;
         }
         return "ARR_0";
     }
@@ -871,7 +873,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     private String stringConst(String value) {
         String name = stringNames().get(value);
         if (name == null) {
-            name = "STR_" + stringCounter++;
+            name = "STR_" + pool.stringCounter++;
             stringNames().put(value, name);
             constants.line("const " + name + " = MAKE_STR('" + escape(value) + "');");
         }
@@ -881,7 +883,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     private String symbolId(String name) {
         String id = symbolNames().get(name);
         if (id == null) {
-            id = "SYMB_" + symbolCounter++;
+            id = "SYMB_" + pool.symbolCounter++;
             symbolNames().put(name, id);
             constants.line("const " + id + " = SYMB_ID('" + escape(name) + "');");
         }
@@ -891,7 +893,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     private String exactNumberConst(String value) {
         String name = exactNumberNames().get(value);
         if (name == null) {
-            name = "INT_" + exactNumberCounter++;
+            name = "INT_" + pool.exactNumberCounter++;
             exactNumberNames().put(value, name);
             constants.line("const " + name + " = MAKE_EN(" + value + ");");
         }
@@ -901,7 +903,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     private String inexactNumberConst(String value) {
         String name = inexactNumberNames().get(value);
         if (name == null) {
-            name = "FLT_" + inexactNumberCounter++;
+            name = "FLT_" + pool.inexactNumberCounter++;
             inexactNumberNames().put(value, name);
             constants.line("const " + name + " = MAKE_IEN(" + value + ");");
         }
@@ -909,31 +911,31 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     private Map<String, String> stringNames() {
-        if (stringNameMap == null) {
-            stringNameMap = new LinkedHashMap<>();
+        if (pool.stringNameMap == null) {
+            pool.stringNameMap = new LinkedHashMap<>();
         }
-        return stringNameMap;
+        return pool.stringNameMap;
     }
 
     private Map<String, String> symbolNames() {
-        if (symbolNameMap == null) {
-            symbolNameMap = new LinkedHashMap<>();
+        if (pool.symbolNameMap == null) {
+            pool.symbolNameMap = new LinkedHashMap<>();
         }
-        return symbolNameMap;
+        return pool.symbolNameMap;
     }
 
     private Map<String, String> exactNumberNames() {
-        if (exactNumberNameMap == null) {
-            exactNumberNameMap = new LinkedHashMap<>();
+        if (pool.exactNumberNameMap == null) {
+            pool.exactNumberNameMap = new LinkedHashMap<>();
         }
-        return exactNumberNameMap;
+        return pool.exactNumberNameMap;
     }
 
     private Map<String, String> inexactNumberNames() {
-        if (inexactNumberNameMap == null) {
-            inexactNumberNameMap = new LinkedHashMap<>();
+        if (pool.inexactNumberNameMap == null) {
+            pool.inexactNumberNameMap = new LinkedHashMap<>();
         }
-        return inexactNumberNameMap;
+        return pool.inexactNumberNameMap;
     }
 
     private static int getPermissions(oscript.syntaxtree.Permissions n, int attr) {
