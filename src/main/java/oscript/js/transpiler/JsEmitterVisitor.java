@@ -94,7 +94,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         out.line("const {");
         out.line("  SYMB_GET, SYMB_ID, NEW_OARRAY,");
         out.line("  TRUE, FALSE, INVOKE, INVOKEC, POSTINC, POSTDEC, UNDEFINED, NULL,");
-        out.line("  SCOPE_CM, SCOPE_L, SCOPE_getThis, SCOPE_getSuper, SCOPE_getCallee,");
+        out.line("  SCOPE_CM, SCOPE_L, SCOPE_THS, SCOPE_SPR, SCOPE_GCLE,");
         out.line("  VAL_OA, VAL_CB, VAL_PLS, VAL_MNS, VAL_MUL, VAL_DIV,");
         out.line("  VAL_bopRemainder, VAL_bopBitwiseAnd, VAL_bopBitwiseOr, VAL_bopBitwiseXor, VAL_bopLeftShift,");
         out.line("  VAL_bopSignedRightShift, VAL_bopUnsignedRightShift, VAL_EQ, VAL_NEQ, VAL_LT,");
@@ -615,17 +615,17 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
 
     @Override
     public Object visit(ThisPrimaryPrefix n, Object argu) {
-        return "SCOPE_getThis(scope)";
+        return "SCOPE_THS(scope)";
     }
 
     @Override
     public Object visit(SuperPrimaryPrefix n, Object argu) {
-        return "SCOPE_getSuper(scope)";
+        return "SCOPE_SPR(scope)";
     }
 
     @Override
     public Object visit(CalleePrimaryPrefix n, Object argu) {
-        return "SCOPE_getCallee(scope)";
+        return "SCOPE_GCLE(scope)";
     }
 
     @Override

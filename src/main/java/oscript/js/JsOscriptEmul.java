@@ -70,15 +70,15 @@ public final class JsOscriptEmul {
         return scope.lookupInScope(symbolId);
     }
 
-    public Value SCOPE_getThis(Scope scope) {
+    public Value SCOPE_THS(Scope scope) {
         return scope.getThis();
     }
 
-    public Value SCOPE_getSuper(Scope scope) {
+    public Value SCOPE_SPR(Scope scope) {
         return scope.getSuper();
     }
 
-    public Value SCOPE_getCallee(Scope scope) {
+    public Value SCOPE_GCLE(Scope scope) {
         return scope.getCallee();
     }
 
