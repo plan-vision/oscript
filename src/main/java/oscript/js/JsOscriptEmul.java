@@ -1,6 +1,10 @@
 package oscript.js;
 
 import oscript.data.OArray;
+import oscript.data.OBoolean;
+import oscript.data.OExactNumber;
+import oscript.data.OInexactNumber;
+import oscript.data.OString;
 import oscript.data.Scope;
 import oscript.data.Symbol;
 import oscript.data.Value;
@@ -14,231 +18,196 @@ public final class JsOscriptEmul {
 
     public static final JsOscriptEmul me = new JsOscriptEmul();
 
-    public final Value TRUE = null;
-    public final Value FALSE = null;
-    public final Value UNDEFINED = null;
-    public final Value NULL = null;
+    public final Value TRUE = OBoolean.TRUE;
+    public final Value FALSE = OBoolean.FALSE;
+    public final Value UNDEFINED = Value.UNDEFINED;
+    public final Value NULL = Value.NULL;
 
     private JsOscriptEmul() {
     }
 
     public Symbol SYMB_GET(int id) {
-        // TODO implement symbol lookup
-        return null;
+        return Symbol.getSymbol(id);
     }
 
     public int SYMB_ID(String name) {
-        // TODO implement symbol creation
-        return 0;
+        return Symbol.getSymbol(name).getId();
     }
 
-    public OArray NEW_OARRAY(Value... items) {
-        // TODO implement array creation
-        return null;
+    public OArray NEW_OARRAY0() {
+        return new OArray();
+    }
+
+    public OArray NEW_OARRAY(Value[] items) {
+        return new OArray(items);
     }
 
     public Value INVOKE(Value callee, Value[] args) {
-        // TODO implement function invocation
-        return null;
+        return callee.callAsFunction(args);
     }
 
     public Value INVOKEC(Value callee, Value[] args) {
-        // TODO implement constructor invocation
-        return null;
+        return callee.callAsConstructor(args);
     }
 
     public Value POSTINC(Value value) {
-        // TODO implement post increment
-        return null;
+        Value original = value.unhand();
+        value.opAssign(value.uopIncrement());
+        return original;
     }
 
     public Value POSTDEC(Value value) {
-        // TODO implement post decrement
-        return null;
+        Value original = value.unhand();
+        value.opAssign(value.uopDecrement());
+        return original;
     }
 
     public Value SCOPE_createMember(Scope scope, int symbolId, int permissions) {
-        // TODO implement member creation
-        return null;
+        return scope.createMember(symbolId, permissions);
     }
 
     public Value SCOPE_lookupInScope(Scope scope, int symbolId) {
-        // TODO implement scope lookup
-        return null;
+        return scope.lookupInScope(symbolId);
     }
 
     public Value SCOPE_getThis(Scope scope) {
-        // TODO return "this" for the given scope
-        return null;
+        return scope.getThis();
     }
 
     public Value SCOPE_getSuper(Scope scope) {
-        // TODO return "super" for the given scope
-        return null;
+        return scope.getSuper();
     }
 
     public Value SCOPE_getCallee(Scope scope) {
-        // TODO return callee for the given scope
-        return null;
+        return scope.getCallee();
     }
 
     public Value VAL_opAssign(Value target, Value value) {
-        // TODO implement assignment
-        return null;
+        target.opAssign(value);
+        return value;
     }
 
     public Value VAL_castToBooleanSoft(Value value) {
-        // TODO implement boolean casting
-        return null;
+        return OBoolean.makeBoolean(value.castToBooleanSoft());
     }
 
     public Value VAL_bopPlus(Value left, Value right) {
-        // TODO implement addition
-        return null;
+        return left.bopPlus(right);
     }
 
     public Value VAL_bopMinus(Value left, Value right) {
-        // TODO implement subtraction
-        return null;
+        return left.bopMinus(right);
     }
 
     public Value VAL_bopMultiply(Value left, Value right) {
-        // TODO implement multiplication
-        return null;
+        return left.bopMultiply(right);
     }
 
     public Value VAL_bopDivide(Value left, Value right) {
-        // TODO implement division
-        return null;
+        return left.bopDivide(right);
     }
 
     public Value VAL_bopRemainder(Value left, Value right) {
-        // TODO implement remainder
-        return null;
+        return left.bopRemainder(right);
     }
 
     public Value VAL_bopBitwiseAnd(Value left, Value right) {
-        // TODO implement bitwise and
-        return null;
+        return left.bopBitwiseAnd(right);
     }
 
     public Value VAL_bopBitwiseOr(Value left, Value right) {
-        // TODO implement bitwise or
-        return null;
+        return left.bopBitwiseOr(right);
     }
 
     public Value VAL_bopBitwiseXor(Value left, Value right) {
-        // TODO implement bitwise xor
-        return null;
+        return left.bopBitwiseXor(right);
     }
 
     public Value VAL_bopLeftShift(Value left, Value right) {
-        // TODO implement left shift
-        return null;
+        return left.bopLeftShift(right);
     }
 
     public Value VAL_bopSignedRightShift(Value left, Value right) {
-        // TODO implement signed right shift
-        return null;
+        return left.bopSignedRightShift(right);
     }
 
     public Value VAL_bopUnsignedRightShift(Value left, Value right) {
-        // TODO implement unsigned right shift
-        return null;
+        return left.bopUnsignedRightShift(right);
     }
 
     public Value VAL_bopEquals(Value left, Value right) {
-        // TODO implement equality
-        return null;
+        return left.bopEquals(right);
     }
 
     public Value VAL_bopNotEquals(Value left, Value right) {
-        // TODO implement inequality
-        return null;
+        return left.bopNotEquals(right);
     }
 
     public Value VAL_bopLessThan(Value left, Value right) {
-        // TODO implement less-than
-        return null;
+        return left.bopLessThan(right);
     }
 
     public Value VAL_bopGreaterThan(Value left, Value right) {
-        // TODO implement greater-than
-        return null;
+        return left.bopGreaterThan(right);
     }
 
     public Value VAL_bopGreaterThanOrEquals(Value left, Value right) {
-        // TODO implement greater-than-or-equals
-        return null;
+        return left.bopGreaterThanOrEquals(right);
     }
 
     public Value VAL_bopLessThanOrEquals(Value left, Value right) {
-        // TODO implement less-than-or-equals
-        return null;
+        return left.bopLessThanOrEquals(right);
     }
 
     public Value VAL_bopInstanceOf(Value left, Value right) {
-        // TODO implement instanceof
-        return null;
+        return left.bopInstanceOf(right);
     }
 
     public Value VAL_bopCast(Value left, Value right) {
-        // TODO implement cast
-        return null;
+        return left.bopCast(right);
     }
 
     public Value VAL_uopIncrement(Value value) {
-        // TODO implement increment
-        return null;
+        return value.uopIncrement();
     }
 
     public Value VAL_uopDecrement(Value value) {
-        // TODO implement decrement
-        return null;
+        return value.uopDecrement();
     }
 
     public Value VAL_uopPlus(Value value) {
-        // TODO implement unary plus
-        return null;
+        return value.uopPlus();
     }
 
     public Value VAL_uopMinus(Value value) {
-        // TODO implement unary minus
-        return null;
+        return value.uopMinus();
     }
 
     public Value VAL_uopBitwiseNot(Value value) {
-        // TODO implement bitwise not
-        return null;
+        return value.uopBitwiseNot();
     }
 
     public Value VAL_uopLogicalNot(Value value) {
-        // TODO implement logical not
-        return null;
+        return value.uopLogicalNot();
     }
 
     public Value VAL_getMember(Value target, int symbol) {
-        // TODO implement member access
-        return null;
+        return target.getMember(symbol);
     }
 
     public Value VAL_elementAt(Value target, Value index) {
-        // TODO implement array access
-        return null;
+        return target.elementAt(index);
     }
 
     public Value MAKE_string(String value) {
-        // TODO implement string creation
-        return null;
+        return OString.makeString(value);
     }
 
-    public Value MAKE_exactNumber(String value) {
-        // TODO implement exact number creation
-        return null;
+    public Value MAKE_exactNumber(Number value) {
+        return OExactNumber.makeExactNumber(value.longValue());
     }
 
-    public Value MAKE_inexactNumber(String value) {
-        // TODO implement inexact number creation
-        return null;
+    public Value MAKE_inexactNumber(Number value) {
+        return OInexactNumber.makeInexactNumber(value.doubleValue());
     }
 }
