@@ -622,6 +622,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
 
     private String emitFunctionExpression(FunctionPrimaryPrefix n) {
         JsEmitterVisitor fn = new JsEmitterVisitor(new JsSourceBuilder(), new JsSourceBuilder());
+        fn.declaredNames.addAll(declaredNames);
         List<String> params = collectArgNames(n.f2);
         fn.declaredNames.addAll(params);
 
@@ -630,12 +631,10 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         builder.append(String.join(", ", params));
         builder.append("){");
         builder.indent();
-        builder.line("let _r = UNDEFINED;");
         fn.constantInsertPos = builder.position();
         fn.constants.setIndent(builder.indentLevel());
         n.f6.accept(fn, null);
         builder.insert(fn.constantInsertPos, fn.constants.toString());
-        builder.line("return _r;");
         builder.dedent();
         builder.append("}");
         return builder.toString();
