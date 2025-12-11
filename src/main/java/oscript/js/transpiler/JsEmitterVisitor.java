@@ -1,23 +1,41 @@
 package oscript.js.transpiler;
 
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import oscript.data.Reference;
 import oscript.syntaxtree.AdditiveExpression;
 import oscript.syntaxtree.AssignmentExpression;
+import oscript.syntaxtree.BreakStatement;
+import oscript.syntaxtree.CollectionForLoopStatement;
 import oscript.syntaxtree.ConditionalExpression;
 import oscript.syntaxtree.ConditionalStatement;
+import oscript.syntaxtree.ContinueStatement;
+import oscript.syntaxtree.BitwiseAndExpression;
+import oscript.syntaxtree.BitwiseOrExpression;
+import oscript.syntaxtree.BitwiseXorExpression;
+import oscript.syntaxtree.CastExpression;
 import oscript.syntaxtree.EvaluationUnit;
 import oscript.syntaxtree.Expression;
 import oscript.syntaxtree.ExpressionBlock;
-import oscript.syntaxtree.FunctionCallExpressionListBody;
+import oscript.syntaxtree.ForLoopStatement;
+import oscript.syntaxtree.RelationalExpression;
 import oscript.syntaxtree.FunctionCallExpressionList;
+import oscript.syntaxtree.FunctionCallExpressionListBody;
 import oscript.syntaxtree.FunctionCallPrimaryPostfix;
+import oscript.syntaxtree.FunctionDeclaration;
 import oscript.syntaxtree.IdentifierPrimaryPrefix;
 import oscript.syntaxtree.Literal;
 import oscript.syntaxtree.LogicalAndExpression;
 import oscript.syntaxtree.LogicalOrExpression;
+import oscript.syntaxtree.EqualityExpression;
 import oscript.syntaxtree.MultiplicativeExpression;
+import oscript.syntaxtree.ParenPrimaryPrefix;
+import oscript.syntaxtree.ThisPrimaryPrefix;
+import oscript.syntaxtree.SuperPrimaryPrefix;
+import oscript.syntaxtree.CalleePrimaryPrefix;
+import oscript.syntaxtree.ArrayDeclarationPrimaryPrefix;
 import oscript.syntaxtree.Node;
 import oscript.syntaxtree.NodeChoice;
 import oscript.syntaxtree.NodeList;
@@ -26,8 +44,10 @@ import oscript.syntaxtree.NodeListOptional;
 import oscript.syntaxtree.NodeOptional;
 import oscript.syntaxtree.NodeSequence;
 import oscript.syntaxtree.NodeToken;
+import oscript.syntaxtree.PreLoopStatement;
 import oscript.syntaxtree.PrimaryExpression;
 import oscript.syntaxtree.PrimaryExpressionNotFunction;
+import oscript.syntaxtree.PrimaryExpressionWithTrailingFxnCallExpList;
 import oscript.syntaxtree.PrimaryPostfix;
 import oscript.syntaxtree.PrimaryPostfixWithTrailingFxnCallExpList;
 import oscript.syntaxtree.PrimaryPrefix;
@@ -35,20 +55,38 @@ import oscript.syntaxtree.PrimaryPrefixNotFunction;
 import oscript.syntaxtree.Program;
 import oscript.syntaxtree.ProgramFile;
 import oscript.syntaxtree.PropertyIdentifierPrimaryPostfix;
+import oscript.syntaxtree.AllocationExpression;
 import oscript.syntaxtree.ReturnStatement;
 import oscript.syntaxtree.ScopeBlock;
 import oscript.syntaxtree.ShiftExpression;
+import oscript.syntaxtree.PostfixExpression;
 import oscript.syntaxtree.ThisScopeQualifierPrimaryPostfix;
 import oscript.syntaxtree.TypeExpression;
 import oscript.syntaxtree.UnaryExpression;
 import oscript.syntaxtree.VariableDeclaration;
 import oscript.syntaxtree.VariableDeclarationBlock;
+import oscript.syntaxtree.WhileLoopStatement;
+import oscript.translator.CollectionForLoopStatementTranslator;
+import oscript.translator.ForLoopStatementTranslator;
+import oscript.translator.FunctionDeclarationTranslator;
 import oscript.visitor.ObjectDepthFirst;
 
 final class JsEmitterVisitor extends ObjectDepthFirst {
 
     private final JsSourceBuilder out = new JsSourceBuilder();
-    private String lastExpression = "Value.UNDEFINED";
+    private final JsSourceBuilder constants = new JsSourceBuilder();
+    private int constantInsertPos;
+    private int stringCounter;
+    private int symbolCounter;
+    private int exactNumberCounter;
+    private int inexactNumberCounter;
+    private boolean emptyArgsConstEmitted;
+    private final java.util.Set<String> declaredNames = new java.util.HashSet<>();
+    private Map<String, String> stringNameMap;
+    private Map<String, String> symbolNameMap;
+    private Map<String, String> exactNumberNameMap;
+    private Map<String, String> inexactNumberNameMap;
+    private String lastExpression = "UNDEFINED";
 
     JsSourceBuilder emitProgram(ProgramFile file) {
         out.append("(function(oscript){");
@@ -59,10 +97,22 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         out.line("const OExactNumber = oscript.data.OExactNumber;");
         out.line("const OInexactNumber = oscript.data.OInexactNumber;");
         out.line("const OString = oscript.data.OString;");
+        out.line("const OARRAY = oscript.data.OArray;");
         out.line("return function(scope,sf){");
         out.indent();
-        out.line("let _r = Value.UNDEFINED;");
+        constantInsertPos = out.position();
+        constants.setIndent(out.indentLevel());
+        constants.line("const NULL = Value.NULL;");
+        constants.line("const UNDEFINED = Value.UNDEFINED;");
+        constants.line("const TRUE = OBoolean.makeBoolean(true);");
+        constants.line("const FALSE = OBoolean.makeBoolean(false);");
+        constants.line("function INVOKE(callee,args){ const mt = sf.allocateMemberTable(args.length); for(let i=0;i<args.length;i++){ mt.referenceAt(i).opAssign(args[i]); } return callee.callAsFunction(sf, mt); }");
+        constants.line("function INVOKEC(callee,args){ const mt = sf.allocateMemberTable(args.length); for(let i=0;i<args.length;i++){ mt.referenceAt(i).opAssign(args[i]); } return callee.callAsConstructor(sf, mt); }");
+        constants.line("function POSTINC(v){ const _orig=v.unhand(); v.opAssign(v.uopIncrement()); return _orig; }");
+        constants.line("function POSTDEC(v){ const _orig=v.unhand(); v.opAssign(v.uopDecrement()); return _orig; }");
+        out.line("let _r = UNDEFINED;");
         file.accept(this, null);
+        out.insert(constantInsertPos, constants.toString());
         out.line("return _r;");
         out.dedent();
         out.line("};");
@@ -81,6 +131,11 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     public Object visit(Program n, Object argu) {
         n.f0.accept(this, argu);
         return null;
+    }
+
+    @Override
+    public Object visit(oscript.syntaxtree.Expression n, Object argu) {
+        return n.f0.accept(this, argu);
     }
 
     @Override
@@ -108,6 +163,11 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     @Override
+    public Object visit(FunctionDeclaration n, Object argu) {
+        return FunctionDeclarationTranslator.translate(n).accept(this, argu);
+    }
+
+    @Override
     public Object visit(ScopeBlock n, Object argu) {
         out.line("{");
         out.indent();
@@ -124,14 +184,30 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     @Override
+    public Object visit(PreLoopStatement n, Object argu) {
+        return n.f0.accept(this, argu);
+    }
+
+    @Override
+    public Object visit(ForLoopStatement n, Object argu) {
+        return ForLoopStatementTranslator.translate(n).accept(this, argu);
+    }
+
+    @Override
+    public Object visit(CollectionForLoopStatement n, Object argu) {
+        return CollectionForLoopStatementTranslator.translate(n).accept(this, argu);
+    }
+
+    @Override
     public Object visit(VariableDeclaration n, Object argu) {
         int permissions = getPermissions(n.f0, Reference.ATTR_PROTECTED);
         String name = n.f2.tokenImage;
-        out.line("const " + name + " = scope.createMember(Symbol.getSymbol('" + escape(name) + "').getId(), " + permissions + ");");
+        declaredNames.add(name);
+        out.line("const " + name + " = scope.createMember(" + symbolId(name) + ", " + permissions + ");");
         if (n.f3.present()) {
             NodeSequence seq = (NodeSequence) n.f3.node;
             String expr = emitExpression((Node) seq.elementAt(1));
-            out.line(assign(name, expr));
+            out.line(assign(name, expr) + ";");
         }
         return null;
     }
@@ -139,7 +215,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     @Override
     public Object visit(ExpressionBlock n, Object argu) {
         String expr = emitExpression(n.f0);
-        out.line("_r = " + expr + ";");
+        out.line(expr + ";");
         lastExpression = expr;
         return null;
     }
@@ -150,7 +226,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String expr = emitExpression((Node) n.f1.node);
             out.line("return " + expr + ";");
         } else {
-            out.line("return Value.UNDEFINED;");
+            out.line("return UNDEFINED;");
         }
         return null;
     }
@@ -172,9 +248,36 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         return null;
     }
 
+    @Override
+    public Object visit(WhileLoopStatement n, Object argu) {
+        String cond = emitExpression(n.f2);
+        out.line("while((" + cond + ").castToBooleanSoft()){");
+        out.indent();
+        n.f4.accept(this, argu);
+        out.dedent();
+        out.line("}");
+        return null;
+    }
+
+    @Override
+    public Object visit(BreakStatement n, Object argu) {
+        out.line("break;");
+        return null;
+    }
+
+    @Override
+    public Object visit(ContinueStatement n, Object argu) {
+        out.line("continue;");
+        return null;
+    }
+
     private String emitExpression(Node node) {
         Object res = node.accept(this, Boolean.TRUE);
-        return (res instanceof String) ? (String) res : lastExpression;
+        if (res instanceof String) {
+            lastExpression = (String) res;
+            return lastExpression;
+        }
+        return lastExpression;
     }
 
     @Override
@@ -216,7 +319,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             case oscript.parser.OscriptParserConstants.RUNSIGNEDSHIFTASSIGN:
                 return assign(left, left + ".bopUnsignedRightShift(" + right + ")");
             default:
-                return assign(left, "Value.UNDEFINED");
+                return assign(left, "UNDEFINED");
         }
     }
 
@@ -255,6 +358,92 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     @Override
+    public Object visit(BitwiseOrExpression n, Object argu) {
+        String val = emitExpression(n.f0);
+        for (int i = 0; i < n.f1.size(); i++) {
+            NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
+            String rhs = emitExpression((Node) seq.elementAt(1));
+            val = val + ".bopBitwiseOr(" + rhs + ")";
+        }
+        return val;
+    }
+
+    @Override
+    public Object visit(BitwiseXorExpression n, Object argu) {
+        String val = emitExpression(n.f0);
+        for (int i = 0; i < n.f1.size(); i++) {
+            NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
+            String rhs = emitExpression((Node) seq.elementAt(1));
+            val = val + ".bopBitwiseXor(" + rhs + ")";
+        }
+        return val;
+    }
+
+    @Override
+    public Object visit(BitwiseAndExpression n, Object argu) {
+        String val = emitExpression(n.f0);
+        for (int i = 0; i < n.f1.size(); i++) {
+            NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
+            String rhs = emitExpression((Node) seq.elementAt(1));
+            val = val + ".bopBitwiseAnd(" + rhs + ")";
+        }
+        return val;
+    }
+
+    @Override
+    public Object visit(EqualityExpression n, Object argu) {
+        String val = emitExpression(n.f0);
+        for (int i = 0; i < n.f1.size(); i++) {
+            NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
+            NodeToken op = (NodeToken) ((NodeChoice) seq.elementAt(0)).choice;
+            String rhs = emitExpression((Node) seq.elementAt(1));
+            switch (op.tokenImage) {
+                case "==":
+                    val = val + ".bopEquals(" + rhs + ")";
+                    break;
+                case "!=":
+                    val = val + ".bopNotEquals(" + rhs + ")";
+                    break;
+                default:
+                    val = "UNDEFINED";
+                    break;
+            }
+        }
+        return val;
+    }
+
+    @Override
+    public Object visit(RelationalExpression n, Object argu) {
+        String val = emitExpression(n.f0);
+        for (int i = 0; i < n.f1.size(); i++) {
+            NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
+            NodeToken op = (NodeToken) ((NodeChoice) seq.elementAt(0)).choice;
+            String rhs = emitExpression((Node) seq.elementAt(1));
+            switch (op.tokenImage) {
+                case "<":
+                    val = val + ".bopLessThan(" + rhs + ")";
+                    break;
+                case ">":
+                    val = val + ".bopGreaterThan(" + rhs + ")";
+                    break;
+                case ">=":
+                    val = val + ".bopGreaterThanOrEquals(" + rhs + ")";
+                    break;
+                case "<=":
+                    val = val + ".bopLessThanOrEquals(" + rhs + ")";
+                    break;
+                case "instanceof":
+                    val = val + ".bopInstanceOf(" + rhs + ")";
+                    break;
+                default:
+                    val = "UNDEFINED";
+                    break;
+            }
+        }
+        return val;
+    }
+
+    @Override
     public Object visit(ShiftExpression n, Object argu) {
         String val = emitExpression(n.f0);
         for (int i = 0; i < n.f1.size(); i++) {
@@ -272,7 +461,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
                     val = val + ".bopUnsignedRightShift(" + rhs + ")";
                     break;
                 default:
-                    val = "Value.UNDEFINED";
+                    val = "UNDEFINED";
                     break;
             }
         }
@@ -294,7 +483,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
                     val = val + ".bopMinus(" + rhs + ")";
                     break;
                 default:
-                    val = "Value.UNDEFINED";
+                    val = "UNDEFINED";
                     break;
             }
         }
@@ -319,7 +508,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
                     val = val + ".bopRemainder(" + rhs + ")";
                     break;
                 default:
-                    val = "Value.UNDEFINED";
+                    val = "UNDEFINED";
                     break;
             }
         }
@@ -330,7 +519,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     public Object visit(UnaryExpression n, Object argu) {
         String val = emitExpression(n.f1);
         if (n.f0.present()) {
-            NodeToken op = (NodeToken) n.f0.node;
+            NodeToken op = (NodeToken) ((NodeChoice) n.f0.node).choice;
             switch (op.tokenImage) {
                 case "++":
                     val = assign(val, val + ".uopIncrement()");
@@ -350,6 +539,23 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
                 case "!":
                     val = "(" + val + ".uopLogicalNot())";
                     break;
+                default:
+                    break;
+            }
+        }
+        return val;
+    }
+
+    @Override
+    public Object visit(PostfixExpression n, Object argu) {
+        String val = emitExpression(n.f0);
+        if (n.f1.present()) {
+            NodeToken op = (NodeToken) ((NodeChoice) n.f1.node).choice;
+            switch (op.tokenImage) {
+                case "++":
+                    return "POSTINC(" + val + ")";
+                case "--":
+                    return "POSTDEC(" + val + ")";
                 default:
                     break;
             }
@@ -381,6 +587,15 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     @Override
+    public Object visit(PrimaryExpressionWithTrailingFxnCallExpList n, Object argu) {
+        String expr = emitExpression(n.f0);
+        for (int i = 0; i < n.f1.size(); i++) {
+            expr = emitPostfix((Node) n.f1.elementAt(i), expr);
+        }
+        return expr;
+    }
+
+    @Override
     public Object visit(PrimaryPrefix n, Object argu) {
         return emitExpression(n.f0);
     }
@@ -393,7 +608,36 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     @Override
     public Object visit(IdentifierPrimaryPrefix n, Object argu) {
         String name = n.f0.tokenImage;
-        return "scope.lookupInScope(Symbol.getSymbol('" + escape(name) + "').getId())";
+        return declaredNames.contains(name) ? name : "scope.lookupInScope(" + symbolId(name) + ")";
+    }
+
+    @Override
+    public Object visit(ParenPrimaryPrefix n, Object argu) {
+        return "(" + emitExpression(n.f1) + ")";
+    }
+
+    @Override
+    public Object visit(ThisPrimaryPrefix n, Object argu) {
+        return "scope.getThis()";
+    }
+
+    @Override
+    public Object visit(SuperPrimaryPrefix n, Object argu) {
+        return "scope.getSuper()";
+    }
+
+    @Override
+    public Object visit(CalleePrimaryPrefix n, Object argu) {
+        return "scope.getCallee()";
+    }
+
+    @Override
+    public Object visit(ArrayDeclarationPrimaryPrefix n, Object argu) {
+        String contents = "";
+        if (n.f1.present()) {
+            contents = emitInitializer((FunctionCallExpressionListBody) n.f1.node);
+        }
+        return contents.isEmpty() ? "new OARRAY()" : "new OARRAY(" + contents + ")";
     }
 
     @Override
@@ -401,27 +645,41 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         return emitLiteral((NodeToken) n.f0.choice);
     }
 
+    @Override
+    public Object visit(AllocationExpression n, Object argu) {
+        String callee = emitExpression(n.f1);
+        String args = emitArgs(n.f2);
+        return emitInvocation(callee, args, true);
+    }
+
+    @Override
+    public Object visit(CastExpression n, Object argu) {
+        String target = emitExpression(n.f1);
+        String expr = emitExpression(n.f3);
+        return "(" + target + ").bopCast(" + expr + ")";
+    }
+
     private String emitLiteral(NodeToken token) {
         switch (token.kind) {
             case oscript.parser.OscriptParserConstants.INTEGER_LITERAL:
-                return "OExactNumber.makeExactNumber(" + token.tokenImage + ")";
+                return exactNumberConst(token.tokenImage);
             case oscript.parser.OscriptParserConstants.FLOATING_POINT_LITERAL:
-                return "OInexactNumber.makeInexactNumber(" + token.tokenImage + ")";
+                return inexactNumberConst(token.tokenImage);
             case oscript.parser.OscriptParserConstants.STRING_LITERAL: {
                 String raw = token.tokenImage;
                 String inner = raw.substring(1, raw.length() - 1);
-                return "OString.makeString('" + escape(inner) + "')";
+                return stringConst(inner);
             }
             case oscript.parser.OscriptParserConstants.TRUE:
-                return "OBoolean.makeBoolean(true)";
+                return "TRUE";
             case oscript.parser.OscriptParserConstants.FALSE:
-                return "OBoolean.makeBoolean(false)";
+                return "FALSE";
             case oscript.parser.OscriptParserConstants.NULL:
-                return "Value.NULL";
+                return "NULL";
             case oscript.parser.OscriptParserConstants.UNDEFINED:
-                return "Value.UNDEFINED";
+                return "UNDEFINED";
             default:
-                return "Value.UNDEFINED";
+                return "UNDEFINED";
         }
     }
 
@@ -442,9 +700,22 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
 
     private String emitArgs(FunctionCallExpressionList list) {
         if (!list.f1.present()) {
-            return "[]";
+            return emptyArgsConst();
         }
         FunctionCallExpressionListBody body = (FunctionCallExpressionListBody) list.f1.node;
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        builder.append(emitExpression(body.f0));
+        for (int i = 0; i < body.f1.size(); i++) {
+            NodeSequence seq = (NodeSequence) body.f1.elementAt(i);
+            builder.append(", ");
+            builder.append(emitExpression((Node) seq.elementAt(1)));
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
+    private String emitInitializer(FunctionCallExpressionListBody body) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         builder.append(emitExpression(body.f0));
@@ -464,7 +735,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         }
         if (node instanceof PropertyIdentifierPrimaryPostfix) {
             String name = ((PropertyIdentifierPrimaryPostfix) node).f1.tokenImage;
-            return "(" + base + ").getMember(Symbol.getSymbol('" + escape(name) + "').getId())";
+            return "(" + base + ").getMember(" + symbolId(name) + ")";
         }
         if (node instanceof oscript.syntaxtree.ArraySubscriptPrimaryPostfix) {
             oscript.syntaxtree.ArraySubscriptPrimaryPostfix arr = (oscript.syntaxtree.ArraySubscriptPrimaryPostfix) node;
@@ -472,7 +743,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             return "(" + base + ").elementAt(" + idx + ")";
         }
         if (node instanceof oscript.syntaxtree.ThisScopeQualifierPrimaryPostfix) {
-            return "(" + base + ").getMember(Symbol.getSymbol('this').getId())";
+            return "(" + base + ").getMember(" + symbolId("this") + ")";
         }
         if (node instanceof PrimaryPostfix) {
             return emitPostfix(((PrimaryPostfix) node).f0.choice, base);
@@ -501,14 +772,87 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     private String emitInvocation(String callee, String args, boolean constructor) {
-        String method = constructor ? "callAsConstructor" : "callAsFunction";
-        return "(() => { const _c = " + callee + "; const _a = " + args + "; const mt = sf.allocateMemberTable(_a.length);" +
-                " for(let i=0;i<_a.length;i++){ mt.referenceAt(i).opAssign(_a[i]); }" +
-                " return _c." + method + "(sf, mt); })()";
+        return constructor ? "INVOKEC(" + callee + ", " + args + ")" : "INVOKE(" + callee + ", " + args + ")";
     }
 
     private static String escape(String text) {
         return text.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n");
+    }
+
+    private String emptyArgsConst() {
+        if (!emptyArgsConstEmitted) {
+            constants.line("const ARR_0 = [];");
+            emptyArgsConstEmitted = true;
+        }
+        return "ARR_0";
+    }
+
+    private String stringConst(String value) {
+        String name = stringNames().get(value);
+        if (name == null) {
+            name = "STR_" + stringCounter++;
+            stringNames().put(value, name);
+            constants.line("const " + name + " = OString.makeString('" + escape(value) + "');");
+        }
+        return name;
+    }
+
+    private String symbolId(String name) {
+        String id = symbolNames().get(name);
+        if (id == null) {
+            id = "SYMB_" + symbolCounter++;
+            symbolNames().put(name, id);
+            constants.line("const " + id + " = Symbol.getSymbol('" + escape(name) + "').getId();");
+        }
+        return id;
+    }
+
+    private String exactNumberConst(String value) {
+        String name = exactNumberNames().get(value);
+        if (name == null) {
+            name = "INT_" + exactNumberCounter++;
+            exactNumberNames().put(value, name);
+            constants.line("const " + name + " = OExactNumber.makeExactNumber(" + value + ");");
+        }
+        return name;
+    }
+
+    private String inexactNumberConst(String value) {
+        String name = inexactNumberNames().get(value);
+        if (name == null) {
+            name = "FLT_" + inexactNumberCounter++;
+            inexactNumberNames().put(value, name);
+            constants.line("const " + name + " = OInexactNumber.makeInexactNumber(" + value + ");");
+        }
+        return name;
+    }
+
+    private Map<String, String> stringNames() {
+        if (stringNameMap == null) {
+            stringNameMap = new LinkedHashMap<>();
+        }
+        return stringNameMap;
+    }
+
+    private Map<String, String> symbolNames() {
+        if (symbolNameMap == null) {
+            symbolNameMap = new LinkedHashMap<>();
+        }
+        return symbolNameMap;
+    }
+
+    private Map<String, String> exactNumberNames() {
+        if (exactNumberNameMap == null) {
+            exactNumberNameMap = new LinkedHashMap<>();
+        }
+        return exactNumberNameMap;
+    }
+
+    private Map<String, String> inexactNumberNames() {
+        if (inexactNumberNameMap == null) {
+            inexactNumberNameMap = new LinkedHashMap<>();
+        }
+        return inexactNumberNameMap;
     }
 
     private static int getPermissions(oscript.syntaxtree.Permissions n, int attr) {

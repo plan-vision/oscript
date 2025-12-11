@@ -36,6 +36,22 @@ final class JsSourceBuilder {
         indent = Math.max(0, indent - 1);
     }
 
+    int indentLevel() {
+        return indent;
+    }
+
+    void setIndent(int value) {
+        indent = Math.max(0, value);
+    }
+
+    int position() {
+        return out.length();
+    }
+
+    void insert(int position, String text) {
+        out.insert(position, text);
+    }
+
     @Override
     public String toString() {
         return out.toString();
