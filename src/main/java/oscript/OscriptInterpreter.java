@@ -83,6 +83,9 @@ public class OscriptInterpreter
   private static DefaultParser parser      	   = new DefaultParser();
   private static LinkedList    scriptPathList  = new LinkedList();
   
+  private static final boolean useJsBackend = Boolean.getBoolean("oscript.target.js");
+  private static final NodeEvaluatorFactory nodeJs = useJsBackend ? new oscript.js.JsNodeEvaluatorFactory() : null;
+
   // XXX clean this up!  It should have some way to register factories, etc...
   public static final NodeEvaluatorFactory nodeCompiler = OscriptHost.me.newCompiledNodeEvaluatorFactory();
   public static final NodeEvaluatorFactory nodeInterpreter = new InterpretedNodeEvaluatorFactory();
@@ -355,10 +358,16 @@ public class OscriptInterpreter
   private static NodeEvaluator createNodeEvaluatorImpl( String name, Node node )
   {
     NodeEvaluator ne = null;
-    
+
+    if(nodeJs != null) {
+      ne = nodeJs.createNodeEvaluator( name, node );
+      if( ne != null )
+        return ne;
+    }
+
     if(nodeCompiler != null) {
-    	try {
-        	ne = nodeCompiler.createNodeEvaluator( name, node );
+        try {
+                ne = nodeCompiler.createNodeEvaluator( name, node );
     	} catch (ProgrammingErrorException ex) {
     		// TOO BIG FOR COMPILATION ? TODO DISABLE FOR VSP?
     	   OscriptHost.me.warn("OScript compilation failed because of ProgrammingErrorException (generated class size > 64K) | Switching to interpretter mode!");

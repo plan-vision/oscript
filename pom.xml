@@ -13,8 +13,8 @@
 		<maven.compiler.target>21</maven.compiler.target>
 		<java.version>21</java.version>
 	</properties>
-	<build>
-		<plugins>
+        <build>
+                <plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.14.0</version>
@@ -35,7 +35,21 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+                        </plugin>
+                </plugins>
+        </build>
+
+        <dependencies>
+                <dependency>
+                        <groupId>org.apache.bcel</groupId>
+                        <artifactId>bcel</artifactId>
+                        <version>6.9.0</version>
+                </dependency>
+                <dependency>
+                        <groupId>org.graalvm.sdk</groupId>
+                        <artifactId>graal-sdk</artifactId>
+                        <version>24.0.1</version>
+                        <scope>provided</scope>
+                </dependency>
+        </dependencies>
 </project>
