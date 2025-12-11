@@ -62,11 +62,11 @@ public final class JsOscriptEmul {
         return original;
     }
 
-    public Value SCOPE_createMember(Scope scope, int symbolId, int permissions) {
+    public Value SCOPE_CM(Scope scope, int symbolId, int permissions) {
         return scope.createMember(symbolId, permissions);
     }
 
-    public Value SCOPE_lookupInScope(Scope scope, int symbolId) {
+    public Value SCOPE_L(Scope scope, int symbolId) {
         return scope.lookupInScope(symbolId);
     }
 
@@ -82,12 +82,12 @@ public final class JsOscriptEmul {
         return scope.getCallee();
     }
 
-    public Value VAL_opAssign(Value target, Value value) {
+    public Value VAL_OA(Value target, Value value) {
         target.opAssign(value);
         return value;
     }
 
-    public Value VAL_castToBooleanSoft(Value value) {
+    public Value VAL_CB(Value value) {
         return OBoolean.makeBoolean(value.castToBooleanSoft());
     }
 
@@ -191,7 +191,7 @@ public final class JsOscriptEmul {
         return value.uopLogicalNot();
     }
 
-    public Value VAL_getMember(Value target, int symbol) {
+    public Value VAL_GM(Value target, int symbol) {
         return target.getMember(symbol);
     }
 

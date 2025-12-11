@@ -94,13 +94,13 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         out.line("const {");
         out.line("  SYMB_GET, SYMB_ID, NEW_OARRAY,");
         out.line("  TRUE, FALSE, INVOKE, INVOKEC, POSTINC, POSTDEC, UNDEFINED, NULL,");
-        out.line("  SCOPE_createMember, SCOPE_lookupInScope, SCOPE_getThis, SCOPE_getSuper, SCOPE_getCallee,");
-        out.line("  VAL_opAssign, VAL_castToBooleanSoft, VAL_bopPlus, VAL_bopMinus, VAL_bopMultiply, VAL_bopDivide,");
+        out.line("  SCOPE_CM, SCOPE_L, SCOPE_getThis, SCOPE_getSuper, SCOPE_getCallee,");
+        out.line("  VAL_OA, VAL_CB, VAL_bopPlus, VAL_bopMinus, VAL_bopMultiply, VAL_bopDivide,");
         out.line("  VAL_bopRemainder, VAL_bopBitwiseAnd, VAL_bopBitwiseOr, VAL_bopBitwiseXor, VAL_bopLeftShift,");
         out.line("  VAL_bopSignedRightShift, VAL_bopUnsignedRightShift, VAL_bopEquals, VAL_bopNotEquals, VAL_bopLessThan,");
         out.line("  VAL_bopGreaterThan, VAL_bopGreaterThanOrEquals, VAL_bopLessThanOrEquals, VAL_bopInstanceOf, VAL_bopCast,");
         out.line("  VAL_uopIncrement, VAL_uopDecrement, VAL_uopPlus, VAL_uopMinus, VAL_uopBitwiseNot, VAL_uopLogicalNot,");
-        out.line("  VAL_getMember, VAL_elementAt,");
+        out.line("  VAL_GM, VAL_elementAt,");
         out.line("  MAKE_string, MAKE_exactNumber, MAKE_inexactNumber");
         out.line("} = oscript;");
         out.line("return function(scope,sf){");
@@ -200,7 +200,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         int permissions = getPermissions(n.f0, Reference.ATTR_PROTECTED);
         String name = n.f2.tokenImage;
         declaredNames.add(name);
-        out.line("const " + name + " = SCOPE_createMember(scope, " + symbolId(name) + ", " + permissions + ");");
+        out.line("const " + name + " = SCOPE_CM(scope, " + symbolId(name) + ", " + permissions + ");");
         if (n.f3.present()) {
             NodeSequence seq = (NodeSequence) n.f3.node;
             String expr = emitExpression((Node) seq.elementAt(1));
@@ -605,7 +605,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     @Override
     public Object visit(IdentifierPrimaryPrefix n, Object argu) {
         String name = n.f0.tokenImage;
-        return declaredNames.contains(name) ? name : "SCOPE_lookupInScope(scope, " + symbolId(name) + ")";
+        return declaredNames.contains(name) ? name : "SCOPE_L(scope, " + symbolId(name) + ")";
     }
 
     @Override
@@ -765,7 +765,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     private static String assign(String target, String value) {
-        return "VAL_opAssign(" + target + ", " + value + ")";
+        return "VAL_OA(" + target + ", " + value + ")";
     }
 
     private static String bop(String fn, String left, String right) {
@@ -777,11 +777,11 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     private String castToBooleanSoft(String expr) {
-        return "VAL_castToBooleanSoft(" + expr + ")";
+        return "VAL_CB(" + expr + ")";
     }
 
     private static String member(String target, String symbol) {
-        return "VAL_getMember(" + target + ", " + symbol + ")";
+        return "VAL_GM(" + target + ", " + symbol + ")";
     }
 
     private static String elementAt(String target, String index) {
