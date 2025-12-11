@@ -244,18 +244,26 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     @Override
     public Object visit(ConditionalStatement n, Object argu) {
         String cond = emitExpression(n.f2);
-        out.line("if(" + castToBooleanSoft(cond) + "){");
-        out.indent();
-        n.f4.accept(this, argu);
-        out.dedent();
+        emitConditionalArm("if(" + castToBooleanSoft(cond) + ")", n.f4, argu);
         if (n.f5.present()) {
-            out.line("} else {");
-            out.indent();
-            ((Node) n.f5.node).accept(this, argu);
-            out.dedent();
+            emitConditionalArm("else", (EvaluationUnit) n.f5.node, argu);
         }
-        out.line("}");
         return null;
+    }
+
+    private void emitConditionalArm(String head, EvaluationUnit body, Object argu) {
+        boolean isScopeBlock = body.f0.choice instanceof ScopeBlock;
+        if (isScopeBlock) {
+            out.line(head);
+            body.accept(this, argu);
+            return;
+        }
+        String prefix = head.isEmpty() ? "{" : head + " {";
+        out.line(prefix);
+        out.indent();
+        body.accept(this, argu);
+        out.dedent();
+        out.line("}");
     }
 
     @Override
