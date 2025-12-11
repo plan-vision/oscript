@@ -1,7 +1,9 @@
 package oscript.js.transpiler;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import oscript.data.Reference;
@@ -21,10 +23,12 @@ import oscript.syntaxtree.Expression;
 import oscript.syntaxtree.ExpressionBlock;
 import oscript.syntaxtree.ForLoopStatement;
 import oscript.syntaxtree.RelationalExpression;
+import oscript.syntaxtree.Arglist;
 import oscript.syntaxtree.FunctionCallExpressionList;
 import oscript.syntaxtree.FunctionCallExpressionListBody;
 import oscript.syntaxtree.FunctionCallPrimaryPostfix;
 import oscript.syntaxtree.FunctionDeclaration;
+import oscript.syntaxtree.FunctionPrimaryPrefix;
 import oscript.syntaxtree.IdentifierPrimaryPrefix;
 import oscript.syntaxtree.Literal;
 import oscript.syntaxtree.LogicalAndExpression;
@@ -73,8 +77,8 @@ import oscript.visitor.ObjectDepthFirst;
 
 final class JsEmitterVisitor extends ObjectDepthFirst {
 
-    private final JsSourceBuilder out = new JsSourceBuilder();
-    private final JsSourceBuilder constants = new JsSourceBuilder();
+    private final JsSourceBuilder out;
+    private final JsSourceBuilder constants;
     private int constantInsertPos;
     private int stringCounter;
     private int symbolCounter;
@@ -87,6 +91,15 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     private Map<String, String> exactNumberNameMap;
     private Map<String, String> inexactNumberNameMap;
     private String lastExpression = "UNDEFINED";
+
+    JsEmitterVisitor() {
+        this(new JsSourceBuilder(), new JsSourceBuilder());
+    }
+
+    private JsEmitterVisitor(JsSourceBuilder out, JsSourceBuilder constants) {
+        this.out = out;
+        this.constants = constants;
+    }
 
     JsSourceBuilder emitProgram(ProgramFile file) {
         out.append("(function(oscript){");
@@ -600,6 +613,49 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     @Override
     public Object visit(PrimaryPrefixNotFunction n, Object argu) {
         return emitExpression(n.f0);
+    }
+
+    @Override
+    public Object visit(FunctionPrimaryPrefix n, Object argu) {
+        return emitFunctionExpression(n);
+    }
+
+    private String emitFunctionExpression(FunctionPrimaryPrefix n) {
+        JsEmitterVisitor fn = new JsEmitterVisitor(new JsSourceBuilder(), new JsSourceBuilder());
+        List<String> params = collectArgNames(n.f2);
+        fn.declaredNames.addAll(params);
+
+        JsSourceBuilder builder = fn.out;
+        builder.append("function(");
+        builder.append(String.join(", ", params));
+        builder.append("){");
+        builder.indent();
+        builder.line("let _r = UNDEFINED;");
+        fn.constantInsertPos = builder.position();
+        fn.constants.setIndent(builder.indentLevel());
+        n.f6.accept(fn, null);
+        builder.insert(fn.constantInsertPos, fn.constants.toString());
+        builder.line("return _r;");
+        builder.dedent();
+        builder.append("}");
+        return builder.toString();
+    }
+
+    private List<String> collectArgNames(NodeOptional argOpt) {
+        List<String> params = new ArrayList<>();
+        if (!argOpt.present()) {
+            return params;
+        }
+        Arglist args = (Arglist) argOpt.node;
+        params.add(args.f1.tokenImage);
+        for (Enumeration e = args.f2.elements(); e.hasMoreElements();) {
+            NodeSequence seq = (NodeSequence) e.nextElement();
+            params.add(((NodeToken) seq.elementAt(2)).tokenImage);
+        }
+        if (args.f3.present()) {
+            params.add("...rest");
+        }
+        return params;
     }
 
     @Override
