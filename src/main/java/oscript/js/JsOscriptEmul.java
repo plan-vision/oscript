@@ -203,11 +203,11 @@ public final class JsOscriptEmul {
         return OString.makeString(value);
     }
 
-    public Value MAKE_exactNumber(Number value) {
+    public Value MAKE_EN(Number value) {
         return OExactNumber.makeExactNumber(value.longValue());
     }
 
-    public Value MAKE_inexactNumber(Number value) {
+    public Value MAKE_IEN(Number value) {
         return OInexactNumber.makeInexactNumber(value.doubleValue());
     }
 }

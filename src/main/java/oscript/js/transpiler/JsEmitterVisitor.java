@@ -101,7 +101,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         out.line("  VAL_bopGreaterThan, VAL_bopGreaterThanOrEquals, VAL_bopLessThanOrEquals, VAL_bopInstanceOf, VAL_bopCast,");
         out.line("  VAL_uopIncrement, VAL_uopDecrement, VAL_uopPlus, VAL_uopMinus, VAL_uopBitwiseNot, VAL_uopLogicalNot,");
         out.line("  VAL_GM, VAL_elementAt,");
-        out.line("  MAKE_string, MAKE_exactNumber, MAKE_inexactNumber");
+        out.line("  MAKE_string, MAKE_EN, MAKE_IEN");
         out.line("} = oscript;");
         out.line("return function(scope,sf){");
         out.indent();
@@ -829,7 +829,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         if (name == null) {
             name = "INT_" + exactNumberCounter++;
             exactNumberNames().put(value, name);
-            constants.line("const " + name + " = MAKE_exactNumber(" + value + ");");
+            constants.line("const " + name + " = MAKE_EN(" + value + ");");
         }
         return name;
     }
@@ -839,7 +839,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         if (name == null) {
             name = "FLT_" + inexactNumberCounter++;
             inexactNumberNames().put(value, name);
-            constants.line("const " + name + " = MAKE_inexactNumber(" + value + ");");
+            constants.line("const " + name + " = MAKE_IEN(" + value + ");");
         }
         return name;
     }
