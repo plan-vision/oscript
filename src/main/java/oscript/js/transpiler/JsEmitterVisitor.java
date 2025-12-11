@@ -246,7 +246,8 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         String cond = emitExpression(n.f2);
         emitConditionalArm("if(" + castToBooleanSoft(cond) + ")", n.f4, argu);
         if (n.f5.present()) {
-            emitConditionalArm("else", (EvaluationUnit) n.f5.node, argu);
+            NodeSequence seq = (NodeSequence) n.f5.node;
+            emitConditionalArm("else", (EvaluationUnit) seq.elementAt(1), argu);
         }
         return null;
     }
