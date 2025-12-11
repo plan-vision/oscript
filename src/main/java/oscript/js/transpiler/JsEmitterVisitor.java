@@ -91,25 +91,22 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     JsSourceBuilder emitProgram(ProgramFile file) {
         out.append("(function(oscript){");
         out.indent();
-        out.line("const Value = oscript.data.Value;");
-        out.line("const Symbol = oscript.data.Symbol;");
-        out.line("const OBoolean = oscript.data.OBoolean;");
-        out.line("const OExactNumber = oscript.data.OExactNumber;");
-        out.line("const OInexactNumber = oscript.data.OInexactNumber;");
-        out.line("const OString = oscript.data.OString;");
-        out.line("const OARRAY = oscript.data.OArray;");
+        out.line("const {");
+        out.line("  SYMB_GET, SYMB_ID, NEW_OARRAY,");
+        out.line("  TRUE, FALSE, INVOKE, INVOKEC, POSTINC, POSTDEC, UNDEFINED, NULL,");
+        out.line("  SCOPE_createMember, SCOPE_lookupInScope, SCOPE_getThis, SCOPE_getSuper, SCOPE_getCallee,");
+        out.line("  VAL_opAssign, VAL_castToBooleanSoft, VAL_bopPlus, VAL_bopMinus, VAL_bopMultiply, VAL_bopDivide,");
+        out.line("  VAL_bopRemainder, VAL_bopBitwiseAnd, VAL_bopBitwiseOr, VAL_bopBitwiseXor, VAL_bopLeftShift,");
+        out.line("  VAL_bopSignedRightShift, VAL_bopUnsignedRightShift, VAL_bopEquals, VAL_bopNotEquals, VAL_bopLessThan,");
+        out.line("  VAL_bopGreaterThan, VAL_bopGreaterThanOrEquals, VAL_bopLessThanOrEquals, VAL_bopInstanceOf, VAL_bopCast,");
+        out.line("  VAL_uopIncrement, VAL_uopDecrement, VAL_uopPlus, VAL_uopMinus, VAL_uopBitwiseNot, VAL_uopLogicalNot,");
+        out.line("  VAL_getMember, VAL_elementAt,");
+        out.line("  MAKE_string, MAKE_exactNumber, MAKE_inexactNumber");
+        out.line("} = oscript;");
         out.line("return function(scope,sf){");
         out.indent();
         constantInsertPos = out.position();
         constants.setIndent(out.indentLevel());
-        constants.line("const NULL = Value.NULL;");
-        constants.line("const UNDEFINED = Value.UNDEFINED;");
-        constants.line("const TRUE = OBoolean.makeBoolean(true);");
-        constants.line("const FALSE = OBoolean.makeBoolean(false);");
-        constants.line("function INVOKE(callee,args){ const mt = sf.allocateMemberTable(args.length); for(let i=0;i<args.length;i++){ mt.referenceAt(i).opAssign(args[i]); } return callee.callAsFunction(sf, mt); }");
-        constants.line("function INVOKEC(callee,args){ const mt = sf.allocateMemberTable(args.length); for(let i=0;i<args.length;i++){ mt.referenceAt(i).opAssign(args[i]); } return callee.callAsConstructor(sf, mt); }");
-        constants.line("function POSTINC(v){ const _orig=v.unhand(); v.opAssign(v.uopIncrement()); return _orig; }");
-        constants.line("function POSTDEC(v){ const _orig=v.unhand(); v.opAssign(v.uopDecrement()); return _orig; }");
         out.line("let _r = UNDEFINED;");
         file.accept(this, null);
         out.insert(constantInsertPos, constants.toString());
@@ -203,7 +200,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         int permissions = getPermissions(n.f0, Reference.ATTR_PROTECTED);
         String name = n.f2.tokenImage;
         declaredNames.add(name);
-        out.line("const " + name + " = scope.createMember(" + symbolId(name) + ", " + permissions + ");");
+        out.line("const " + name + " = SCOPE_createMember(scope, " + symbolId(name) + ", " + permissions + ");");
         if (n.f3.present()) {
             NodeSequence seq = (NodeSequence) n.f3.node;
             String expr = emitExpression((Node) seq.elementAt(1));
@@ -234,7 +231,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     @Override
     public Object visit(ConditionalStatement n, Object argu) {
         String cond = emitExpression(n.f2);
-        out.line("if((" + cond + ").castToBooleanSoft()){");
+        out.line("if(" + castToBooleanSoft(cond) + "){");
         out.indent();
         n.f4.accept(this, argu);
         out.dedent();
@@ -251,7 +248,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     @Override
     public Object visit(WhileLoopStatement n, Object argu) {
         String cond = emitExpression(n.f2);
-        out.line("while((" + cond + ").castToBooleanSoft()){");
+        out.line("while(" + castToBooleanSoft(cond) + "){");
         out.indent();
         n.f4.accept(this, argu);
         out.dedent();
@@ -297,27 +294,27 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             case oscript.parser.OscriptParserConstants.ASSIGN:
                 return assign(left, right);
             case oscript.parser.OscriptParserConstants.PLUSASSIGN:
-                return assign(left, left + ".bopPlus(" + right + ")");
+                return assign(left, bop("VAL_bopPlus", left, right));
             case oscript.parser.OscriptParserConstants.MINUSASSIGN:
-                return assign(left, left + ".bopMinus(" + right + ")");
+                return assign(left, bop("VAL_bopMinus", left, right));
             case oscript.parser.OscriptParserConstants.STARASSIGN:
-                return assign(left, left + ".bopMultiply(" + right + ")");
+                return assign(left, bop("VAL_bopMultiply", left, right));
             case oscript.parser.OscriptParserConstants.SLASHASSIGN:
-                return assign(left, left + ".bopDivide(" + right + ")");
+                return assign(left, bop("VAL_bopDivide", left, right));
             case oscript.parser.OscriptParserConstants.REMASSIGN:
-                return assign(left, left + ".bopRemainder(" + right + ")");
+                return assign(left, bop("VAL_bopRemainder", left, right));
             case oscript.parser.OscriptParserConstants.ANDASSIGN:
-                return assign(left, left + ".bopBitwiseAnd(" + right + ")");
+                return assign(left, bop("VAL_bopBitwiseAnd", left, right));
             case oscript.parser.OscriptParserConstants.ORASSIGN:
-                return assign(left, left + ".bopBitwiseOr(" + right + ")");
+                return assign(left, bop("VAL_bopBitwiseOr", left, right));
             case oscript.parser.OscriptParserConstants.XORASSIGN:
-                return assign(left, left + ".bopBitwiseXor(" + right + ")");
+                return assign(left, bop("VAL_bopBitwiseXor", left, right));
             case oscript.parser.OscriptParserConstants.LSHIFTASSIGN:
-                return assign(left, left + ".bopLeftShift(" + right + ")");
+                return assign(left, bop("VAL_bopLeftShift", left, right));
             case oscript.parser.OscriptParserConstants.RSIGNEDSHIFTASSIGN:
-                return assign(left, left + ".bopSignedRightShift(" + right + ")");
+                return assign(left, bop("VAL_bopSignedRightShift", left, right));
             case oscript.parser.OscriptParserConstants.RUNSIGNEDSHIFTASSIGN:
-                return assign(left, left + ".bopUnsignedRightShift(" + right + ")");
+                return assign(left, bop("VAL_bopUnsignedRightShift", left, right));
             default:
                 return assign(left, "UNDEFINED");
         }
@@ -330,7 +327,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             NodeListInterface list = (NodeListInterface) n.f1.node;
             String t = emitExpression((Node) list.elementAt(1));
             String f = emitExpression((Node) list.elementAt(3));
-            return "((" + left + ").castToBooleanSoft() ? " + t + " : " + f + ")";
+            return "(" + castToBooleanSoft(left) + " ? " + t + " : " + f + ")";
         }
         return left;
     }
@@ -341,7 +338,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         for (int i = 0; i < n.f1.size(); i++) {
             NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
             String rhs = emitExpression((Node) seq.elementAt(1));
-            val = "((" + val + ").castToBooleanSoft() ? " + val + " : " + rhs + ")";
+            val = "(" + castToBooleanSoft(val) + " ? " + val + " : " + rhs + ")";
         }
         return val;
     }
@@ -352,7 +349,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         for (int i = 0; i < n.f1.size(); i++) {
             NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
             String rhs = emitExpression((Node) seq.elementAt(1));
-            val = "((" + val + ").castToBooleanSoft() ? " + rhs + " : " + val + ")";
+            val = "(" + castToBooleanSoft(val) + " ? " + rhs + " : " + val + ")";
         }
         return val;
     }
@@ -363,7 +360,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         for (int i = 0; i < n.f1.size(); i++) {
             NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
             String rhs = emitExpression((Node) seq.elementAt(1));
-            val = val + ".bopBitwiseOr(" + rhs + ")";
+            val = bop("VAL_bopBitwiseOr", val, rhs);
         }
         return val;
     }
@@ -374,7 +371,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         for (int i = 0; i < n.f1.size(); i++) {
             NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
             String rhs = emitExpression((Node) seq.elementAt(1));
-            val = val + ".bopBitwiseXor(" + rhs + ")";
+            val = bop("VAL_bopBitwiseXor", val, rhs);
         }
         return val;
     }
@@ -385,7 +382,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         for (int i = 0; i < n.f1.size(); i++) {
             NodeSequence seq = (NodeSequence) n.f1.elementAt(i);
             String rhs = emitExpression((Node) seq.elementAt(1));
-            val = val + ".bopBitwiseAnd(" + rhs + ")";
+            val = bop("VAL_bopBitwiseAnd", val, rhs);
         }
         return val;
     }
@@ -399,10 +396,10 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String rhs = emitExpression((Node) seq.elementAt(1));
             switch (op.tokenImage) {
                 case "==":
-                    val = val + ".bopEquals(" + rhs + ")";
+                    val = bop("VAL_bopEquals", val, rhs);
                     break;
                 case "!=":
-                    val = val + ".bopNotEquals(" + rhs + ")";
+                    val = bop("VAL_bopNotEquals", val, rhs);
                     break;
                 default:
                     val = "UNDEFINED";
@@ -421,19 +418,19 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String rhs = emitExpression((Node) seq.elementAt(1));
             switch (op.tokenImage) {
                 case "<":
-                    val = val + ".bopLessThan(" + rhs + ")";
+                    val = bop("VAL_bopLessThan", val, rhs);
                     break;
                 case ">":
-                    val = val + ".bopGreaterThan(" + rhs + ")";
+                    val = bop("VAL_bopGreaterThan", val, rhs);
                     break;
                 case ">=":
-                    val = val + ".bopGreaterThanOrEquals(" + rhs + ")";
+                    val = bop("VAL_bopGreaterThanOrEquals", val, rhs);
                     break;
                 case "<=":
-                    val = val + ".bopLessThanOrEquals(" + rhs + ")";
+                    val = bop("VAL_bopLessThanOrEquals", val, rhs);
                     break;
                 case "instanceof":
-                    val = val + ".bopInstanceOf(" + rhs + ")";
+                    val = bop("VAL_bopInstanceOf", val, rhs);
                     break;
                 default:
                     val = "UNDEFINED";
@@ -452,13 +449,13 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String rhs = emitExpression((Node) seq.elementAt(1));
             switch (op.tokenImage) {
                 case "<<":
-                    val = val + ".bopLeftShift(" + rhs + ")";
+                    val = bop("VAL_bopLeftShift", val, rhs);
                     break;
                 case ">>":
-                    val = val + ".bopSignedRightShift(" + rhs + ")";
+                    val = bop("VAL_bopSignedRightShift", val, rhs);
                     break;
                 case ">>>":
-                    val = val + ".bopUnsignedRightShift(" + rhs + ")";
+                    val = bop("VAL_bopUnsignedRightShift", val, rhs);
                     break;
                 default:
                     val = "UNDEFINED";
@@ -477,10 +474,10 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String rhs = emitExpression((Node) seq.elementAt(1));
             switch (op.tokenImage) {
                 case "+":
-                    val = val + ".bopPlus(" + rhs + ")";
+                    val = bop("VAL_bopPlus", val, rhs);
                     break;
                 case "-":
-                    val = val + ".bopMinus(" + rhs + ")";
+                    val = bop("VAL_bopMinus", val, rhs);
                     break;
                 default:
                     val = "UNDEFINED";
@@ -499,13 +496,13 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String rhs = emitExpression((Node) seq.elementAt(1));
             switch (op.tokenImage) {
                 case "*":
-                    val = val + ".bopMultiply(" + rhs + ")";
+                    val = bop("VAL_bopMultiply", val, rhs);
                     break;
                 case "/":
-                    val = val + ".bopDivide(" + rhs + ")";
+                    val = bop("VAL_bopDivide", val, rhs);
                     break;
                 case "%":
-                    val = val + ".bopRemainder(" + rhs + ")";
+                    val = bop("VAL_bopRemainder", val, rhs);
                     break;
                 default:
                     val = "UNDEFINED";
@@ -522,22 +519,22 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             NodeToken op = (NodeToken) ((NodeChoice) n.f0.node).choice;
             switch (op.tokenImage) {
                 case "++":
-                    val = assign(val, val + ".uopIncrement()");
+                    val = assign(val, uop("VAL_uopIncrement", val));
                     break;
                 case "--":
-                    val = assign(val, val + ".uopDecrement()");
+                    val = assign(val, uop("VAL_uopDecrement", val));
                     break;
                 case "+":
-                    val = "(" + val + ".uopPlus())";
+                    val = "(" + uop("VAL_uopPlus", val) + ")";
                     break;
                 case "-":
-                    val = "(" + val + ".uopMinus())";
+                    val = "(" + uop("VAL_uopMinus", val) + ")";
                     break;
                 case "~":
-                    val = "(" + val + ".uopBitwiseNot())";
+                    val = "(" + uop("VAL_uopBitwiseNot", val) + ")";
                     break;
                 case "!":
-                    val = "(" + val + ".uopLogicalNot())";
+                    val = "(" + uop("VAL_uopLogicalNot", val) + ")";
                     break;
                 default:
                     break;
@@ -608,7 +605,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     @Override
     public Object visit(IdentifierPrimaryPrefix n, Object argu) {
         String name = n.f0.tokenImage;
-        return declaredNames.contains(name) ? name : "scope.lookupInScope(" + symbolId(name) + ")";
+        return declaredNames.contains(name) ? name : "SCOPE_lookupInScope(scope, " + symbolId(name) + ")";
     }
 
     @Override
@@ -618,17 +615,17 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
 
     @Override
     public Object visit(ThisPrimaryPrefix n, Object argu) {
-        return "scope.getThis()";
+        return "SCOPE_getThis(scope)";
     }
 
     @Override
     public Object visit(SuperPrimaryPrefix n, Object argu) {
-        return "scope.getSuper()";
+        return "SCOPE_getSuper(scope)";
     }
 
     @Override
     public Object visit(CalleePrimaryPrefix n, Object argu) {
-        return "scope.getCallee()";
+        return "SCOPE_getCallee(scope)";
     }
 
     @Override
@@ -637,7 +634,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         if (n.f1.present()) {
             contents = emitInitializer((FunctionCallExpressionListBody) n.f1.node);
         }
-        return contents.isEmpty() ? "new OARRAY()" : "new OARRAY(" + contents + ")";
+        return contents.isEmpty() ? "NEW_OARRAY()" : "NEW_OARRAY(" + contents + ")";
     }
 
     @Override
@@ -656,7 +653,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     public Object visit(CastExpression n, Object argu) {
         String target = emitExpression(n.f1);
         String expr = emitExpression(n.f3);
-        return "(" + target + ").bopCast(" + expr + ")";
+        return bop("VAL_bopCast", target, expr);
     }
 
     private String emitLiteral(NodeToken token) {
@@ -735,15 +732,15 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         }
         if (node instanceof PropertyIdentifierPrimaryPostfix) {
             String name = ((PropertyIdentifierPrimaryPostfix) node).f1.tokenImage;
-            return "(" + base + ").getMember(" + symbolId(name) + ")";
+            return member(base, symbolId(name));
         }
         if (node instanceof oscript.syntaxtree.ArraySubscriptPrimaryPostfix) {
             oscript.syntaxtree.ArraySubscriptPrimaryPostfix arr = (oscript.syntaxtree.ArraySubscriptPrimaryPostfix) node;
             String idx = emitExpression(arr.f1);
-            return "(" + base + ").elementAt(" + idx + ")";
+            return elementAt(base, idx);
         }
         if (node instanceof oscript.syntaxtree.ThisScopeQualifierPrimaryPostfix) {
-            return "(" + base + ").getMember(" + symbolId("this") + ")";
+            return member(base, symbolId("this"));
         }
         if (node instanceof PrimaryPostfix) {
             return emitPostfix(((PrimaryPostfix) node).f0.choice, base);
@@ -768,7 +765,27 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     private static String assign(String target, String value) {
-        return target + ".opAssign(" + value + ")";
+        return "VAL_opAssign(" + target + ", " + value + ")";
+    }
+
+    private static String bop(String fn, String left, String right) {
+        return fn + "(" + left + ", " + right + ")";
+    }
+
+    private static String uop(String fn, String value) {
+        return fn + "(" + value + ")";
+    }
+
+    private String castToBooleanSoft(String expr) {
+        return "VAL_castToBooleanSoft(" + expr + ")";
+    }
+
+    private static String member(String target, String symbol) {
+        return "VAL_getMember(" + target + ", " + symbol + ")";
+    }
+
+    private static String elementAt(String target, String index) {
+        return "VAL_elementAt(" + target + ", " + index + ")";
     }
 
     private String emitInvocation(String callee, String args, boolean constructor) {
@@ -792,7 +809,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         if (name == null) {
             name = "STR_" + stringCounter++;
             stringNames().put(value, name);
-            constants.line("const " + name + " = OString.makeString('" + escape(value) + "');");
+            constants.line("const " + name + " = MAKE_string('" + escape(value) + "');");
         }
         return name;
     }
@@ -802,7 +819,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         if (id == null) {
             id = "SYMB_" + symbolCounter++;
             symbolNames().put(name, id);
-            constants.line("const " + id + " = Symbol.getSymbol('" + escape(name) + "').getId();");
+            constants.line("const " + id + " = SYMB_ID('" + escape(name) + "');");
         }
         return id;
     }
@@ -812,7 +829,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         if (name == null) {
             name = "INT_" + exactNumberCounter++;
             exactNumberNames().put(value, name);
-            constants.line("const " + name + " = OExactNumber.makeExactNumber(" + value + ");");
+            constants.line("const " + name + " = MAKE_exactNumber(" + value + ");");
         }
         return name;
     }
@@ -822,7 +839,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         if (name == null) {
             name = "FLT_" + inexactNumberCounter++;
             inexactNumberNames().put(value, name);
-            constants.line("const " + name + " = OInexactNumber.makeInexactNumber(" + value + ");");
+            constants.line("const " + name + " = MAKE_inexactNumber(" + value + ");");
         }
         return name;
     }

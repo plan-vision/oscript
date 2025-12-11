@@ -15,8 +15,8 @@ import oscript.util.SymbolTable;
 /**
  * {@link NodeEvaluator} implementation backed by transpiled JavaScript source.
  * The generated function runs inside a dedicated GraalJS {@link Context} that
- * is primed with core OScript classes (via {@link JsHostExports}) so the
- * transpiled JavaScript can call into the existing runtime directly.
+ * is primed with an object-based OScript API facade (via {@link JsHostExports})
+ * so the transpiled JavaScript can call into the existing runtime directly.
  */
 final class JsTranspilingNodeEvaluator extends NodeEvaluator {
 
