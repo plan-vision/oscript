@@ -91,19 +91,19 @@ public final class JsOscriptEmul {
         return OBoolean.makeBoolean(value.castToBooleanSoft());
     }
 
-    public Value VAL_bopPlus(Value left, Value right) {
+    public Value VAL_PLS(Value left, Value right) {
         return left.bopPlus(right);
     }
 
-    public Value VAL_bopMinus(Value left, Value right) {
+    public Value VAL_MNS(Value left, Value right) {
         return left.bopMinus(right);
     }
 
-    public Value VAL_bopMultiply(Value left, Value right) {
+    public Value VAL_MUL(Value left, Value right) {
         return left.bopMultiply(right);
     }
 
-    public Value VAL_bopDivide(Value left, Value right) {
+    public Value VAL_DIV(Value left, Value right) {
         return left.bopDivide(right);
     }
 
@@ -135,31 +135,31 @@ public final class JsOscriptEmul {
         return left.bopUnsignedRightShift(right);
     }
 
-    public Value VAL_bopEquals(Value left, Value right) {
+    public Value VAL_EQ(Value left, Value right) {
         return left.bopEquals(right);
     }
 
-    public Value VAL_bopNotEquals(Value left, Value right) {
+    public Value VAL_NEQ(Value left, Value right) {
         return left.bopNotEquals(right);
     }
 
-    public Value VAL_bopLessThan(Value left, Value right) {
+    public Value VAL_LT(Value left, Value right) {
         return left.bopLessThan(right);
     }
 
-    public Value VAL_bopGreaterThan(Value left, Value right) {
+    public Value VAL_GT(Value left, Value right) {
         return left.bopGreaterThan(right);
     }
 
-    public Value VAL_bopGreaterThanOrEquals(Value left, Value right) {
+    public Value VAL_GTE(Value left, Value right) {
         return left.bopGreaterThanOrEquals(right);
     }
 
-    public Value VAL_bopLessThanOrEquals(Value left, Value right) {
+    public Value VAL_LEQ(Value left, Value right) {
         return left.bopLessThanOrEquals(right);
     }
 
-    public Value VAL_bopInstanceOf(Value left, Value right) {
+    public Value VAL_IOF(Value left, Value right) {
         return left.bopInstanceOf(right);
     }
 
@@ -167,19 +167,19 @@ public final class JsOscriptEmul {
         return left.bopCast(right);
     }
 
-    public Value VAL_uopIncrement(Value value) {
+    public Value VAL_INC(Value value) {
         return value.uopIncrement();
     }
 
-    public Value VAL_uopDecrement(Value value) {
+    public Value VAL_DEC(Value value) {
         return value.uopDecrement();
     }
 
-    public Value VAL_uopPlus(Value value) {
+    public Value VAL_OPLS(Value value) {
         return value.uopPlus();
     }
 
-    public Value VAL_uopMinus(Value value) {
+    public Value VAL_OMNS(Value value) {
         return value.uopMinus();
     }
 
@@ -195,11 +195,11 @@ public final class JsOscriptEmul {
         return target.getMember(symbol);
     }
 
-    public Value VAL_elementAt(Value target, Value index) {
+    public Value VAL_EL(Value target, Value index) {
         return target.elementAt(index);
     }
 
-    public Value MAKE_string(String value) {
+    public Value MAKE_STR(String value) {
         return OString.makeString(value);
     }
 

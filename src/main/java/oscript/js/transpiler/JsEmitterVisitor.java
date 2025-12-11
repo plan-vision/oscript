@@ -95,13 +95,13 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         out.line("  SYMB_GET, SYMB_ID, NEW_OARRAY,");
         out.line("  TRUE, FALSE, INVOKE, INVOKEC, POSTINC, POSTDEC, UNDEFINED, NULL,");
         out.line("  SCOPE_CM, SCOPE_L, SCOPE_getThis, SCOPE_getSuper, SCOPE_getCallee,");
-        out.line("  VAL_OA, VAL_CB, VAL_bopPlus, VAL_bopMinus, VAL_bopMultiply, VAL_bopDivide,");
+        out.line("  VAL_OA, VAL_CB, VAL_PLS, VAL_MNS, VAL_MUL, VAL_DIV,");
         out.line("  VAL_bopRemainder, VAL_bopBitwiseAnd, VAL_bopBitwiseOr, VAL_bopBitwiseXor, VAL_bopLeftShift,");
-        out.line("  VAL_bopSignedRightShift, VAL_bopUnsignedRightShift, VAL_bopEquals, VAL_bopNotEquals, VAL_bopLessThan,");
-        out.line("  VAL_bopGreaterThan, VAL_bopGreaterThanOrEquals, VAL_bopLessThanOrEquals, VAL_bopInstanceOf, VAL_bopCast,");
-        out.line("  VAL_uopIncrement, VAL_uopDecrement, VAL_uopPlus, VAL_uopMinus, VAL_uopBitwiseNot, VAL_uopLogicalNot,");
-        out.line("  VAL_GM, VAL_elementAt,");
-        out.line("  MAKE_string, MAKE_EN, MAKE_IEN");
+        out.line("  VAL_bopSignedRightShift, VAL_bopUnsignedRightShift, VAL_EQ, VAL_NEQ, VAL_LT,");
+        out.line("  VAL_GT, VAL_GTE, VAL_LEQ, VAL_IOF, VAL_bopCast,");
+        out.line("  VAL_INC, VAL_DEC, VAL_OPLS, VAL_OMNS, VAL_uopBitwiseNot, VAL_uopLogicalNot,");
+        out.line("  VAL_GM, VAL_EL,");
+        out.line("  MAKE_STR, MAKE_EN, MAKE_IEN");
         out.line("} = oscript;");
         out.line("return function(scope,sf){");
         out.indent();
@@ -294,13 +294,13 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             case oscript.parser.OscriptParserConstants.ASSIGN:
                 return assign(left, right);
             case oscript.parser.OscriptParserConstants.PLUSASSIGN:
-                return assign(left, bop("VAL_bopPlus", left, right));
+                return assign(left, bop("VAL_PLS", left, right));
             case oscript.parser.OscriptParserConstants.MINUSASSIGN:
-                return assign(left, bop("VAL_bopMinus", left, right));
+                return assign(left, bop("VAL_MNS", left, right));
             case oscript.parser.OscriptParserConstants.STARASSIGN:
-                return assign(left, bop("VAL_bopMultiply", left, right));
+                return assign(left, bop("VAL_MUL", left, right));
             case oscript.parser.OscriptParserConstants.SLASHASSIGN:
-                return assign(left, bop("VAL_bopDivide", left, right));
+                return assign(left, bop("VAL_DIV", left, right));
             case oscript.parser.OscriptParserConstants.REMASSIGN:
                 return assign(left, bop("VAL_bopRemainder", left, right));
             case oscript.parser.OscriptParserConstants.ANDASSIGN:
@@ -396,10 +396,10 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String rhs = emitExpression((Node) seq.elementAt(1));
             switch (op.tokenImage) {
                 case "==":
-                    val = bop("VAL_bopEquals", val, rhs);
+                    val = bop("VAL_EQ", val, rhs);
                     break;
                 case "!=":
-                    val = bop("VAL_bopNotEquals", val, rhs);
+                    val = bop("VAL_NEQ", val, rhs);
                     break;
                 default:
                     val = "UNDEFINED";
@@ -418,19 +418,19 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String rhs = emitExpression((Node) seq.elementAt(1));
             switch (op.tokenImage) {
                 case "<":
-                    val = bop("VAL_bopLessThan", val, rhs);
+                    val = bop("VAL_LT", val, rhs);
                     break;
                 case ">":
-                    val = bop("VAL_bopGreaterThan", val, rhs);
+                    val = bop("VAL_GT", val, rhs);
                     break;
                 case ">=":
-                    val = bop("VAL_bopGreaterThanOrEquals", val, rhs);
+                    val = bop("VAL_GTE", val, rhs);
                     break;
                 case "<=":
-                    val = bop("VAL_bopLessThanOrEquals", val, rhs);
+                    val = bop("VAL_LEQ", val, rhs);
                     break;
                 case "instanceof":
-                    val = bop("VAL_bopInstanceOf", val, rhs);
+                    val = bop("VAL_IOF", val, rhs);
                     break;
                 default:
                     val = "UNDEFINED";
@@ -474,10 +474,10 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String rhs = emitExpression((Node) seq.elementAt(1));
             switch (op.tokenImage) {
                 case "+":
-                    val = bop("VAL_bopPlus", val, rhs);
+                    val = bop("VAL_PLS", val, rhs);
                     break;
                 case "-":
-                    val = bop("VAL_bopMinus", val, rhs);
+                    val = bop("VAL_MNS", val, rhs);
                     break;
                 default:
                     val = "UNDEFINED";
@@ -496,10 +496,10 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             String rhs = emitExpression((Node) seq.elementAt(1));
             switch (op.tokenImage) {
                 case "*":
-                    val = bop("VAL_bopMultiply", val, rhs);
+                    val = bop("VAL_MUL", val, rhs);
                     break;
                 case "/":
-                    val = bop("VAL_bopDivide", val, rhs);
+                    val = bop("VAL_DIV", val, rhs);
                     break;
                 case "%":
                     val = bop("VAL_bopRemainder", val, rhs);
@@ -519,16 +519,16 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
             NodeToken op = (NodeToken) ((NodeChoice) n.f0.node).choice;
             switch (op.tokenImage) {
                 case "++":
-                    val = assign(val, uop("VAL_uopIncrement", val));
+                    val = assign(val, uop("VAL_INC", val));
                     break;
                 case "--":
-                    val = assign(val, uop("VAL_uopDecrement", val));
+                    val = assign(val, uop("VAL_DEC", val));
                     break;
                 case "+":
-                    val = "(" + uop("VAL_uopPlus", val) + ")";
+                    val = "(" + uop("VAL_OPLS", val) + ")";
                     break;
                 case "-":
-                    val = "(" + uop("VAL_uopMinus", val) + ")";
+                    val = "(" + uop("VAL_OMNS", val) + ")";
                     break;
                 case "~":
                     val = "(" + uop("VAL_uopBitwiseNot", val) + ")";
@@ -785,7 +785,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
     }
 
     private static String elementAt(String target, String index) {
-        return "VAL_elementAt(" + target + ", " + index + ")";
+        return "VAL_EL(" + target + ", " + index + ")";
     }
 
     private String emitInvocation(String callee, String args, boolean constructor) {
@@ -809,7 +809,7 @@ final class JsEmitterVisitor extends ObjectDepthFirst {
         if (name == null) {
             name = "STR_" + stringCounter++;
             stringNames().put(value, name);
-            constants.line("const " + name + " = MAKE_string('" + escape(value) + "');");
+            constants.line("const " + name + " = MAKE_STR('" + escape(value) + "');");
         }
         return name;
     }
