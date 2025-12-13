@@ -32,7 +32,7 @@ import oscript.util.*;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public abstract class Scope extends Value
+public abstract class  extends Value
 {
   /**
    * Previous in object scope chain.  This is used to <code>lookupInScope</code>,
