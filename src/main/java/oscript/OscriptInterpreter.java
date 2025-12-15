@@ -227,6 +227,7 @@ public class OscriptInterpreter
   }
   
   /*=======================================================================*/
+  // DEFAULT IMPLEMENTATION > EVAL INTERPRETER ONLY !!! ONLY for small evals not subject to not optimization (run once)
   /**
    * Evaluate the specified sting.
    * 
@@ -239,8 +240,7 @@ public class OscriptInterpreter
     throws ParseException
   {
     Node node = parse(str);
-    NodeEvaluator ne = nodeInterpreter.createNodeEvaluator( str, node );
-    
+    NodeEvaluator ne =  nodeInterpreter.createNodeEvaluator( null/* NO NAME */, node );
     return (Value)(StackFrame.currentStackFrame().evalNode( ne, scope ));
   }
   
