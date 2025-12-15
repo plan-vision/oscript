@@ -40,7 +40,7 @@ import oscript.NodeEvaluator;
  * 
  * @author Rob Clark (rob@ti.com)
  */
-public class Function extends Type
+public class Function extends Type 
 {
   /**
    * The type object for an script function.
@@ -518,6 +518,7 @@ public class Function extends Type
   public Scope getEnclosingScope() {
       return enclosingScope;
   }
+
 }
 
 
