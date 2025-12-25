@@ -380,7 +380,10 @@ public abstract class StackFrame {
 			final int idx = smit.get(id);
 			if (idx < 0)
 				return null;
-			final int meml = members.length();
+			
+			// ORIGINAL CODE :  if(idx >= members.length())  return null;
+			// NEW : AUTO NULL ARGS
+			final int meml = members instanceof StackFrame.StackFrameMemberTable ? ((StackFrame.StackFrameMemberTable)members).initialLen : members.length();
 			final int reli = idx-meml;
 			if (reli >= 0) {  // original code was return null @ 20.12.2025 (accessing not provided arguments)
 				if (tmpArrNull == null)
@@ -449,6 +452,7 @@ public abstract class StackFrame {
 		private int len; // length of our part of 'members'
 		private int sz; // the actual size of the array, sz <= len
 		private int savedOff; // saved 'off' value if we have copyOutOfStack()'d
+		protected int initialLen; // save len in reinit(len) 
 		private OArray aVArgs;
 		
 		StackFrameMemberTable next;
@@ -458,7 +462,7 @@ public abstract class StackFrame {
 		public void reinit(int len) {
 			this.members = StackFrame.this.members;
 			this.off = membersIdx[0];
-			this.len = len;
+			this.len = initialLen = len;
 			this.sz = 0;
 			if ((len + off) > membersCount)
 				throw new ProgrammingErrorException("failed to allocate from stack for " + this + ", idx=" + idx[0]);
