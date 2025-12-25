@@ -125,7 +125,7 @@ public class Symbol extends OString
    * Given a string, return a symbol object.  If two strings are equals()
    * then they will always map to the same symbol.
    */
-  public synchronized static void setSymbol( int id,String str) {
+  public static void setSymbol( int id,String str) {
 	  if (tbl.symbols[id] != null)
 		 throw new RuntimeException("Symbol already defined : "+id+" | "+str); 
       tbl.symbols[id] = new Symbol( str, id );
@@ -135,7 +135,7 @@ public class Symbol extends OString
   }
 
   
-  public synchronized static Symbol getSymbol( String str )
+  public static Symbol getSymbol( String str )
   {
     Integer iid = (Integer)(tbl.strToIdTable.get(str));
     if( iid == null )

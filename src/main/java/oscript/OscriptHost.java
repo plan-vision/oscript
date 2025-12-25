@@ -55,4 +55,7 @@ public abstract class OscriptHost {
         public Object __unmap();
 	}
 
+	/* old location was in CompilerVisitor, we need VScript force true flag moving it here skips reflection */
+	public static boolean compilerVisitor_allocateMemberTable_allocateFromStack = false;
 }
+

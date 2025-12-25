@@ -148,7 +148,7 @@ public final class FunctionData {
 	 * @param args the input arguments
 	 * @return
 	 */
-	public static final OArray __empty = new OArray();
+	public static final OArray __empty = new OArray(0); // ONLY FOR EMPTY VARGS  
 
 	public final MemberTable mapArgs(MemberTable args) {
 		if (hasFxnInScope)

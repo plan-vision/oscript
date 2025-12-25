@@ -21,7 +21,6 @@ public abstract class ValueWrapperTempReference extends Value {
 	
   public ValueWrapperTempReference()
   {
-	  super();
   }
 
   public abstract Value get();/* {

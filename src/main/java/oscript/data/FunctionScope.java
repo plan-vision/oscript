@@ -54,10 +54,10 @@ public class FunctionScope extends BasicScope {
 	 */
 	protected Value getMemberImpl(int id) {
 		Value val = super.getMemberImpl(id);
-
-		if (val == null && fxn != null)
-			val = fxn.getStaticMember(id);
-
+		if (val == null) {
+			if (fxn != null)
+				val = fxn.getStaticMember(id);
+		}
 		return val;
 	}
 
@@ -122,7 +122,7 @@ public class FunctionScope extends BasicScope {
 			scriptObject = scope;
 
 			if (scriptObject == null)
-				throw new ProgrammingErrorException("this shouldn't happen");
+				throw new ProgrammingErrorException("OScript@FunctionScope.OTHIS : this shouldn't happen!");
 		}
 
 		protected Value get() {
@@ -176,6 +176,7 @@ public class FunctionScope extends BasicScope {
 			return val.getMember(id, exception);
 		}
 	}
+
 }
 
 /*

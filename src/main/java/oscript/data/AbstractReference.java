@@ -40,7 +40,6 @@ public abstract class AbstractReference extends Value
    */
   public AbstractReference()
   {
-    super();
   }
   
   /*=======================================================================*/
@@ -94,13 +93,6 @@ public abstract class AbstractReference extends Value
   }
   
   /*=======================================================================*/
-  /**
-   * Return the object used for implementing <i>synchronized</i>.  For a
-   * normal script object, the object is it's own monitor.  For a java
-   * object, it is the java object rather than the {@link JavaObjectWrapper}.
-   * 
-   * @return the object to synchronize on
-   */
   public Object getMonitor()
   {
     return get().getMonitor();

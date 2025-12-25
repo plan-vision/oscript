@@ -113,7 +113,7 @@ public class BasicScope extends Scope
    * @param members    members, can be used by function scope to directly
    *    map arguments to the function into the function's scope
    */
-  protected BasicScope( Scope previous, SymbolTable smit, MemberTable members )
+  public BasicScope( Scope previous, SymbolTable smit, MemberTable members )
   {
     super(previous);
     
@@ -152,33 +152,9 @@ public class BasicScope extends Scope
     members = members.safeCopy();
     return super.getSafeCopy();
   }
-  
-  // XXX for debugging, determine if this is a scope that is safe to hold
-  //     a reference to after it is exited
+
   public boolean isSafe()
   {
-//    StringBuffer sb = new StringBuffer();
-//    sb.append(this);
-//    sb.append(": ");
-//    sb.append( getClass().getName() );
-//    sb.append(", ");
-//    sb.append( findDesc(this) );
-//    sb.append(", ");
-//    
-//    Set memberSet = new HashSet();
-//    populateMemberSet( memberSet, true );
-//    sb.append(memberSet);
-//    
-//    if( members == StackFrame.currentStackFrame().members )
-//    {
-//      System.err.println("scope not safe: " + sb);
-//      return false;
-//    }
-//    else if( (previous != null) && !previous.isSafe() )
-//    {
-//      System.err.println("  ->   " + sb);
-//      return false;
-//    }
     return true;
   }
   
@@ -356,7 +332,6 @@ public class BasicScope extends Scope
     throws PackagedScriptObjectException
   {
     Value val = getMemberImpl(id);
-    
     if( val == null && previous != null)
       val = previous.lookupInScope(id);
     
@@ -436,8 +411,6 @@ public class BasicScope extends Scope
   
 }
 
-
-
 /*
  *   Local Variables:
  *   tab-width: 2

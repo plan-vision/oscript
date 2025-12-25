@@ -151,7 +151,7 @@ public class BuiltinType extends JavaClassWrapper
   {
     return makeBuiltinType( className, null );
   }
-  private static synchronized final BuiltinType makeBuiltinType( String className, BuiltinType type )
+  private static final BuiltinType makeBuiltinType( String className, BuiltinType type )
   {
     if( classCache == null )
       classCache = new Hashtable();
@@ -184,7 +184,7 @@ public class BuiltinType extends JavaClassWrapper
   }
   
   /*=======================================================================*/
-  public synchronized void init()
+  public void init()
   {
     if( !initialized )
     {
@@ -197,7 +197,7 @@ public class BuiltinType extends JavaClassWrapper
         
         typeName  = (String)(javaClass.getField("TYPE_NAME").get(null));
         
-        memberSet = new OpenHashSymbolTable();
+        memberSet = new OpenHashSymbolTable(32,0.75f);
         BuiltinType bt = this;
         while( bt != null )
         {

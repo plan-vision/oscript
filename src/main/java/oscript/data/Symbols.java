@@ -471,6 +471,7 @@ public class Symbols {
 
     public static final int IS_SERVER_MODE_TEST=455;
     public static final int IS_SERVER_MODE_PROD=456;
+    public static final int VARGS_IN =457;	// "in" - function auto vargs 
 
     public static void init() 
 	{     
@@ -937,6 +938,9 @@ public class Symbols {
 		
         Symbol.setSymbol(IS_SERVER_MODE_PROD,"isServerModeProd");
         Symbol.setSymbol(IS_SERVER_MODE_TEST,"isServerModeTest");
+
+        Symbol.setSymbol(VARGS_IN,"in");
+        
 	}
 }
 

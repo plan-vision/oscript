@@ -197,7 +197,7 @@ public class OscriptInterpreter
   public static Value eval( MemoryFile file, Scope scope )
     throws ParseException, IOException
   {
-      return (Value)(StackFrame.currentStackFrame().evalNode( getNodeEvaluator(file), scope ));
+      return (Value)(StackFrame.currentStackFrame.evalNode( getNodeEvaluator(file), scope ));
   }
   
   public static long et;
@@ -241,7 +241,7 @@ public class OscriptInterpreter
   {
     Node node = parse(str);
     NodeEvaluator ne =  nodeInterpreter.createNodeEvaluator( null/* NO NAME */, node );
-    return (Value)(StackFrame.currentStackFrame().evalNode( ne, scope ));
+    return (Value)(StackFrame.currentStackFrame.evalNode( ne, scope ));
   }
   
   // XXX fixme: work around because "eval" is a object-script keyword

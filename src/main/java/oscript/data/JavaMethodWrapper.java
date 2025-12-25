@@ -53,8 +53,6 @@ public class JavaMethodWrapper extends Value implements Runnable {
      * @param methods    the methods this is a wrapper for
      */
     JavaMethodWrapper(int id, Object javaObject, Method[] methods) {
-        super();
-
         this.id = id;
         this.javaObject = javaObject;
         this.methods = methods;

@@ -60,7 +60,6 @@ public class Function extends Type
     "callAsExtends"
   };
   public final static Value TYPE = BuiltinType.makeBuiltinType("oscript.data.Function");
-  public final static OArray array0 = new OArray(0); // immutable!
   
   /**
    * The scope this function is defined in.  This does not change throughout
@@ -92,6 +91,7 @@ public class Function extends Type
    * If this function overrides a value, this is the previous value.
    */
   public Value overriden;
+  public final SymbolTable smitAll;
   
   /**
    * In order to keep function instances more lightweight, the values that
@@ -130,7 +130,7 @@ public class Function extends Type
         scope = scope.getPreviousScope();
       overriden = scope.getMemberImpl(fd.id);
       if( overriden != null )
-        overriden = overriden.unhand();
+        overriden = overriden.unhand();    
     }
     
 // XXX seems to cause apple's VM to bus-error... not sure if it causes 
@@ -146,12 +146,15 @@ public class Function extends Type
     if( fd.sprogram != null )
     {
       staticScope = new BasicScope(enclosingScope);
-      StackFrame.currentStackFrame().evalNode( fd.sprogram, staticScope );
+      StackFrame.currentStackFrame.evalNode( fd.sprogram, staticScope );
     }
     else
     {
       staticScope = null;
     }
+    // CACHE VALUE 
+	smitAll = fd.program.getSharedMemberIndexTable(NodeEvaluator.ALL);
+
   }
   
   /*=======================================================================*/
@@ -317,26 +320,21 @@ public class Function extends Type
   {
     if( superFxn != OObject.TYPE )
       throw PackagedScriptObjectException.makeExceptionWrapper( new OUnsupportedOperationException(getName() + ": cannot call as function!") );
-    
-    if( !fd.hasVarInScope && (fd.argIds.length == 0) && (args == null) )
+    if( !fd.hasVarInScope && (fd.argIds.length == 0) && (args == null)  )
     {
       return (Value)(sf.evalNode( fd.program, enclosingScope ));
     }
     else
     {
       Scope scope;
-      SymbolTable smit = fd.program.getSharedMemberIndexTable(NodeEvaluator.ALL);
-      // OPTIMIZED @ 13.12.25
-      /*if( args == null ) args = fd.hasFxnInScope ? array0 : sf.allocateMemberTable(0);
-      args = fd.mapArgs(args);  // even if args length is zero, to deal with var-args*/
-      if (args == null)
-    	  args = array0;
-      else
-    	  args = fd.mapArgs(args);
-      if( !fd.hasFxnInScope )
-        scope = sf.allocateFunctionScope( this, enclosingScope, smit, args );
-      else
-        scope = new FunctionScope( this, enclosingScope, smit, args );
+      SymbolTable smit = smitAll;
+      if( args == null )
+          args = fd.hasFxnInScope ? new OArray(0) : sf.allocateMemberTable(0);
+        args = fd.mapArgs(args);  // even if args length is zero, to deal with var-args
+        if( !fd.hasFxnInScope )
+          scope = sf.allocateFunctionScope( this, enclosingScope, smit, args,null/*,null*/);
+        else
+          scope = new FunctionScope( this, enclosingScope, smit, args );
       try {
         return (Value)(sf.evalNode( fd.program, scope ));
       } finally {
@@ -374,7 +372,7 @@ public class Function extends Type
     if( fd.exprList != null )
       superFxnArgs = (MemberTable)(sf.evalNode( fd.exprList, fxnScope ));
     else
-      superFxnArgs = array0;
+      superFxnArgs = new OArray(0);
     
     superFxn.callAsExtends( sf, newThisScope, superFxnArgs );
     
@@ -412,7 +410,7 @@ public class Function extends Type
     if( fd.exprList != null )
       superFxnArgs = (MemberTable)(sf.evalNode( fd.exprList, fxnScope ));
     else
-      superFxnArgs = array0;
+      superFxnArgs = new OArray(0);
     
     superFxn.callAsExtends( sf, scope, superFxnArgs );
     

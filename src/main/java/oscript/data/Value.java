@@ -52,15 +52,7 @@ public abstract class Value implements MemberTable {
   public final static String PARENT_TYPE_NAME = null;
   public final static String TYPE_NAME        = "Value";
   public final static String[] MEMBER_NAMES   = new String[] {};
-  public final static BuiltinType TYPE = BuiltinType.makeBuiltinType("oscript.data.Value");
-  /*=======================================================================*/
-  /**
-   * Class Constructor.
-   * 
-   * @param type         the type of this object
-   */
-  public Value() {}
-  
+  public final static BuiltinType TYPE = BuiltinType.makeBuiltinType("oscript.data.Value");  
   /*=======================================================================*/
   /**
    * For references to an object (ie variables), this returns the actual
@@ -74,13 +66,6 @@ public abstract class Value implements MemberTable {
   }
   
   /*=======================================================================*/
-  /**
-   * Return the object used for implementing <i>synchronized</i>.  For a
-   * normal script object, the object is it's own monitor.  For a java
-   * object, it is the java object rather than the {@link JavaObjectWrapper}.
-   * 
-   * @return the object to synchronize on
-   */
   public Object getMonitor()
   {
     return this;
@@ -780,7 +765,7 @@ public abstract class Value implements MemberTable {
   public final Value callAsFunction( Value[] args )
     throws PackagedScriptObjectException
   {
-    return callAsFunction( StackFrame.currentStackFrame(), new OArray(args) );
+    return callAsFunction( StackFrame.currentStackFrame, new OArray(args) );
   }
   /*=======================================================================*/
   /**
@@ -795,7 +780,7 @@ public abstract class Value implements MemberTable {
   public final Value callAsConstructor( Value[] args )
     throws PackagedScriptObjectException
   {
-    return callAsConstructor( StackFrame.currentStackFrame(), new OArray(args) );
+    return callAsConstructor( StackFrame.currentStackFrame, new OArray(args) );
   }
   /*=======================================================================*/
   /**
@@ -816,7 +801,7 @@ public abstract class Value implements MemberTable {
   public final Value callAsExtends( Scope scope, MemberTable args )
     throws PackagedScriptObjectException
   {
-    return callAsExtends( StackFrame.currentStackFrame(), scope, args );
+    return callAsExtends( StackFrame.currentStackFrame, scope, args );
   } 
   /*=======================================================================*/
   /**

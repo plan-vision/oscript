@@ -46,7 +46,7 @@ public class SymbolMap
    */
   public SymbolMap()
   {
-    this( new OpenHashSymbolTable() );
+    this( new OpenHashSymbolTable(10,0.75f) );
   }
   
   /**

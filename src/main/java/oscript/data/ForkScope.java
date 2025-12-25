@@ -200,9 +200,9 @@ public class ForkScope extends Scope
    */
   public void free()
   {
-    System.err.println("probably shouldn't get here... tell rob");
-    obj.free();
-    env.free();
+    //System.err.println("probably shouldn't get here... tell rob");
+    //obj.free();
+    //env.free();
   }
 }
 

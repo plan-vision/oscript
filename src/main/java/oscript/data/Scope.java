@@ -51,8 +51,6 @@ public abstract class Scope extends Value
    */
   protected Scope( Scope previous )
   {
-    super();
-    
     this.previous = previous;
   }
   
@@ -292,7 +290,7 @@ public abstract class Scope extends Value
   /*=======================================================================*/
   protected final static String findDesc( Scope scope )
   {
-    for( java.util.Iterator itr=StackFrame.currentStackFrame().iterator(); itr.hasNext(); )
+    for( java.util.Iterator itr=StackFrame.currentStackFrame.iterator(); itr.hasNext(); )
     {
       StackFrame sf=(StackFrame)(itr.next());
       if( sf.getScope() == scope )

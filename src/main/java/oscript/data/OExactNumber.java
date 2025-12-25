@@ -93,25 +93,29 @@ public class OExactNumber extends OObject
    * short lived (for example, for loops, etc), a table of pre-allocated
    * OExactNumbers is used
    */
-  private static final int MIN_CACHED_EXACT_NUMBER  = -100;
-  private static final int MAX_CACHED_EXACT_NUMBER  = 2000;
-  private static final OExactNumber[] EXACT_NUMBERS = new OExactNumber[ MAX_CACHED_EXACT_NUMBER - MIN_CACHED_EXACT_NUMBER + 1 ];
-  static {
-    for( int i=MIN_CACHED_EXACT_NUMBER; i<=MAX_CACHED_EXACT_NUMBER; i++ )
-      EXACT_NUMBERS[ i - MIN_CACHED_EXACT_NUMBER ] = new OExactNumber(i);
-  }
-  
   /*=======================================================================*/
-  /**
-   */
-  public static final OExactNumber makeExactNumber( long longVal )
-  {
-    if( (MIN_CACHED_EXACT_NUMBER <= longVal) && (longVal <= MAX_CACHED_EXACT_NUMBER) )
-      return EXACT_NUMBERS[ (int)longVal - MIN_CACHED_EXACT_NUMBER ];
-//System.out.println("makeExactNumber: " + longVal);
-    return new OExactNumber(longVal);
+  private static final OExactNumber[] EXACT_NUMBERS_POS = new OExactNumber[ 8192 ];
+  private static final OExactNumber[] EXACT_NUMBERS_NEG = new OExactNumber[ 8192 ];
+  public static final OExactNumber makeExactNumber( int val ) {
+	  if (val >= 0) {
+		  if (val >= 8192)
+			  return new OExactNumber(val);
+		  OExactNumber t = EXACT_NUMBERS_POS[val];
+		  return t != null ? t : (EXACT_NUMBERS_POS[val]=new OExactNumber(val));
+	  } else {
+		  final int aval = -val;
+		  if (aval >= 8192)
+			  return new OExactNumber(val);
+		  OExactNumber t = EXACT_NUMBERS_NEG[aval];
+		  return t != null ? t : (EXACT_NUMBERS_NEG[aval]=new OExactNumber(val));
+	  }
   }
-  
+  public static final OExactNumber makeExactNumber( long val )
+   {
+	  if (val >= 8192 || val <= -8192)
+		  return new OExactNumber(val);
+	  return makeExactNumber((int)val);
+  }
   /*=======================================================================*/
   // members:
   private long longVal;

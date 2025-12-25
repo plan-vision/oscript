@@ -200,7 +200,7 @@ public class EvaluateVisitor implements ObjectVisitor, OscriptParserConstants
     NodeToken_kind      = n.kind;
     NodeToken_lastToken = n;
     
-    StackFrame.currentStackFrame().setLineNumber( thisScope, n.beginLine );
+    StackFrame.currentStackFrame.setLineNumber( thisScope, n.beginLine );
     
     /*if( n.specialTokens != null )
       NodeToken_lastSpecials = n.specialTokens;*/   

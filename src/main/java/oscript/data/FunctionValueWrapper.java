@@ -12,7 +12,7 @@ import oscript.util.StackFrame;
  * @date 	$LastChangedDate: 2012-01-17 16:27:36 +0100 (Di, 17 Jan 2012) $
  * @project VisionR Server 
  */
-public class FunctionValueWrapper extends ValueWrapperTempReference {
+public final class FunctionValueWrapper extends ValueWrapperTempReference {
 	
 	public final static FunctionValueWrapper NULL = new FunctionValueWrapper(null);
 	

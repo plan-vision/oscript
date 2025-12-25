@@ -67,11 +67,7 @@ public class OObject extends Value
   /**
    * Class Constructor.
    */
-  public OObject()
-  {
-    super();
-  }
-  
+  public OObject() {}
   /*=======================================================================*/
   /**
    * Class Constructor.  This is the constructor that gets called via an

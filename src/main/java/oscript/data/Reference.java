@@ -95,7 +95,6 @@ public class Reference extends Value
    */
   public Reference( int attr )
   {
-    super();
     reset(attr);
   }
   
@@ -116,7 +115,7 @@ public class Reference extends Value
   /**
    * Get access to this reference's attributes.
    */
-  int getAttr()
+  public int getAttr()
   {
     return attr;
   }
@@ -147,6 +146,12 @@ public class Reference extends Value
     this.readonly = false;
   }
   
+  public final void resetNULL()
+  {
+    this.attr = ATTR_PUBLIC;
+    this.val  = NULL;
+    this.readonly = false;
+  }
   /*=======================================================================*/
   /**
    * Return a hash code value for this object.
@@ -197,13 +202,6 @@ public class Reference extends Value
   }
   
   /*=======================================================================*/
-  /**
-   * Return the object used for implementing <i>synchronized</i>.  For a
-   * normal script object, the object is it's own monitor.  For a java
-   * object, it is the java object rather than the {@link JavaObjectWrapper}.
-   * 
-   * @return the object to synchronize on
-   */
   public Object getMonitor()
   {
     return val.getMonitor();

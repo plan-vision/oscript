@@ -62,7 +62,7 @@ public class JavaClassWrapper extends Type {
 	 * 
 	 * @param javaClass the java class this object is a wrapper for
 	 */
-	public static synchronized JavaClassWrapper getClassWrapper(Class javaClass) {
+	public static JavaClassWrapper getClassWrapper(Class javaClass) {
 		JavaClassWrapper jcw = (JavaClassWrapper) (classWrapperCache.get(javaClass));
 
 		if (jcw == null) {
@@ -73,7 +73,7 @@ public class JavaClassWrapper extends Type {
 		return jcw;
 	}
 
-	public static synchronized Class forName(String className) throws ClassNotFoundException {
+	public static Class forName(String className) throws ClassNotFoundException {
 		//System.err.println(">>> HOST IMPL GET CLASS BY NAME " + className);
 		return OscriptHost.me.getClassByName(className);
 	}
@@ -99,7 +99,7 @@ public class JavaClassWrapper extends Type {
 	 * <code>impl</code> and <code>wrapperImpl</code> are transient, and might not
 	 * exist if this object gets unserialized...
 	 */
-	public synchronized void init() {
+	public void init() {
 		if (impl == null) {
 			String name = javaClass.getName();
 			if (name != null) // TeaVM target may be null ? TODO ?
@@ -356,7 +356,7 @@ public class JavaClassWrapper extends Type {
 			this.javaClass = javaClass;
 		}
 
-		synchronized void init() {
+		void init() {
 			if (!initialized) {
 				constructors = javaClass.getDeclaredConstructors();
 				boolean isNotPublic = !Modifier.isPublic(javaClass.getModifiers());
@@ -461,31 +461,24 @@ public class JavaClassWrapper extends Type {
 					public Value getMember(int id, Object javaObj) {
 						Value obj = JavaBridge.convertToScriptObject(javaObj);
 
-						/*
-						 * not synchronized on innerClassImplCache, to avoid deadlock when calling
-						 * forName() triggers loading a class that does something that causes methods of
-						 * this object to be called again
-						 */
-						synchronized (javaClass) // XXX is this ok to sync on?
-						{
-							JavaInnerClassWrapper jicw = null;
+						JavaInnerClassWrapper jicw = null;
 
-							if (impls == null) {
-								jicw = new JavaInnerClassWrapper(obj, innerClass);
-								jicw.init();
+						if (impls == null) {
+							jicw = new JavaInnerClassWrapper(obj, innerClass);
+							jicw.init();
 
-								impls = new JavaClassWrapperImpl[1];
-								impls[0] = jicw.impl;
-							}
-
-							if (jicw == null) {
-								jicw = new JavaInnerClassWrapper(obj, impls[0].javaClass);
-
-								jicw.impl = impls[0];
-							}
-
-							return jicw;
+							impls = new JavaClassWrapperImpl[1];
+							impls[0] = jicw.impl;
 						}
+
+						if (jicw == null) {
+							jicw = new JavaInnerClassWrapper(obj, impls[0].javaClass);
+
+							jicw.impl = impls[0];
+						}
+
+						return jicw;
+						
 					}
 
 				};
@@ -669,7 +662,7 @@ public class JavaClassWrapper extends Type {
 			v.add(method);
 		}
 
-		public synchronized Value getMember(int id, Object obj) {
+		public Value getMember(int id, Object obj) {
 			if (methods == null) {
 				methods = new Method[v.size()];
 				v.copyInto(methods);
@@ -772,13 +765,11 @@ public class JavaClassWrapper extends Type {
 	Object readResolve() throws java.io.ObjectStreamException {
 		Object obj;
 
-		synchronized (JavaClassWrapper.class) {
-			obj = classWrapperCache.get(javaClass);
+		obj = classWrapperCache.get(javaClass);
 
-			if (obj == null) {
-				obj = this;
-				classWrapperCache.put(javaClass, obj);
-			}
+		if (obj == null) {
+			obj = this;
+			classWrapperCache.put(javaClass, obj);
 		}
 
 		return obj;

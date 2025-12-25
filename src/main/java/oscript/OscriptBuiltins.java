@@ -23,8 +23,6 @@ package oscript;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.LinkedList;
-import java.util.TreeMap;
 
 import oscript.data.Function;
 import oscript.data.JavaClassWrapper;
@@ -61,9 +59,7 @@ public class OscriptBuiltins
   /**
    * sorted by priority, values are list of runnables at that
    * priority level.
-   */
-  private static TreeMap atExitRunnableMap = null;
-    
+   */    
   /*=======================================================================*/
   /**
    * 
@@ -137,49 +133,6 @@ public class OscriptBuiltins
   }
 
   /*=======================================================================*/
-  /**
-   * Register a hook to be called at system exit.  The runnables are
-   * prioritized, and the ones with higher priority (lower numerical
-   * <code>priority</code> value) will be invoked first.
-   * 
-   * @param r            runnable to call
-   * @param priority     lower numerical value is higher priority
-   */
-  public static synchronized void atExit( Runnable r, final int priority )
-  {
-    if( atExitRunnableMap == null )
-      atExitRunnableMap = new TreeMap();
-    
-    Integer p = Integer.valueOf(priority);
-    LinkedList runnableList = (LinkedList)(atExitRunnableMap.get(p));
-    if( runnableList == null )
-    {
-      runnableList = new LinkedList() {
-          public String toString()
-          {
-            return "[pri=" + priority + ", list=" + super.toString() + "]";
-          }
-        };
-      atExitRunnableMap.put( p, runnableList );
-    }
-    
-    runnableList.add(r);
-  }
-  public static void atExit( Runnable r )
-  {
-    atExit( r, Integer.MAX_VALUE / 2 );
-  }
-  
-  public static final long runStringTest( int cnt )
-  {
-    String str = "0123456789";
-    String res = "";
-    long t = System.currentTimeMillis();
-    for( int i=0; i<cnt; i++ )
-      res += str;
-    str=res; // silent compiler
-    return System.currentTimeMillis() - t;
-  }
 }
 
 
@@ -193,8 +146,6 @@ class OBuiltinFunction extends Value
   
   OBuiltinFunction( OString name, OString[] argNames )
   {
-    super();
-    
     this.name     = name;
     this.argNames = argNames;
   }

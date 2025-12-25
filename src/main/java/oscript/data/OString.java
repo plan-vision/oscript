@@ -1073,7 +1073,7 @@ public class OString extends OObject
 	  return new OString(str);
   }
   private static Hashtable interndTable; // key is str, val is ostr
-  private static final synchronized OString makeString( OString ostr, String str )
+  private static final OString makeString( OString ostr, String str )
   {
     if( interndTable == null )
       interndTable = new Hashtable();
@@ -1206,7 +1206,7 @@ public class OString extends OObject
       return stringVal;
     }
     
-    protected synchronized int length()
+    protected int length()
     {
       if( stringVal == null )
         return s1.length() + s2.length();
@@ -1214,7 +1214,7 @@ public class OString extends OObject
         return stringVal.length();
     }
     
-    protected synchronized void appendTo( StringBuffer sb )
+    protected void appendTo( StringBuffer sb )
     {
       if( stringVal == null )
       {
@@ -1227,7 +1227,7 @@ public class OString extends OObject
       }
     }
     
-    private synchronized void flatten()
+    private void flatten()
     {
       if( stringVal == null ) // do check here to, cause it's sync'd
       {
@@ -1240,15 +1240,8 @@ public class OString extends OObject
         }
         appendTo(sb);
         String tmp = sb.toString();
-        stringVal = tmp;    /* this step has to be last, because
-                             * an unsynchronized access to stringVal
-                             * is used to determin if init() is
-                             * complete... weird, but avoids needing
-                             * a state variable in an object we want
-                             * to keep lightweight.
-                             */
-        s1 = s2 = null;     /* post-flatten cleanup, allow to be GC'd
-                             */
+        stringVal = tmp;    
+        s1 = s2 = null;    
       }
     }
         

@@ -46,7 +46,6 @@ public abstract class Type extends Value
    */
   public Type()
   {
-    super();
   }
   
   /*=======================================================================*/

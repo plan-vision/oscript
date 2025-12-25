@@ -94,9 +94,7 @@ public class OException extends OObject
     super();
     this.type = type;
     this.str  = str;
-    
-    sf = StackFrame.currentStackFrame();
-    //line = sf.getLineNumber();
+    sf = StackFrame.currentStackFrame;
   }
   
   /*=======================================================================*/
