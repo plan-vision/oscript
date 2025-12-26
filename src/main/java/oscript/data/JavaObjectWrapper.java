@@ -66,8 +66,6 @@ public class JavaObjectWrapper extends Value {
 		return javaObject;
 	}
 
-	private static final Value[] NO_ARGS = Value.emptyArray;
-
 	/* ======================================================================= */
 	/**
 	 * Convert this object to a native java <code>boolean</code> value.
@@ -81,7 +79,7 @@ public class JavaObjectWrapper extends Value {
 		if (fxn == null)
 			return super.castToBoolean();
 		else
-			return fxn.callAsFunction(NO_ARGS).castToBoolean();
+			return fxn.callAsFunction().castToBoolean();
 	}
 
 	/* ======================================================================= */
@@ -122,7 +120,7 @@ public class JavaObjectWrapper extends Value {
 		if (fxn == null)
 			return super.castToExactNumber();
 		else
-			return fxn.callAsFunction(NO_ARGS).castToExactNumber();
+			return fxn.callAsFunction().castToExactNumber();
 	}
 
 	/* ======================================================================= */
@@ -141,7 +139,7 @@ public class JavaObjectWrapper extends Value {
 		if (fxn == null)
 			return super.castToInexactNumber();
 		else
-			return fxn.callAsFunction(NO_ARGS).castToInexactNumber();
+			return fxn.callAsFunction().castToInexactNumber();
 	}
 
 	/* ======================================================================= */

@@ -282,7 +282,7 @@ public class BuiltinType extends JavaClassWrapper
 	// note symbol is pushed to ScriptObject to work around a starup dependency issue
     Value bopCast = getMember( ScriptObject._BOPCAST, false );
     if( bopCast != null )
-      return bopCast.callAsFunction( new Value[] { val } );
+      return bopCast.callAsFunction(val );
     return super.bopCast(val);
   }
   

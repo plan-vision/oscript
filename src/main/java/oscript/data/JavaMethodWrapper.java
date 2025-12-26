@@ -75,11 +75,8 @@ public class JavaMethodWrapper extends Value implements Runnable {
      * Implementing the runnable interface.
      */
     public void run() {
-        callAsFunction(NO_ARGS);
+        callAsFunction();
     }
-
-    private static final Value[] NO_ARGS = Value.emptyArray;
-
     /* ======================================================================= */
     /**
      * Return a hash code value for this object.

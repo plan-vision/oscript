@@ -1707,7 +1707,6 @@ public class EvaluateVisitor implements ObjectVisitor, OscriptParserConstants
   public Object visit( FunctionCallPrimaryPostfix n, Object argu )
   {
     Value[] args = (Value[])(n.f0.accept( this, argu ));
-    
     return ((Value)argu).callAsFunction(args);
   }
   

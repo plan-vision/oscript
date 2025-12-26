@@ -1033,15 +1033,94 @@ public abstract class Value implements MemberTable {
 	    throw noSuchMember("referenceAt");
   }
   //-----------------------------------------------------------------------------------------------------
-  public final Value callAsFunction( Value[] args )
-    throws PackagedScriptObjectException
-  {
-    return callAsFunction( StackFrame.currentStackFrame, new OArray(args) );
+  public final Value callAsFunction() {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(0);
+	  Value res = callAsFunction(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
   }
+  public final Value callAsFunction(Value arg1) {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(1);
+	  t.push1(arg1);
+	  Value res = callAsFunction(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+  public final Value callAsFunction(Value arg1,Value arg2) {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(2);
+	  t.push2(arg1,arg2);
+	  Value res = callAsFunction(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+  public final Value callAsFunction(Value arg1,Value arg2,Value arg3) {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(3);
+	  t.push3(arg1,arg2,arg3);
+	  Value res = callAsFunction(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+  public final Value callAsFunction(Value arg1,Value arg2,Value arg3,Value arg4) {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(4);
+	  t.push4(arg1,arg2,arg3,arg4);
+	  Value res = callAsFunction(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+  //---------------------------------------------------------------------------------
+  public final Value callAsConstructor() {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(0);
+	  Value res = callAsConstructor(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+  public final Value callAsConstructor(Value arg1) {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(1);
+	  t.push1(arg1);
+	  Value res = callAsConstructor(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+  public final Value callAsConstructor(Value arg1,Value arg2) {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(2);
+	  t.push2(arg1,arg2);
+	  Value res = callAsConstructor(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+  public final Value callAsConstructor(Value arg1,Value arg2,Value arg3) {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(3);
+	  t.push3(arg1,arg2,arg3);
+	  Value res = callAsConstructor(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+  public final Value callAsConstructor(Value arg1,Value arg2,Value arg3,Value arg4) {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(4);
+	  t.push4(arg1,arg2,arg3,arg4);
+	  Value res = callAsConstructor(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+  //---------------------------------------------------------------------------------
+ public final Value callAsFunction( Value[] args ) throws PackagedScriptObjectException
+  {
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(args.length);
+	  for (int i=0;i<args.length;i++) t.push1(args[i]);
+	  Value res = callAsFunction(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
+  }
+
   public final Value callAsConstructor( Value[] args ) throws PackagedScriptObjectException
   {
-    return callAsConstructor( StackFrame.currentStackFrame, new OArray(args) );
+	  MemberTable t = StackFrame.currentStackFrame.allocateMemberTable(args.length);
+	  for (int i=0;i<args.length;i++) t.push1(args[i]);
+	  Value res = callAsConstructor(StackFrame.currentStackFrame, t);
+	  t.free();
+	  return res;
   }
+ 
 
 }
 

@@ -510,8 +510,11 @@ public abstract class StackFrame {
 		}
 
 		public void reset() {
-			for (int i = off + sz - 1; i >= off; i--)
-				members[i].reset();
+			for (int i = off + sz - 1; i >= off; i--) {
+				Reference r = members[i];
+				if (r != null)				// NEW @ 26.12.25 | NULL POINTER maybe because of the new VARGS IMPL. TODO INVESTIGATE! ONLY BYTECODE COMPILER!
+					r.reset();
+			}
 		}
 
 		public void free() {

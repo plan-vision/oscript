@@ -537,14 +537,14 @@ public class JavaClassWrapper extends Type {
 									throw noSuchMember(setterName);
 							}
 
-							setter.callAsFunction(new Value[] { val });
+							setter.callAsFunction(val);
 						}
 
 						protected Value get() {
 							if (getter == null)
 								getter = getterCE.getMember(id, javaObj);
 
-							return getter.callAsFunction(Value.emptyArray);
+							return getter.callAsFunction();
 						}
 
 					};

@@ -46,9 +46,7 @@ public class ScriptObject extends BasicScope
    * The type of the script object.
    */
   private Value type;
-  
-  private static final Value[] EMPTY_ARRAY = new Value[] {};
-  
+   
   /**
    * The type object for an instance of ScriptObject... which can't really be
    * instantiated, but this is needed internally.
@@ -112,7 +110,7 @@ public class ScriptObject extends BasicScope
   public boolean castToBoolean()
     throws PackagedScriptObjectException
   {
-    return getMember(CASTTOBOOLEAN).callAsFunction(EMPTY_ARRAY).castToBoolean();
+    return getMember(CASTTOBOOLEAN).callAsFunction().castToBoolean();
   }
   public boolean _castToBoolean()
     throws PackagedScriptObjectException
@@ -132,7 +130,7 @@ public class ScriptObject extends BasicScope
   public String castToString()
     throws PackagedScriptObjectException
   {
-    return getMember(CASTTOSTRING).callAsFunction(EMPTY_ARRAY).castToString();
+    return getMember(CASTTOSTRING).callAsFunction().castToString();
     // handled specially for objects that subclass java types:
 //     try
 //     {
@@ -169,7 +167,7 @@ public class ScriptObject extends BasicScope
   public long castToExactNumber()
     throws PackagedScriptObjectException
   {
-    return getMember(CASTTOEXACTNUMBER).callAsFunction(EMPTY_ARRAY).castToExactNumber();
+    return getMember(CASTTOEXACTNUMBER).callAsFunction().castToExactNumber();
   }
   public long _castToExactNumber()
     throws PackagedScriptObjectException
@@ -189,7 +187,7 @@ public class ScriptObject extends BasicScope
   public double castToInexactNumber()
     throws PackagedScriptObjectException
   {
-    return getMember(CASTTOINEXACTNUMBER).callAsFunction(EMPTY_ARRAY).castToInexactNumber();
+    return getMember(CASTTOINEXACTNUMBER).callAsFunction().castToInexactNumber();
   }
   public double _castToInexactNumber()
     throws PackagedScriptObjectException
@@ -247,7 +245,7 @@ public class ScriptObject extends BasicScope
   public Value bopCast( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPCAST).callAsFunction( new Value[] { val } );
+    return getMember(BOPCAST).callAsFunction( val );
   }
   public Value _bopCast( Value val )
     throws PackagedScriptObjectException
@@ -257,7 +255,7 @@ public class ScriptObject extends BasicScope
   public Value bopCastR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPCASTR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPCASTR).callAsFunction(val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopCastR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -279,7 +277,7 @@ public class ScriptObject extends BasicScope
   public Value bopInstanceOf( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPINSTANCEOF).callAsFunction( new Value[] { val } );
+    return getMember(BOPINSTANCEOF).callAsFunction( val );
   }
   public Value _bopInstanceOf( Value val )
     throws PackagedScriptObjectException
@@ -289,7 +287,7 @@ public class ScriptObject extends BasicScope
   public Value bopInstanceOfR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPINSTANCEOFR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPINSTANCEOFR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopInstanceOfR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -311,7 +309,7 @@ public class ScriptObject extends BasicScope
   public Value bopLogicalOr( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLOGICALOR).callAsFunction( new Value[] { val } );
+    return getMember(BOPLOGICALOR).callAsFunction( val );
   }
   public Value _bopLogicalOr( Value val )
     throws PackagedScriptObjectException
@@ -321,7 +319,7 @@ public class ScriptObject extends BasicScope
   public Value bopLogicalOrR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLOGICALORR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPLOGICALORR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopLogicalOrR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -343,7 +341,7 @@ public class ScriptObject extends BasicScope
   public Value bopLogicalAnd( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLOGICALAND).callAsFunction( new Value[] { val } );
+    return getMember(BOPLOGICALAND).callAsFunction( val );
   }
   public Value _bopLogicalAnd( Value val )
     throws PackagedScriptObjectException
@@ -353,7 +351,7 @@ public class ScriptObject extends BasicScope
   public Value bopLogicalAndR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLOGICALANDR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPLOGICALANDR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopLogicalAndR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -375,7 +373,7 @@ public class ScriptObject extends BasicScope
   public Value bopBitwiseOr( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPBITWISEOR).callAsFunction( new Value[] { val } );
+    return getMember(BOPBITWISEOR).callAsFunction( val );
   }
   public Value _bopBitwiseOr( Value val )
     throws PackagedScriptObjectException
@@ -385,7 +383,7 @@ public class ScriptObject extends BasicScope
   public Value bopBitwiseOrR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPBITWISEORR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPBITWISEORR).callAsFunction( val, JavaBridge.convertToScriptObject(e));
   }
   public Value _bopBitwiseOrR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -407,7 +405,7 @@ public class ScriptObject extends BasicScope
   public Value bopBitwiseXor( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPBITWISEXOR).callAsFunction( new Value[] { val } );
+    return getMember(BOPBITWISEXOR).callAsFunction( val );
   }
   public Value _bopBitwiseXor( Value val )
     throws PackagedScriptObjectException
@@ -417,7 +415,7 @@ public class ScriptObject extends BasicScope
   public Value bopBitwiseXorR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPBITWISEXORR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPBITWISEXORR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopBitwiseXorR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -439,7 +437,7 @@ public class ScriptObject extends BasicScope
   public Value bopBitwiseAnd( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPBITEWISEAND).callAsFunction( new Value[] { val } );
+    return getMember(BOPBITEWISEAND).callAsFunction( val );
   }
   public Value _bopBitwiseAnd( Value val )
     throws PackagedScriptObjectException
@@ -449,7 +447,7 @@ public class ScriptObject extends BasicScope
   public Value bopBitwiseAndR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPBITEWISEANDR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPBITEWISEANDR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopBitwiseAndR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -471,7 +469,7 @@ public class ScriptObject extends BasicScope
   public Value bopEquals( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPEQUALS).callAsFunction( new Value[] { val } );
+    return getMember(BOPEQUALS).callAsFunction( val );
   }
   public Value _bopEquals( Value val )
     throws PackagedScriptObjectException
@@ -481,7 +479,7 @@ public class ScriptObject extends BasicScope
   public Value bopEqualsR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPEQUALSR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPEQUALSR).callAsFunction(  val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopEqualsR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -503,7 +501,7 @@ public class ScriptObject extends BasicScope
   public Value bopNotEquals( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPNOTEQUALS).callAsFunction( new Value[] { val } );
+    return getMember(BOPNOTEQUALS).callAsFunction( val );
   }
   public Value _bopNotEquals( Value val )
     throws PackagedScriptObjectException
@@ -513,7 +511,7 @@ public class ScriptObject extends BasicScope
   public Value bopNotEqualsR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPNOTEQUALSR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPNOTEQUALSR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopNotEqualsR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -535,7 +533,7 @@ public class ScriptObject extends BasicScope
   public Value bopLessThan( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLESSTHAN).callAsFunction( new Value[] { val } );
+    return getMember(BOPLESSTHAN).callAsFunction( val );
   }
   public Value _bopLessThan( Value val )
     throws PackagedScriptObjectException
@@ -545,7 +543,7 @@ public class ScriptObject extends BasicScope
   public Value bopLessThanR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLESSTHANR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPLESSTHANR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopLessThanR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -567,7 +565,7 @@ public class ScriptObject extends BasicScope
   public Value bopGreaterThan( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPGREATERTHAN).callAsFunction( new Value[] { val } );
+    return getMember(BOPGREATERTHAN).callAsFunction( val );
   }
   public Value _bopGreaterThan( Value val )
     throws PackagedScriptObjectException
@@ -577,7 +575,7 @@ public class ScriptObject extends BasicScope
   public Value bopGreaterThanR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPGREATERTHANR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPGREATERTHANR).callAsFunction( val, JavaBridge.convertToScriptObject(e));
   }
   public Value _bopGreaterThanR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -599,7 +597,7 @@ public class ScriptObject extends BasicScope
   public Value bopLessThanOrEquals( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLESSTHANOREQUALS).callAsFunction( new Value[] { val } );
+    return getMember(BOPLESSTHANOREQUALS).callAsFunction( val );
   }
   public Value _bopLessThanOrEquals( Value val )
     throws PackagedScriptObjectException
@@ -609,7 +607,7 @@ public class ScriptObject extends BasicScope
   public Value bopLessThanOrEqualsR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLESSTHANOREQUALSR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPLESSTHANOREQUALSR).callAsFunction(val, JavaBridge.convertToScriptObject(e));
   }
   public Value _bopLessThanOrEqualsR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -631,7 +629,7 @@ public class ScriptObject extends BasicScope
   public Value bopGreaterThanOrEquals( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPGREATORTHANOREQUALS).callAsFunction( new Value[] { val } );
+    return getMember(BOPGREATORTHANOREQUALS).callAsFunction( val );
   }
   public Value _bopGreaterThanOrEquals( Value val )
     throws PackagedScriptObjectException
@@ -641,7 +639,7 @@ public class ScriptObject extends BasicScope
   public Value bopGreaterThanOrEqualsR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPGREATORTHANOREQUALSR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPGREATORTHANOREQUALSR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopGreaterThanOrEqualsR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -663,7 +661,7 @@ public class ScriptObject extends BasicScope
   public Value bopLeftShift( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLEFTSHIFT).callAsFunction( new Value[] { val } );
+    return getMember(BOPLEFTSHIFT).callAsFunction( val );
   }
   public Value _bopLeftShift( Value val )
     throws PackagedScriptObjectException
@@ -673,7 +671,7 @@ public class ScriptObject extends BasicScope
   public Value bopLeftShiftR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPLEFTSHIFTR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPLEFTSHIFTR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopLeftShiftR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -695,7 +693,7 @@ public class ScriptObject extends BasicScope
   public Value bopSignedRightShift( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPSIGNEDRIGHTSHIFT).callAsFunction( new Value[] { val } );
+    return getMember(BOPSIGNEDRIGHTSHIFT).callAsFunction( val );
   }
   public Value _bopSignedRightShift( Value val )
     throws PackagedScriptObjectException
@@ -705,7 +703,7 @@ public class ScriptObject extends BasicScope
   public Value bopSignedRightShiftR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPSIGNEDRIGHTSHIFTR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPSIGNEDRIGHTSHIFTR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopSignedRightShiftR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -727,7 +725,7 @@ public class ScriptObject extends BasicScope
   public Value bopUnsignedRightShift( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPUNSIGNEDRIGHTSHIFT).callAsFunction( new Value[] { val } );
+    return getMember(BOPUNSIGNEDRIGHTSHIFT).callAsFunction( val );
   }
   public Value _bopUnsignedRightShift( Value val )
     throws PackagedScriptObjectException
@@ -737,7 +735,7 @@ public class ScriptObject extends BasicScope
   public Value bopUnsignedRightShiftR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPUNSIGNEDRIGHTSHIFTR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPUNSIGNEDRIGHTSHIFTR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopUnsignedRightShiftR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -759,7 +757,7 @@ public class ScriptObject extends BasicScope
   public Value bopPlus( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPPLUS).callAsFunction( new Value[] { val } );
+    return getMember(BOPPLUS).callAsFunction( val );
   }
   public Value _bopPlus( Value val )
     throws PackagedScriptObjectException
@@ -769,7 +767,7 @@ public class ScriptObject extends BasicScope
   public Value bopPlusR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPPLUSR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPPLUSR).callAsFunction(  val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopPlusR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -791,7 +789,7 @@ public class ScriptObject extends BasicScope
   public Value bopMinus( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPMINUS).callAsFunction( new Value[] { val } );
+    return getMember(BOPMINUS).callAsFunction( val );
   }
   public Value _bopMinus( Value val )
     throws PackagedScriptObjectException
@@ -801,7 +799,7 @@ public class ScriptObject extends BasicScope
   public Value bopMinusR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPMINUSR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPMINUSR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopMinusR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -823,7 +821,7 @@ public class ScriptObject extends BasicScope
   public Value bopMultiply( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPMULTIPLY).callAsFunction( new Value[] { val } );
+    return getMember(BOPMULTIPLY).callAsFunction(  val );
   }
   public Value _bopMultiply( Value val )
     throws PackagedScriptObjectException
@@ -833,7 +831,7 @@ public class ScriptObject extends BasicScope
   public Value bopMultiplyR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPMULTIPLYR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPMULTIPLYR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopMultiplyR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -855,7 +853,7 @@ public class ScriptObject extends BasicScope
   public Value bopDivide( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPDIVIDE).callAsFunction( new Value[] { val } );
+    return getMember(BOPDIVIDE).callAsFunction( val );
   }
   public Value _bopDivide( Value val )
     throws PackagedScriptObjectException
@@ -865,7 +863,7 @@ public class ScriptObject extends BasicScope
   public Value bopDivideR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPDIVIDER).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPDIVIDER).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopDivideR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -887,7 +885,7 @@ public class ScriptObject extends BasicScope
   public Value bopRemainder( Value val )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPREMAINDER).callAsFunction( new Value[] { val } );
+    return getMember(BOPREMAINDER).callAsFunction( val );
   }
   public Value _bopRemainder( Value val )
     throws PackagedScriptObjectException
@@ -897,7 +895,7 @@ public class ScriptObject extends BasicScope
   public Value bopRemainderR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
   {
-    return getMember(BOPREMAINDERR).callAsFunction( new Value[] { val, JavaBridge.convertToScriptObject(e) } );
+    return getMember(BOPREMAINDERR).callAsFunction( val, JavaBridge.convertToScriptObject(e) );
   }
   public Value _bopRemainderR( Value val, PackagedScriptObjectException e )
     throws PackagedScriptObjectException
@@ -917,7 +915,7 @@ public class ScriptObject extends BasicScope
   public Value uopIncrement()
     throws PackagedScriptObjectException
   {
-    return getMember(UOPINCREMENT).callAsFunction(EMPTY_ARRAY);
+    return getMember(UOPINCREMENT).callAsFunction();
   }
   public Value _uopIncrement()
     throws PackagedScriptObjectException
@@ -937,7 +935,7 @@ public class ScriptObject extends BasicScope
   public Value uopDecrement()
     throws PackagedScriptObjectException
   {
-    return getMember(UOPDECREMENT).callAsFunction(EMPTY_ARRAY);
+    return getMember(UOPDECREMENT).callAsFunction();
   }
   public Value _uopDecrement()
     throws PackagedScriptObjectException
@@ -957,7 +955,7 @@ public class ScriptObject extends BasicScope
   public Value uopPlus()
     throws PackagedScriptObjectException
   {
-    return getMember(UOPPLUS).callAsFunction(EMPTY_ARRAY);
+    return getMember(UOPPLUS).callAsFunction();
   }
   public Value _uopPlus()
     throws PackagedScriptObjectException
@@ -977,7 +975,7 @@ public class ScriptObject extends BasicScope
   public Value uopMinus()
     throws PackagedScriptObjectException
   {
-    return getMember(UOPMINUS).callAsFunction(EMPTY_ARRAY);
+    return getMember(UOPMINUS).callAsFunction();
   }
   public Value _uopMinus()
     throws PackagedScriptObjectException
@@ -996,7 +994,7 @@ public class ScriptObject extends BasicScope
   public Value uopBitwiseNot()
     throws PackagedScriptObjectException
   {
-    return getMember(UOPBITWISENOT).callAsFunction(EMPTY_ARRAY);
+    return getMember(UOPBITWISENOT).callAsFunction();
   }
   public Value _uopBitwiseNot()
     throws PackagedScriptObjectException
@@ -1016,7 +1014,7 @@ public class ScriptObject extends BasicScope
   public Value uopLogicalNot()
     throws PackagedScriptObjectException
   {
-    return getMember(UOPLOGICALNOT).callAsFunction(EMPTY_ARRAY);
+    return getMember(UOPLOGICALNOT).callAsFunction();
   }
   public Value _uopLogicalNot()
     throws PackagedScriptObjectException
@@ -1042,7 +1040,7 @@ public class ScriptObject extends BasicScope
   public void opAssign( Value val )
     throws PackagedScriptObjectException
   {
-    getMember(OPASSIGN).callAsFunction( new Value[] { val } );
+    getMember(OPASSIGN).callAsFunction( val );
   }
   public void _opAssign( Value val )
     throws PackagedScriptObjectException
@@ -1065,9 +1063,9 @@ public class ScriptObject extends BasicScope
   public Value callAsFunction( StackFrame sf, MemberTable args )
     throws PackagedScriptObjectException
   {
-    return getMember(CALLASFUNCTION).callAsFunction( new Value[] {
+    return getMember(CALLASFUNCTION).callAsFunction(
       (args == null) ? new OArray(0) : new OArray(args)
-    } );
+    );
   }
   public Value _callAsFunction( StackFrame sf, MemberTable args )
     throws PackagedScriptObjectException
@@ -1090,9 +1088,9 @@ public class ScriptObject extends BasicScope
   public Value callAsConstructor( StackFrame sf, MemberTable args )
     throws PackagedScriptObjectException
   {
-    return getMember(CALLASCONSTRUCTOR).callAsFunction( new Value[] {
+    return getMember(CALLASCONSTRUCTOR).callAsFunction(
       (args == null) ? new OArray(0) : new OArray(args)
-    } );
+    );
   }
   public Value _callAsConstructor( StackFrame sf, MemberTable args )
     throws PackagedScriptObjectException
@@ -1116,9 +1114,9 @@ public class ScriptObject extends BasicScope
   public Value callAsExtends( StackFrame sf, Scope scope, MemberTable args )
     throws PackagedScriptObjectException
   {
-    return getMember(CALLASEXTENDS).callAsFunction( new Value[] { 
+    return getMember(CALLASEXTENDS).callAsFunction( 
       (args == null) ? new OArray(0) : new OArray(args)
-    } );
+    );
   }
   public Value _callAsExtends( StackFrame sf, Scope scope, MemberTable args )
     throws PackagedScriptObjectException
@@ -1142,7 +1140,7 @@ public class ScriptObject extends BasicScope
   public int length()
     throws PackagedScriptObjectException
   {
-    return (int)(getMember(LENGTH).callAsFunction(EMPTY_ARRAY).castToExactNumber());
+    return (int)(getMember(LENGTH).callAsFunction().castToExactNumber());
   }
   public int _length()
     throws PackagedScriptObjectException
@@ -1165,7 +1163,7 @@ public class ScriptObject extends BasicScope
   public Value elementAt( Value idx )
     throws PackagedScriptObjectException
   {
-    return getMember(ELEMENTAT).callAsFunction( new Value[] { idx } );
+    return getMember(ELEMENTAT).callAsFunction( idx );
   }
   public Value _elementAt( Value idx )
     throws PackagedScriptObjectException
@@ -1190,7 +1188,7 @@ public class ScriptObject extends BasicScope
   public Value elementsAt( Value idx1, Value idx2 )
     throws PackagedScriptObjectException
   {
-    return getMember(ELEMENTSAT).callAsFunction( new Value[] { idx1, idx2 } );
+    return getMember(ELEMENTSAT).callAsFunction( idx1, idx2 );
   }
   public Value _elementsAt( Value idx1, Value idx2 )
     throws PackagedScriptObjectException

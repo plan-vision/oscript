@@ -105,7 +105,7 @@ public final class OArray extends Value implements MemberTable {
 					Value v = args.referenceAt(0).unhand();
 					if (v.bopEquals(Value.NULL).castToBoolean())
 						return OArray.this;
-					int s = (int) v.getMember("length").callAsFunction(Value.emptyArray).castToExactNumber();
+					int s = (int) v.getMember("length").callAsFunction().castToExactNumber();
 					for (int i = 0; i < s; i++)
 						OArray.this.push1(v.elementAt(OExactNumber.makeExactNumber(i)));
 					return OArray.this;
@@ -682,11 +682,8 @@ public final class OArray extends Value implements MemberTable {
 	 */
 	public Value every(Value fxn) {
 		int len = length();
-		Value[] args = new Value[] { null, null, this };
 		for (int i = 0; i < len; i++) {
-			args[0] = elementAt(i);
-			args[1] = OExactNumber.makeExactNumber(i);
-			if (!fxn.callAsFunction(args).castToBoolean())
+			if (!fxn.callAsFunction(elementAt(i),OExactNumber.makeExactNumber(i),this).castToBoolean())
 				return OBoolean.FALSE;
 		}
 		return OBoolean.TRUE;
@@ -709,11 +706,8 @@ public final class OArray extends Value implements MemberTable {
 	 */
 	public Value some(Value fxn) {
 		int len = length();
-		Value[] args = new Value[] { null, null, this };
 		for (int i = 0; i < len; i++) {
-			args[0] = elementAt(i);
-			args[1] = OExactNumber.makeExactNumber(i);
-			if (fxn.callAsFunction(args).castToBoolean())
+			if (fxn.callAsFunction(elementAt(i),OExactNumber.makeExactNumber(i),this).castToBoolean())
 				return OBoolean.TRUE;
 		}
 		return OBoolean.FALSE;
@@ -736,11 +730,8 @@ public final class OArray extends Value implements MemberTable {
 	public Value filter(Value fxn) {
 		OArray arr = new OArray(0);
 		int len = length();
-		Value[] args = new Value[] { null, null, this };
 		for (int i = 0; i < len; i++) {
-			args[0] = elementAt(i);
-			args[1] = OExactNumber.makeExactNumber(i);
-			if (fxn.callAsFunction(args).castToBoolean())
+			if (fxn.callAsFunction(elementAt(i),OExactNumber.makeExactNumber(i),this).castToBoolean())
 				arr.push1(elementAt(i));
 		}
 		return arr;
@@ -758,11 +749,8 @@ public final class OArray extends Value implements MemberTable {
 	public Value map(Value fxn) {
 		OArray arr = new OArray(length());
 		int len = length();
-		Value[] args = new Value[] { null, null, this };
 		for (int i = 0; i < len; i++) {
-			args[0] = elementAt(i);
-			args[1] = OExactNumber.makeExactNumber(i);
-			arr.push1(fxn.callAsFunction(args));
+			arr.push1(fxn.callAsFunction(elementAt(i),OExactNumber.makeExactNumber(i),this ));
 		}
 		return arr;
 	}
@@ -777,11 +765,8 @@ public final class OArray extends Value implements MemberTable {
 	 */
 	public void forEach(Value fxn) {
 		int len = length();
-		Value[] args = new Value[] { null, null, this };
 		for (int i = 0; i < len; i++) {
-			args[0] = elementAt(i);
-			args[1] = OExactNumber.makeExactNumber(i);
-			fxn.callAsFunction(args);
+			fxn.callAsFunction(elementAt(i),OExactNumber.makeExactNumber(i),this);
 		}
 	}
 
@@ -853,7 +838,7 @@ public final class OArray extends Value implements MemberTable {
 	}
 
 	private static final int _compare(Value fxn, Reference a, Reference b) {
-		return (int) (fxn.callAsFunction(new Value[] { a.unhand(), b.unhand() }).castToExactNumber());
+		return (int) (fxn.callAsFunction(a.unhand(), b.unhand()).castToExactNumber());
 	}
 
 	private static final void _swap(Reference[] arr, int a, int b) {

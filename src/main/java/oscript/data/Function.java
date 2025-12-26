@@ -286,7 +286,7 @@ public class Function extends Type
   {
     Value bopCast = getMember( BOPCAST, false );
     if( bopCast != null )
-      return bopCast.callAsFunction( new Value[] { val } );
+      return bopCast.callAsFunction( val);
     return super.bopCast(val);
   }
   

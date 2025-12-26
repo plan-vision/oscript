@@ -62,7 +62,7 @@ public class ExtensibleVisitor
   {
     Value val = get( NodeToken.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction( JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -78,7 +78,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ProgramFile.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction( JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu)  );
     return super.visit( n, argu );
   }
 
@@ -92,7 +92,7 @@ public class ExtensibleVisitor
   {
     Value val = get( Program.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction( JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu)  );
     return super.visit( n, argu );
   }
 
@@ -122,7 +122,7 @@ public class ExtensibleVisitor
   {
     Value val = get( EvaluationUnit.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction( JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -138,7 +138,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ScopeBlock.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction( JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -153,7 +153,7 @@ public class ExtensibleVisitor
   {
     Value val = get( VariableDeclarationBlock.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -168,7 +168,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ExpressionBlock.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -184,7 +184,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ThrowBlock.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -201,7 +201,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ImportBlock.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -218,7 +218,7 @@ public class ExtensibleVisitor
   {
     Value val = get( MixinBlock.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -235,7 +235,7 @@ public class ExtensibleVisitor
   {
     Value val = get( EvalBlock.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -253,7 +253,7 @@ public class ExtensibleVisitor
   {
     Value val = get( VariableDeclaration.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu));
     return super.visit( n, argu );
   }
 
@@ -277,7 +277,7 @@ public class ExtensibleVisitor
   {
     Value val = get( FunctionDeclaration.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -294,7 +294,7 @@ public class ExtensibleVisitor
   {
     Value val = get( Arglist.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu)  );
     return super.visit( n, argu );
   }
 
@@ -312,7 +312,7 @@ public class ExtensibleVisitor
   {
     Value val = get( TryStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -335,7 +335,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ForLoopStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -356,7 +356,7 @@ public class ExtensibleVisitor
   {
     Value val = get( CollectionForLoopStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -371,7 +371,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PreLoopStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -389,7 +389,7 @@ public class ExtensibleVisitor
   {
     Value val = get( WhileLoopStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -408,7 +408,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ConditionalStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -426,7 +426,7 @@ public class ExtensibleVisitor
   {
     Value val = get( SynchronizedStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -442,7 +442,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ReturnStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -457,7 +457,7 @@ public class ExtensibleVisitor
   {
     Value val = get( BreakStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -472,7 +472,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ContinueStatement.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -487,7 +487,7 @@ public class ExtensibleVisitor
   {
     Value val = get( Expression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -503,7 +503,7 @@ public class ExtensibleVisitor
   {
     Value val = get( FunctionCallExpressionList.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -518,7 +518,7 @@ public class ExtensibleVisitor
   {
     Value val = get( FunctionCallExpressionListBody.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -533,7 +533,7 @@ public class ExtensibleVisitor
   {
     Value val = get( AssignmentExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -548,7 +548,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ConditionalExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -563,7 +563,7 @@ public class ExtensibleVisitor
   {
     Value val = get( LogicalOrExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -578,7 +578,7 @@ public class ExtensibleVisitor
   {
     Value val = get( LogicalAndExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -593,7 +593,7 @@ public class ExtensibleVisitor
   {
     Value val = get( BitwiseOrExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -608,7 +608,7 @@ public class ExtensibleVisitor
   {
     Value val = get( BitwiseXorExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu)  );
     return super.visit( n, argu );
   }
 
@@ -623,7 +623,7 @@ public class ExtensibleVisitor
   {
     Value val = get( BitwiseAndExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -638,7 +638,7 @@ public class ExtensibleVisitor
   {
     Value val = get( EqualityExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -653,7 +653,7 @@ public class ExtensibleVisitor
   {
     Value val = get( RelationalExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -668,7 +668,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ShiftExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -683,7 +683,7 @@ public class ExtensibleVisitor
   {
     Value val = get( AdditiveExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -698,7 +698,7 @@ public class ExtensibleVisitor
   {
     Value val = get( MultiplicativeExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -713,7 +713,7 @@ public class ExtensibleVisitor
   {
     Value val = get( UnaryExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -728,7 +728,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PostfixExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -744,7 +744,7 @@ public class ExtensibleVisitor
   {
     Value val = get( TypeExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -760,7 +760,7 @@ public class ExtensibleVisitor
   {
     Value val = get( AllocationExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -777,7 +777,7 @@ public class ExtensibleVisitor
   {
     Value val = get( CastExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -792,7 +792,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PrimaryExpression.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -807,7 +807,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PrimaryExpressionNotFunction.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -822,7 +822,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PrimaryExpressionWithTrailingFxnCallExpList.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -838,7 +838,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PrimaryPrefix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -858,7 +858,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PrimaryPrefixNotFunction.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -872,7 +872,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ThisPrimaryPrefix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -886,7 +886,7 @@ public class ExtensibleVisitor
   {
     Value val = get( SuperPrimaryPrefix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -901,7 +901,7 @@ public class ExtensibleVisitor
   {
     Value val = get( CalleePrimaryPrefix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -915,7 +915,7 @@ public class ExtensibleVisitor
   {
     Value val = get( IdentifierPrimaryPrefix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -931,7 +931,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ParenPrimaryPrefix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -953,7 +953,7 @@ public class ExtensibleVisitor
   {
     Value val = get( FunctionPrimaryPrefix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -969,7 +969,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ShorthandFunctionPrimaryPrefix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -985,7 +985,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ArrayDeclarationPrimaryPrefix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -1002,7 +1002,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PrimaryPostfix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -1018,7 +1018,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PrimaryPostfixWithTrailingFxnCallExpList.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -1032,7 +1032,7 @@ public class ExtensibleVisitor
   {
     Value val = get( FunctionCallPrimaryPostfix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -1049,7 +1049,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ArraySubscriptPrimaryPostfix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -1064,7 +1064,7 @@ public class ExtensibleVisitor
   {
     Value val = get( PropertyIdentifierPrimaryPostfix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -1079,7 +1079,7 @@ public class ExtensibleVisitor
   {
     Value val = get( ThisScopeQualifierPrimaryPostfix.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -1099,7 +1099,7 @@ public class ExtensibleVisitor
   {
     Value val = get( Literal.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
@@ -1114,7 +1114,7 @@ public class ExtensibleVisitor
   {
     Value val = get( Permissions.class );
     if( val != null )
-      return val.callAsFunction( new Value[] { JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) } );
+      return val.callAsFunction(  JavaBridge.convertToScriptObject(n), JavaBridge.convertToScriptObject(argu) );
     return super.visit( n, argu );
   }
 
