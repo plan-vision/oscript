@@ -755,44 +755,7 @@ public abstract class Value implements MemberTable {
   {
     throw PackagedScriptObjectException.makeExceptionWrapper( new OUnsupportedOperationException("can't call as constructor") );
   }
-
-  public final Value callAsFunction( Value oneArg) {
-	  Value[] t = new Value[1];
-	  t[0]=oneArg;
-	  return callAsFunction(t);
-  }
-
-  public final Value callAsFunction( Value[] args )
-    throws PackagedScriptObjectException
-  {
-    return callAsFunction( StackFrame.currentStackFrame, new OArray(args) );
-  }
   /*=======================================================================*/
-  /**
-   * Call this object as a constructor.
-   * 
-   * @param sf           the current stack frame
-   * @param args         the arguments to the function, or <code>null</code> if none
-   * @return the newly constructed object
-   * @throws PackagedScriptObjectException
-   * @see Function
-   */
-  public final Value callAsConstructor( Value[] args )
-    throws PackagedScriptObjectException
-  {
-    return callAsConstructor( StackFrame.currentStackFrame, new OArray(args) );
-  }
-  /*=======================================================================*/
-  /**
-   * Call this object as a parent class constructor.
-   * 
-   * @param sf           the current stack frame
-   * @param scope        the object
-   * @param args         the arguments to the function, or <code>null</code> if none
-   * @return the value returned by the function
-   * @throws PackagedScriptObjectException
-   * @see Function
-   */
   public Value callAsExtends( StackFrame sf, Scope scope, MemberTable args )
     throws PackagedScriptObjectException
   {
@@ -1068,6 +1031,16 @@ public abstract class Value implements MemberTable {
   public Reference referenceAt(final int idx)
   {
 	    throw noSuchMember("referenceAt");
+  }
+  //-----------------------------------------------------------------------------------------------------
+  public final Value callAsFunction( Value[] args )
+    throws PackagedScriptObjectException
+  {
+    return callAsFunction( StackFrame.currentStackFrame, new OArray(args) );
+  }
+  public final Value callAsConstructor( Value[] args ) throws PackagedScriptObjectException
+  {
+    return callAsConstructor( StackFrame.currentStackFrame, new OArray(args) );
   }
 
 }

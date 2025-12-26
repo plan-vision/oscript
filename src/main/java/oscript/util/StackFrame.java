@@ -510,9 +510,8 @@ public abstract class StackFrame {
 		}
 
 		public void reset() {
-			//if (members != null) // WHY NEEDED ? DEBUG ?
-				for (int i = off + sz - 1; i >= off; i--)
-					members[i].reset();
+			for (int i = off + sz - 1; i >= off; i--)
+				members[i].reset();
 		}
 
 		public void free() {
