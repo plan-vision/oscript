@@ -380,23 +380,28 @@ public abstract class StackFrame {
 			final int idx = smit.get(id);
 			if (idx < 0)
 				return null;
-			
-			// ORIGINAL CODE :  if(idx >= members.length())  return null;
-			// NEW : AUTO NULL ARGS
-			final int meml = members instanceof StackFrame.StackFrameMemberTable ? ((StackFrame.StackFrameMemberTable)members).initialLen : members.length();
-			final int reli = idx-meml;
-			if (reli >= 0) {  // original code was return null @ 20.12.2025 (accessing not provided arguments)
-				if (tmpArrNull == null)
-					tmpArrNull = new OArray(Math.max(4,reli+1)); // min 4
-				else {
-					final Reference r = tmpArrNull._referenceAtIfExists(reli);
-					if (r != null)
-						return r;
+			if (idx < fxn.fd.nargs) {
+				// ORIGINAL CODE :  if(idx >= members.length())  return null;
+				// LESS THAN NUMBER OF ARGUMENTS (NEW AUTO ARG NULL IF NOT PROVIDED)
+				final int meml = members instanceof StackFrame.StackFrameMemberTable ? ((StackFrame.StackFrameMemberTable)members).initialLen : members.length();
+				final int reli = idx-meml;
+				if (reli >= 0) {  // original code was return null @ 20.12.2025 (accessing not provided arguments)
+					if (tmpArrNull == null)
+						tmpArrNull = new OArray(Math.max(4,reli+1)); // min 4
+					else {
+						final Reference r = tmpArrNull._referenceAtIfExists(reli);
+						if (r != null)
+							return r;
+					}
+					tmpArrNull.ensureCapacity(reli);
+					final Reference r=tmpArrNull.referenceAt(reli);
+					r.resetNULL(); // INITIAL NULL, may be reassigned
+					return r;
 				}
-				tmpArrNull.ensureCapacity(reli);
-				final Reference r=tmpArrNull.referenceAt(reli);
-				r.resetNULL(); // INITIAL NULL, may be reassigned
-				return r;
+			} else {
+				// ORIGINAL CODE
+				if (idx > members.length())
+					return null;
 			}
 			final Reference ref = members.referenceAt(idx);
 			if ((ref == null) || (ref.getAttr() == Reference.ATTR_INVALID))
@@ -452,7 +457,7 @@ public abstract class StackFrame {
 		private int len; // length of our part of 'members'
 		private int sz; // the actual size of the array, sz <= len
 		private int savedOff; // saved 'off' value if we have copyOutOfStack()'d
-		protected int initialLen; // save len in reinit(len) 
+		protected int initialLen; // save len in reinit(len) (adds offset!)
 		private OArray aVArgs;
 		
 		StackFrameMemberTable next;
