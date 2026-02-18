@@ -319,8 +319,8 @@ public final class OArray extends Value implements MemberTable {
 		if (sz >= alen) {
 			// grow to fit
 			int newSize = alen == 0 ? 4 /* initial */ : alen * 2;
-			while (sz >= newSize)	// 21.12.25 @ * 2 till reach ! OK ? CHECK !
-				newSize<<=1;
+			while (sz >= newSize)	// 21.12.25 @ * 1.5 till reach (like ArrayList factor)
+				newSize*=1.5;
 			Reference[] newArr = new Reference[newSize];
 			if (arr != null)
 				System.arraycopy(arr, 0, newArr, 0, size);

@@ -53,7 +53,7 @@ public final class FunctionData {
 	 * function has its <code>id</code> specified by the 2*n element in the array,
 	 * and <code>attr</code> specified by the 2*n+1 element in the array.
 	 */
-	int[] argIds;
+	public int[] argIds;
 
 	/**
 	 * The number of args (if not vararg fxn), or minimum number of args (if vararg
