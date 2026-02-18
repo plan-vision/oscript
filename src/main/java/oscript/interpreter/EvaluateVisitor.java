@@ -30,6 +30,7 @@ import oscript.visitor.ObjectVisitor;
 import oscript.parser.OscriptParser;
 import oscript.parser.OscriptParserConstants;
 import oscript.parser.ParseException;
+import oscript.OscriptHost;
 import oscript.OscriptInterpreter;
 import oscript.translator.*;
 
@@ -1596,9 +1597,15 @@ public class EvaluateVisitor implements ObjectVisitor, OscriptParserConstants
         }
         
         functionCallExpressionListEvaluator = functionCallExpressionList.nodeEvaluator;
-      }
+      } 
       
-      oscript.NodeEvaluator nodeEvaluator = OscriptInterpreter.createNodeEvaluator( name, n.f6 );
+      oscript.NodeEvaluator nodeEvaluator;
+      try {
+          OscriptHost.compileSourceContextScriptParams=argIds; // hint only 
+          nodeEvaluator = OscriptInterpreter.createNodeEvaluator( name, n.f6 );
+      } finally {
+          OscriptHost.compileSourceContextScriptParams=null;
+      }
       
       {
         oscript.util.SymbolTable smit = nodeEvaluator.getSharedMemberIndexTable( oscript.NodeEvaluator.ALL );

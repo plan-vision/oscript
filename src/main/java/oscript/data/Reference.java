@@ -127,6 +127,12 @@ public class Reference extends Value {
 		this.val = val.unhand();
 		this.readonly = false;
 	}
+	
+	public final void resetNonhand(Value val) {
+		this.attr = ATTR_PUBLIC;
+		this.val = val.unhand();
+		this.readonly = false;
+	}
 
 	public final void reset() {
 		this.attr = ATTR_INVALID;

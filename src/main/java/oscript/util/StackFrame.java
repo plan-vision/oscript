@@ -380,7 +380,7 @@ public abstract class StackFrame {
 			final int idx = smit.get(id);
 			if (idx < 0)
 				return null;
-			if (idx < fxn.fd.nargs) {
+			if (fxn != null && idx < fxn.fd.nargs) {
 				// ORIGINAL CODE :  if(idx >= members.length())  return null;
 				// LESS THAN NUMBER OF ARGUMENTS (NEW AUTO ARG NULL IF NOT PROVIDED)
 				final int meml = members instanceof StackFrame.StackFrameMemberTable ? ((StackFrame.StackFrameMemberTable)members).initialLen : members.length();

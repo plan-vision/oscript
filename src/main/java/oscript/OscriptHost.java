@@ -54,6 +54,8 @@ public abstract class OscriptHost {
 	public static interface ClassMappingUnproxifyCallback {
         public Object __unmap();
 	}
+	// hint temporary 
+	public static Object compileSourceContextScriptParams; // String (, separated) or int[] argsIds (nargs*2 , [0] > symbol)
 
 }
 
